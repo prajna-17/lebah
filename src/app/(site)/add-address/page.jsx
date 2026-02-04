@@ -48,7 +48,8 @@ export default function AddAddressPage() {
         <section className="space-y-4">
           <h2 className="text-lg font-semibold">Contact Details</h2>
 
-          <input
+          <Input
+            label="Name *"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder="Enter your name"

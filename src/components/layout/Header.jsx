@@ -25,12 +25,12 @@ export default function Header() {
 
         {/* Icons */}
         <div className="flex gap-4">
-          <Link href="/cart">
-            <FiShoppingCart className="text-white text-2xl cursor-pointer" />
-          </Link>
           {/* Wishlist */}
           <Link href="/wishlist">
             <FiHeart className="text-white text-2xl cursor-pointer" />
+          </Link>
+          <Link href="/cart">
+            <FiShoppingCart className="text-white text-2xl cursor-pointer" />
           </Link>
         </div>
       </div>

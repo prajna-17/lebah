@@ -2,6 +2,7 @@
 import { useAuth } from "@/components/auth/AuthContext";
 import LoginGate from "@/components/auth/LoginGate";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function BestProducts() {
   const products = [
@@ -12,6 +13,7 @@ export default function BestProducts() {
   ];
   const { isLoggedIn } = useAuth();
   const [showLogin, setShowLogin] = useState(false);
+  const router = useRouter();
 
   const requireLogin = (cb) => {
     if (!isLoggedIn) {
@@ -74,7 +76,13 @@ export default function BestProducts() {
 
       {/* View all */}
       <div className="mt-10 flex justify-center">
-        <button className="border border-black px-10 py-3 text-sm text-[#0b1d36]">
+        <button
+          onClick={() => router.push("/products")}
+          className="
+    border border-black px-10 py-3 text-sm text-[#0b1d36]
+    transition active:scale-[0.97]
+  "
+        >
           View All
         </button>
       </div>

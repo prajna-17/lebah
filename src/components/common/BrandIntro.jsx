@@ -12,7 +12,7 @@ export default function BrandIntro({ onFinish }) {
 
     const finishTimer = setTimeout(() => {
       onFinish();
-    }, 4600); // ⏱ animation end
+    }, 4600); // ⏱ exit animation end
 
     return () => {
       clearTimeout(timer);
@@ -22,17 +22,23 @@ export default function BrandIntro({ onFinish }) {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] bg-[#001A3E] flex items-center justify-center
+      className={`fixed inset-0 z-[9999]
+      flex items-center justify-center
+      bg-[#001A3E]
       transition-all duration-700 ease-in-out
       ${exit ? "-translate-y-full opacity-0" : "translate-y-0 opacity-100"}`}
     >
-      <video
-        src="/video/lebah-intro.mp4"
-        autoPlay
-        muted
-        playsInline
-        className="w-[80%] max-w-[420px] aspect-video object-contain"
-      />
+      {/* VIDEO WRAPPER — forces same blue everywhere */}
+      <div className="bg-[#001A3E] p-6 rounded-xl">
+        <video
+          src="/video/lebah-intro.mp4"
+          autoPlay
+          muted
+          playsInline
+          style={{ backgroundColor: "#001A3E" }}
+          className="w-[80%] max-w-[420px] aspect-video object-contain"
+        />
+      </div>
     </div>
   );
 }

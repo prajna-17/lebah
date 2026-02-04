@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const banners = [
   "/img/heroim.jpeg",
@@ -10,6 +11,8 @@ const banners = [
 ];
 
 export default function HeroBanner() {
+  const router = useRouter();
+
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -27,7 +30,8 @@ export default function HeroBanner() {
         key={index}
         src={banners[index]}
         alt="banner"
-        className="absolute inset-0 w-full h-full object-cover animate-banner-slide"
+        onClick={() => router.push("/products")}
+        className="absolute inset-0 w-full h-full object-cover animate-banner-slide cursor-pointer active:scale-[0.98] transition"
       />
 
       {/* DOTS — ON IMAGE, BOTTOM */}
