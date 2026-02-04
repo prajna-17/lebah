@@ -12,7 +12,7 @@ export default function BrandIntro({ onFinish }) {
 
     const finishTimer = setTimeout(() => {
       onFinish();
-    }, 4600); // ⏱ animation end
+    }, 5600); // ⏱ animation end
 
     return () => {
       clearTimeout(timer);
