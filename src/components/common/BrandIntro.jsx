@@ -8,7 +8,7 @@ export default function BrandIntro({ onFinish }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setExit(true);
-    }, 4000); // ⏱ video duration
+    }, 4500); // ⏱ video duration
 
     const finishTimer = setTimeout(() => {
       onFinish();
