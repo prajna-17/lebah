@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useAuth } from "./AuthContext";
 
 export default function LoginGate({ open, onClose }) {
   const [mounted, setMounted] = useState(false);
@@ -10,6 +11,7 @@ export default function LoginGate({ open, onClose }) {
   const [form, setForm] = useState({ name: "", phone: "", email: "" });
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const otpRefs = useRef([]);
+  const { login } = useAuth();
 
   // ✅ Mount check (HOOK ALWAYS RUNS)
   useEffect(() => {
@@ -111,7 +113,13 @@ export default function LoginGate({ open, onClose }) {
               ))}
             </div>
 
-            <button className="w-full bg-[#0f243e] text-white py-4 rounded-md">
+            <button
+              onClick={() => {
+                login(); // ✅ user logged in
+                onClose(); // ✅ close modal
+              }}
+              className="w-full bg-[#0f243e] text-white py-4 rounded-md"
+            >
               Login
             </button>
           </>

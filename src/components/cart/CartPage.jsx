@@ -32,7 +32,7 @@ export default function CartPage() {
   const router = useRouter();
 
   return (
-    <section className="px-4 pt-4 pb-10 bg-[#fafafa] min-h-screen text-gray-900">
+    <section className="px-4 pt-4 pb-10 bg-[#fafafa] min-h-screen text-gray-900 -mb-77">
       {/* TOP BAR */}
       <div className="flex items-center gap-3 mb-6">
         {/* BACK BUTTON */}

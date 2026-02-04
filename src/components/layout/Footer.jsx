@@ -1,6 +1,19 @@
-import { FaYoutube } from "react-icons/fa";
+"use client";
+
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  // Hide footer on checkout page
+  if (
+    pathname.includes("/checkout") ||
+    pathname.includes("/add-address") ||
+    pathname.includes("/order-confirmed")
+  ) {
+    return null;
+  }
+
   const links = ["ABOUT US", "CONTACT US", "FAQ'S", "SERVICES", "QUICK LINKS"];
 
   return (
@@ -15,11 +28,10 @@ export default function Footer() {
       </div>
 
       {/* Social icons */}
-      {/* Social icons */}
       <div className="flex justify-center gap-8 py-10">
         <img
           src="/img/youtube.jpeg"
-          alt="Instagram"
+          alt="YouTube"
           className="w-14 h-14 rounded-full bg-white p-3 cursor-pointer hover:scale-110 transition"
         />
 
@@ -31,14 +43,14 @@ export default function Footer() {
 
         <img
           src="/img/insta.jpeg"
-          alt="YouTube"
+          alt="Instagram"
           className="w-14 h-14 rounded-full bg-white p-3 cursor-pointer hover:scale-110 transition"
         />
       </div>
 
       {/* Copyright */}
       <div className="text-xs tracking-[0.25em] text-white/80">
-        @2012 ABC WAS PRI.
+        © 2012 ABC WAS PRI.
       </div>
 
       <div className="mt-4 text-xs tracking-[0.25em] text-white/80">

@@ -1,8 +1,11 @@
 "use client";
 
 import { Percent } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function CartSummary() {
+  const router = useRouter();
+
   return (
     <>
       {/* SUMMARY CARD */}
@@ -61,7 +64,10 @@ export default function CartSummary() {
 
       {/* STICKY CHECKOUT */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-4 z-50">
-        <button className="w-full bg-[#0f243e] text-white py-4 text-sm font-semibold rounded-md tracking-wide">
+        <button
+          onClick={() => router.push("/checkout")}
+          className="w-full bg-[#0f243e] text-white py-4 text-sm font-semibold rounded-md tracking-wide"
+        >
           CHECKOUT
         </button>
       </div>
