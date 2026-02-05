@@ -330,7 +330,7 @@ export default function CheckoutPage() {
         </div>
       </div>
       {showAddressError && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#0b1b2f] text-white px-5 py-3 rounded-xl shadow-lg animate-fadeIn">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#0b1b2f] text-white px-5 py-3 rounded-xl shadow-lg animate-fadeIn">
           Please add your delivery address to continue
         </div>
       )}
