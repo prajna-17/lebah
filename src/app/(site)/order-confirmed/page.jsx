@@ -8,14 +8,24 @@ import SuccessAnimation from "@/components/SuccessAnimation";
 import { useEffect, useState } from "react";
 import { getCart } from "@/utils/cart";
 
+export const dynamic = "force-dynamic";
+
 export default function OrderConfirmedPage() {
   const router = useRouter();
   const [openShare, setOpenShare] = useState(false);
   const [cart, setCart] = useState([]);
+  const [productLink, setProductLink] = useState("");
 
   /* LOAD CART */
   useEffect(() => {
     setCart(getCart());
+  }, []);
+
+  /* GET CURRENT URL (CLIENT ONLY) */
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setProductLink(window.location.href);
+    }
   }, []);
 
   /* ORDER DATA */
@@ -35,15 +45,16 @@ export default function OrderConfirmedPage() {
       year: "numeric",
     });
 
-  const productLink = window.location.href;
   const shareText = `I just placed an order with Lebah! 🛍️
 Order ${orderNumber}
 Total ₹${subTotal.toLocaleString("en-IN")}`;
 
   const copyLink = () => {
-    navigator.clipboard.writeText(productLink);
-    alert("Link Copied ✔");
-    setOpenShare(false);
+    if (typeof navigator !== "undefined") {
+      navigator.clipboard.writeText(productLink);
+      alert("Link Copied ✔");
+      setOpenShare(false);
+    }
   };
 
   return (
@@ -102,6 +113,8 @@ Total ₹${subTotal.toLocaleString("en-IN")}`;
       <div className="flex gap-4">
         <button
           onClick={() => {
+            if (typeof document === "undefined") return;
+
             const invoice = `
 Lebah - Invoice
 
@@ -152,7 +165,6 @@ ${cart
           openShare ? "visible" : "invisible pointer-events-none"
         }`}
       >
-        {/* BACKDROP */}
         <div
           onClick={() => setOpenShare(false)}
           className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
@@ -160,14 +172,12 @@ ${cart
           }`}
         />
 
-        {/* BOTTOM SHEET */}
         <div
           className={`w-full max-w-[480px] bg-white rounded-t-2xl p-5 pb-8 z-[999999]
           transition-transform duration-300 ${
             openShare ? "translate-y-0" : "translate-y-full"
           }`}
         >
-          {/* HEADER */}
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold">Share Order</h3>
             <button onClick={() => setOpenShare(false)}>
@@ -175,16 +185,17 @@ ${cart
             </button>
           </div>
 
-          {/* OPTIONS */}
           <div className="grid grid-cols-4 gap-5 text-center text-sm font-medium">
             <button
               className="flex flex-col items-center"
-              onClick={() =>
-                window.open(
-                  `https://wa.me/?text=${encodeURIComponent(shareText)}`,
-                  "_blank",
-                )
-              }
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.open(
+                    `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+                    "_blank",
+                  );
+                }
+              }}
             >
               <FaWhatsapp size={28} className="text-green-500" />
               WhatsApp
@@ -192,12 +203,14 @@ ${cart
 
             <button
               className="flex flex-col items-center"
-              onClick={() =>
-                window.open(
-                  `https://www.facebook.com/sharer/sharer.php?u=${productLink}`,
-                  "_blank",
-                )
-              }
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.open(
+                    `https://www.facebook.com/sharer/sharer.php?u=${productLink}`,
+                    "_blank",
+                  );
+                }
+              }}
             >
               <FaFacebookF size={28} className="text-blue-600" />
               Facebook
@@ -205,9 +218,11 @@ ${cart
 
             <button
               className="flex flex-col items-center"
-              onClick={() =>
-                window.open("https://www.instagram.com/", "_blank")
-              }
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.open("https://www.instagram.com/", "_blank");
+                }
+              }}
             >
               <FaInstagram size={28} className="text-pink-500" />
               Instagram
