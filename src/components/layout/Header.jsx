@@ -38,7 +38,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="w-full">
+      <header className="w-full sticky top-0 z-[9999]">
         {/* Offer strip */}
         <div className="bg-white text-center py-1 text-sm text-gray-700 border-b font-[500]">
           Upto 60% off on Selected Apparel
