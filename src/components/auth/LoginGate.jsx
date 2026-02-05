@@ -11,26 +11,33 @@ export default function LoginGate({ open, onClose }) {
   const [form, setForm] = useState({ name: "", phone: "", email: "" });
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const otpRefs = useRef([]);
-  const { login } = useAuth();
 
-  // ✅ Mount check (HOOK ALWAYS RUNS)
+  const [error, setError] = useState("");
+  const [shake, setShake] = useState(false);
+
+  const { sendOtp, verifyOtp } = useAuth();
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  // mount
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // ✅ Lock scroll + hide bottom nav
+  // lock scroll
   useEffect(() => {
-    if (open) {
-      document.body.classList.add("login-open");
-    } else {
-      document.body.classList.remove("login-open");
-    }
+    if (open) document.body.classList.add("login-open");
+    else document.body.classList.remove("login-open");
 
     return () => document.body.classList.remove("login-open");
   }, [open]);
 
-  // ❗ AFTER hooks → conditional render
   if (!mounted || !open) return null;
+
+  const triggerError = (msg) => {
+    setError(msg);
+    setShake(true);
+    setTimeout(() => setShake(false), 400);
+  };
 
   const handleOtpChange = (value, index) => {
     if (!/^\d?$/.test(value)) return;
@@ -38,6 +45,11 @@ export default function LoginGate({ open, onClose }) {
     newOtp[index] = value;
     setOtp(newOtp);
     if (value && index < 5) otpRefs.current[index + 1]?.focus();
+  };
+  const triggerHaptic = () => {
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(20); // 💙 subtle vibration
+    }
   };
 
   return createPortal(
@@ -74,27 +86,71 @@ export default function LoginGate({ open, onClose }) {
           <div className="space-y-4">
             <input
               placeholder="Full Name"
-              className="w-full border rounded-lg px-4 py-3 text-sm"
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className={`w-full border rounded-lg px-4 py-3 text-sm transition
+                ${shake ? "border-[#0f243e] animate-shake" : "border-gray-300"}
+              `}
+              onChange={(e) => {
+                setForm({ ...form, name: e.target.value });
+                setError("");
+              }}
             />
+
             <input
               placeholder="Phone Number"
-              className="w-full border rounded-lg px-4 py-3 text-sm"
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              className={`w-full border rounded-lg px-4 py-3 text-sm transition
+                ${shake ? "border-[#0f243e] animate-shake" : "border-gray-300"}
+              `}
+              onChange={(e) => {
+                setForm({ ...form, phone: e.target.value });
+                setError("");
+              }}
             />
+
             <div className="flex gap-3">
               <input
                 placeholder="Email Address"
-                className="flex-1 border rounded-lg px-4 py-3 text-sm"
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className={`flex-1 border rounded-lg px-4 py-3 text-sm transition
+                  ${shake ? "border-[#0f243e] animate-shake" : "border-gray-300"}
+                `}
+                onChange={(e) => {
+                  setForm({ ...form, email: e.target.value });
+                  setError("");
+                }}
               />
+
               <button
-                onClick={() => setStep("otp")}
+                onClick={async () => {
+                  // 🔒 HARD STOP — NO OTP IF INVALID
+                  if (
+                    form.name.trim().length === 0 ||
+                    form.phone.trim().length === 0 ||
+                    form.email.trim().length === 0
+                  ) {
+                    setError("Please fill all fields");
+                    setShake(true);
+                    setTimeout(() => setShake(false), 400);
+                    return; // ❗ THIS was missing
+                  }
+
+                  try {
+                    setError("");
+                    await sendOtp(form.email); // ✅ ONLY runs if valid
+                    setStep("otp");
+                  } catch (e) {
+                    setError(e.message || "Failed to send OTP");
+                    setShake(true);
+                    setTimeout(() => setShake(false), 400);
+                  }
+                }}
                 className="px-4 bg-[#0f243e] text-white rounded-lg"
               >
                 Send OTP
               </button>
             </div>
+
+            {error && (
+              <p className="text-xs text-[#0f243e] font-medium mt-1">{error}</p>
+            )}
           </div>
         )}
 
@@ -114,9 +170,20 @@ export default function LoginGate({ open, onClose }) {
             </div>
 
             <button
-              onClick={() => {
-                login(); // ✅ user logged in
-                onClose(); // ✅ close modal
+              onClick={async () => {
+                try {
+                  await verifyOtp(form.email, otp.join(""), form.name);
+
+                  triggerHaptic(); // 📳 happy lil tap
+                  setShowSuccess(true);
+
+                  setTimeout(() => {
+                    setShowSuccess(false);
+                    onClose();
+                  }, 1800);
+                } catch (e) {
+                  triggerError(e.message || "Invalid OTP");
+                }
               }}
               className="w-full bg-[#0f243e] text-white py-4 rounded-md"
             >
@@ -129,6 +196,18 @@ export default function LoginGate({ open, onClose }) {
           By continuing, you agree to Lebah’s Terms & Privacy Policy
         </p>
       </div>
+      {showSuccess && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center pointer-events-none">
+          <div className="bg-white px-8 py-6 rounded-2xl shadow-xl text-center animate-heartDance">
+            <p className="text-sm font-medium text-gray-700 mt-1">
+              Log In Successful!!{" "}
+            </p>
+            <p className="text-sm font-medium text-gray-700 mt-1">
+              You’re in ✨
+            </p>
+          </div>
+        </div>
+      )}
     </>,
     document.getElementById("modal-root"),
   );

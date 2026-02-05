@@ -119,11 +119,19 @@ export default function AdminCreateProduct() {
 
     const token = localStorage.getItem("token");
 
+    // const res = await fetch(`${API}/products`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    //   body: JSON.stringify(payload),
+    // });
+
     const res = await fetch(`${API}/products`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(payload),
     });
@@ -216,7 +224,6 @@ export default function AdminCreateProduct() {
           value={currentColor}
           onChange={(e) => setCurrentColor(e.target.value)}
         />
-
         <input
           ref={colorFileRef}
           type="file"

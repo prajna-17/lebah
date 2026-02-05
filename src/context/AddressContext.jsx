@@ -1,19 +1,50 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useAuth } from "@/components/auth/AuthContext";
 
 const AddressContext = createContext();
 
 export function AddressProvider({ children }) {
-  const [address, setAddress] = useState(null);
+  const { user, isLoggedIn } = useAuth();
+  const [address, setAddressState] = useState(null);
+
+  /* 🔑 storage key per user */
+  const storageKey = user?.email ? `leebah-address-${user.email}` : null;
+
+  /* LOAD address on login */
+  useEffect(() => {
+    if (isLoggedIn && storageKey) {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        setAddressState(JSON.parse(saved));
+      }
+    } else {
+      setAddressState(null);
+    }
+  }, [isLoggedIn, storageKey]);
+
+  /* SAVE address */
+  const setAddress = (data) => {
+    setAddressState(data);
+    if (storageKey) {
+      localStorage.setItem(storageKey, JSON.stringify(data));
+    }
+  };
+
+  /* CLEAR on logout */
+  const clearAddress = () => {
+    if (storageKey) {
+      localStorage.removeItem(storageKey);
+    }
+    setAddressState(null);
+  };
 
   return (
-    <AddressContext.Provider value={{ address, setAddress }}>
+    <AddressContext.Provider value={{ address, setAddress, clearAddress }}>
       {children}
     </AddressContext.Provider>
   );
 }
 
-export function useAddress() {
-  return useContext(AddressContext);
-}
+export const useAddress = () => useContext(AddressContext);

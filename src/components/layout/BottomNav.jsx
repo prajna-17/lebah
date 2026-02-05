@@ -11,17 +11,14 @@ const navItems = [
 ];
 
 export default function BottomNav() {
-  // ✅ ALL HOOKS FIRST
   const pathname = usePathname();
   const router = useRouter();
 
-  const [active, setActive] = useState(pathname);
   const [visible, setVisible] = useState(true);
-
   const lastScrollY = useRef(0);
   const idleTimer = useRef(null);
 
-  // ✅ Hide conditions (AFTER hooks)
+  // ❌ Hide bottom nav on specific pages
   const hideBottomNav =
     pathname.includes("/cart") ||
     pathname.includes("/checkout") ||
@@ -36,9 +33,7 @@ export default function BottomNav() {
 
   // 📳 Haptic
   const haptic = () => {
-    if (typeof navigator !== "undefined" && navigator.vibrate) {
-      navigator.vibrate(10);
-    }
+    if (navigator?.vibrate) navigator.vibrate(10);
   };
 
   // 👀 Scroll hide/show
@@ -68,7 +63,6 @@ export default function BottomNav() {
     };
   }, []);
 
-  // ✅ FINAL CONDITIONAL RETURN
   if (hideBottomNav) return null;
 
   return (
@@ -79,14 +73,18 @@ export default function BottomNav() {
     >
       <div className="flex justify-around items-center h-[60px]">
         {navItems.map((item) => {
-          const isActive = active === item.path;
+          // ✅ ACTIVE LOGIC (THIS FIXES YOUR ISSUE)
+          const isActive =
+            item.path === "/products"
+              ? pathname.startsWith("/products")
+              : pathname === item.path;
+
           const Icon = item.icon;
 
           return (
             <button
               key={item.label}
               onClick={() => {
-                setActive(item.path);
                 haptic();
                 playSound();
                 router.push(item.path);

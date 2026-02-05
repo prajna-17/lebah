@@ -1,6 +1,13 @@
-export default function CategoryCard({ img, title, subtitle }) {
+"use client";
+import { useRouter } from "next/navigation";
+
+export default function CategoryCard({ id, img, title, subtitle }) {
+  const router = useRouter();
   return (
-    <div className="relative w-full rounded-2xl overflow-hidden">
+    <div
+      onClick={() => router.push(`/products?category=${id}`)}
+      className="relative w-full rounded-2xl overflow-hidden cursor-pointer"
+    >
       {/* GOLDEN BACKGROUND IMAGE */}
       <img
         src="/img/cat.png" // 👈 your golden background image

@@ -22,12 +22,12 @@ export default function BrandIntro({ onFinish }) {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] bg-[#010A35] flex items-center justify-center
+      className={`fixed inset-0 z-[9999] bg-[#000] flex items-center justify-center
       transition-all duration-700 ease-in-out
       ${exit ? "-translate-y-full opacity-0" : "translate-y-0 opacity-100"}`}
     >
       <video
-        src="/video/lebah-intro.mp4"
+        src="/video/monto-intro.mp4"
         autoPlay
         muted
         playsInline

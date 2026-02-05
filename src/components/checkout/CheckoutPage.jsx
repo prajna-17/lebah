@@ -2,15 +2,54 @@
 
 import { FiChevronLeft, FiChevronRight, FiPlus } from "react-icons/fi";
 import { MapPin, Percent, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { useAddress } from "@/context/AddressContext";
+import { getCart } from "@/utils/cart";
 
 export default function CheckoutPage() {
   const [openSummary, setOpenSummary] = useState(false);
+  const [showAddressError, setShowAddressError] = useState(false);
+
   const router = useRouter();
   const { address } = useAddress();
+  const [cart, setCart] = useState([]);
+  const subTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+  const discount = cart.reduce((sum, item) => {
+    if (!item.oldPrice) return sum;
+    return sum + (item.oldPrice - item.price) * item.qty;
+  }, 0);
+
+  const tax = Math.round(subTotal * 0.02); // 2%
+  const grandTotal = subTotal - discount + tax;
+  const today = new Date();
+
+  const addDays = (date, days) => {
+    const d = new Date(date);
+    d.setDate(d.getDate() + days);
+    return d;
+  };
+
+  const formatDate = (date) =>
+    date.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+    });
+
+  const startDate = addDays(today, 7);
+  const endDate = addDays(today, 10);
+
+  const arrivalText = `${formatDate(startDate)} to ${formatDate(endDate)}`;
+
+  useEffect(() => {
+    const load = () => setCart(getCart());
+    load();
+
+    window.addEventListener("cart-updated", load);
+    return () => window.removeEventListener("cart-updated", load);
+  }, []);
 
   return (
     <div className="w-full min-h-screen bg-gray-50 text-gray-900">
@@ -193,31 +232,33 @@ export default function CheckoutPage() {
         {/* ITEMS */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-lg font-semibold">2 Items</span>
+            <span className="text-lg font-semibold">{cart.length} Items</span>
             <span className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm">
-              Arrives by Feb 10 to Feb 12
+              Arrives by {arrivalText}
             </span>
           </div>
 
           {/* SLIDER */}
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            {[1, 2].map((item) => (
+            {cart.map((item) => (
               <div
-                key={item}
+                key={item.variantId}
                 className="min-w-[320px] bg-gray-200 rounded-2xl p-4 flex gap-4"
               >
                 <img
-                  src="/img/shirt.jpg"
+                  src={item.image}
                   className="w-24 h-28 rounded-xl object-cover"
-                  alt="product"
+                  alt={item.title}
                 />
 
                 <div className="text-sm space-y-1">
-                  <p className="font-semibold">Men Soft Cotton Shirt</p>
-                  <p>Color : Blue</p>
-                  <p>Size : L</p>
-                  <p className="font-semibold mt-2">₹ 2,599</p>
-                  <p>Qty : 1</p>
+                  <p className="font-semibold">{item.title}</p>
+                  <p>Color : {item.color}</p>
+                  {item.size && <p>Size : {item.size}</p>}
+                  <p className="font-semibold mt-2">
+                    ₹ {(item.price * item.qty).toLocaleString("en-IN")}
+                  </p>
+                  <p>Qty : {item.qty}</p>
                 </div>
               </div>
             ))}
@@ -233,20 +274,20 @@ export default function CheckoutPage() {
           <div className="px-4 py-4 space-y-3 border-b font-semibold">
             <div className="flex justify-between text-sm">
               <span>Sub Total</span>
-              <span>₹ 5,555</span>
+              <span>₹ {subTotal.toLocaleString("en-IN")}</span>
             </div>
             <div className="flex justify-between text-sm text-green-600">
               <span>Discount</span>
-              <span>- ₹ 1,555</span>
+              <span>- ₹ {discount.toLocaleString("en-IN")}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span>Tax</span>
-              <span>₹ 100</span>
+              <span>₹ {tax.toLocaleString("en-IN")}</span>
             </div>
 
             <div className="flex justify-between font-semibold text-base border-t pt-2">
               <span>Grand Total</span>
-              <span>₹ 6,690</span>
+              <span>₹ {grandTotal.toLocaleString("en-IN")}</span>
             </div>
           </div>
         )}
@@ -260,18 +301,39 @@ export default function CheckoutPage() {
             {openSummary ? <FiChevronDown /> : <FiChevronUp />}
             <div>
               <p className="text-medium text-gray-900 font-bold">Total</p>
-              <p className="text-xl font-bold">₹ 6,690</p>
+              <p className="text-xl font-bold">
+                ₹ {grandTotal.toLocaleString("en-IN")}
+              </p>
             </div>
           </div>
 
           <button
-            onClick={() => router.push("/order-confirmed")}
+            onClick={() => {
+              if (!address) {
+                setShowAddressError(true);
+
+                // 📳 vibration (mobile only)
+                if (navigator.vibrate) {
+                  navigator.vibrate([80, 40, 80]);
+                }
+
+                setTimeout(() => setShowAddressError(false), 2500);
+                return;
+              }
+
+              router.push("/order-confirmed");
+            }}
             className="bg-[#0f1e3a] text-white px-8 py-4 rounded-lg font-bold"
           >
             PAY NOW
           </button>
         </div>
       </div>
+      {showAddressError && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#0b1b2f] text-white px-5 py-3 rounded-xl shadow-lg animate-fadeIn">
+          Please add your delivery address to continue
+        </div>
+      )}
     </div>
   );
 }

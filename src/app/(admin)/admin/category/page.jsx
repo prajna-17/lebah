@@ -146,6 +146,13 @@ export default function AdminCategory() {
             startUpload([file]);
           }}
         />
+        {/* <input
+          type="text"
+          placeholder="Image URL"
+          className="modal-input"
+          value={image}
+          onChange={(e) => setImage(e.target.value)}
+        /> */}
 
         {preview && (
           <img
@@ -168,10 +175,10 @@ export default function AdminCategory() {
               return;
             }
 
-            if (!token) {
-              alert("Login expired. Please login again.");
-              return;
-            }
+            // if (!token) {
+            //   alert("Login expired. Please login again.");
+            //   return;
+            // }
 
             if (!name || !image) {
               alert("Name required & image upload must finish");
@@ -184,10 +191,14 @@ export default function AdminCategory() {
               if (!editMode) {
                 const r = await fetch(`${API}/categories`, {
                   method: "POST",
+                  // headers: {
+                  //   "Content-Type": "application/json",
+                  //   Authorization: `Bearer ${token}`,
+                  // },
                   headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
                   },
+
                   body: JSON.stringify(payload),
                 });
 
@@ -204,10 +215,14 @@ export default function AdminCategory() {
               } else {
                 const r = await fetch(`${API}/categories/${currentId}`, {
                   method: "PUT",
+                  // headers: {
+                  //   "Content-Type": "application/json",
+                  //   Authorization: `Bearer ${token}`,
+                  // },
                   headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
                   },
+
                   body: JSON.stringify(payload),
                 });
 
@@ -245,8 +260,11 @@ export default function AdminCategory() {
           try {
             const r = await fetch(`${API}/categories/${deleteId}`, {
               method: "DELETE",
+              // headers: {
+              //   Authorization: `Bearer ${token}`,
+              // },
               headers: {
-                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
               },
             });
 

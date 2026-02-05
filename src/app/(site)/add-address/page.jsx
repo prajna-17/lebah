@@ -2,8 +2,8 @@
 
 import { FiChevronLeft } from "react-icons/fi";
 import { useRouter } from "next/navigation";
-import { useAddress } from "@/context/AddressContext";
 import { useEffect, useState } from "react";
+import { useAddress } from "@/context/AddressContext";
 
 export default function AddAddressPage() {
   const [form, setForm] = useState({
@@ -13,10 +13,13 @@ export default function AddAddressPage() {
     line1: "",
     city: "",
     pincode: "",
+    state: "",
   });
 
   const router = useRouter();
   const { address, setAddress } = useAddress();
+
+  /* PREFILL FORM IF ADDRESS EXISTS */
   useEffect(() => {
     if (address) {
       setForm({
@@ -26,6 +29,7 @@ export default function AddAddressPage() {
         line1: address.line1 || "",
         city: address.city || "",
         pincode: address.pincode || "",
+        state: address.state || "",
       });
     }
   }, [address]);
@@ -54,6 +58,7 @@ export default function AddAddressPage() {
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder="Enter your name"
           />
+
           <Input
             label="Email ID *"
             placeholder="Enter your email Id"
@@ -108,6 +113,7 @@ export default function AddAddressPage() {
             value={form.city}
             onChange={(e) => setForm({ ...form, city: e.target.value })}
           />
+
           <Input
             label="State *"
             placeholder="Enter your state name"

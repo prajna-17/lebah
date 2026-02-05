@@ -3,95 +3,168 @@
 import { FiShoppingCart } from "react-icons/fi";
 import { useAuth } from "@/components/auth/AuthContext";
 import LoginGate from "@/components/auth/LoginGate";
-import { useState } from "react";
+import { API } from "@/utils/api";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { addToCart } from "@/utils/cart";
+import { createPortal } from "react-dom";
 
 export default function ProductSlider() {
-  const products = [
-    {
-      id: 1,
-      name: "Men Beige Casual Shirt",
-      img: "/img/oxford.jpeg",
-      rating: 4.3,
-      price: 2999,
-      oldPrice: 4999,
-      off: "56% OFF",
-    },
-    {
-      id: 2,
-      name: "Men Beige Casual Shirt",
-      img: "/img/linen.jpeg",
-      rating: 4.3,
-      price: 2999,
-      oldPrice: 4999,
-      off: "56% OFF",
-    },
-    {
-      id: 3,
-      name: "Men Beige Casual Shirt",
-      img: "/img/p3.jpeg",
-      rating: 4.3,
-      price: 2999,
-      oldPrice: 4999,
-      off: "56% OFF",
-    },
-  ];
   const { isLoggedIn } = useAuth();
   const [showLogin, setShowLogin] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [showCartModal, setShowCartModal] = useState(false);
+  const [addedItem, setAddedItem] = useState(null);
+  const router = useRouter();
 
-  const requireLogin = (cb) => {
+  useEffect(() => {
+    fetch(`${API}/products`)
+      .then((res) => res.json())
+      .then(setProducts);
+  }, []);
+
+  const requireLogin = () => {
     if (!isLoggedIn) {
       setShowLogin(true);
-      return;
+      return false;
     }
-    cb && cb();
+    return true;
   };
 
   return (
-    <section className="bg-white px-4 py-10">
-      <div className="flex gap-5 overflow-x-auto scrollbar-hide font-semibold">
-        {products.map((p) => (
-          <div key={p.id} className="min-w-[220px] flex-shrink-0">
-            {/* Image card */}
-            <div className="relative rounded-xl overflow-hidden">
-              <img
-                src={p.img}
-                alt={p.name}
-                className="h-[300px] w-full object-cover"
-              />
+    <>
+      {/* ===== SLIDER (UI UNCHANGED) ===== */}
+      <section className="bg-white px-4 py-10">
+        <div className="flex gap-5 overflow-x-auto scrollbar-hide font-semibold">
+          {products.map((p) => {
+            const variantId = `${p._id}-Default`;
 
-              {/* Rating */}
-              <div className="absolute bottom-3 left-3 bg-white px-2 py-1 rounded-md text-mid text-gray-800 flex items-center gap-1 font-semibold">
-                <span>{p.rating}</span>
-                <span className="text-gray-900">★</span>
+            return (
+              <div
+                key={p._id}
+                className="min-w-[220px] flex-shrink-0 cursor-pointer"
+                onClick={() => router.push(`/products/${p._id}`)}
+              >
+                {/* Image card */}
+                <div className="relative rounded-xl overflow-hidden">
+                  <img
+                    src={p.images?.[0]}
+                    alt={p.title}
+                    className="h-[300px] w-full object-cover"
+                  />
+
+                  {/* Rating */}
+                  <div className="absolute bottom-3 left-3 bg-white px-2 py-1 rounded-md text-mid text-gray-800 flex items-center gap-1 font-semibold">
+                    <span>{p.rating || 4.3}</span>
+                    <span className="text-gray-900">★</span>
+                  </div>
+
+                  {/* Cart icon */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!requireLogin()) return;
+
+                      addToCart({
+                        productId: p._id,
+                        variantId,
+                        title: p.title,
+                        image: p.images?.[0],
+                        price: p.price,
+                        color: "Default",
+                      });
+
+                      // sound
+                      const audio = new Audio("/sounds/pop.mp3");
+                      audio.volume = 0.6;
+                      audio.play();
+
+                      // show modal
+                      setAddedItem({
+                        image: p.images?.[0],
+                        title: p.title,
+                      });
+                      setShowCartModal(true);
+
+                      // bounce header cart icon
+                      document
+                        .querySelector(".cart-icon")
+                        ?.classList.add("cart-bounce");
+                      setTimeout(() => {
+                        document
+                          .querySelector(".cart-icon")
+                          ?.classList.remove("cart-bounce");
+                      }, 600);
+                    }}
+                    className="absolute bottom-3 right-3 bg-white w-10 h-10 rounded-full flex items-center justify-center"
+                  >
+                    <FiShoppingCart size={18} className="text-[#0f243e]" />
+                  </button>
+                </div>
+
+                {/* Text */}
+                <div className="mt-3">
+                  <p className="text-mid font-medium text-gray-900">
+                    {p.title}
+                  </p>
+
+                  <div className="flex items-center gap-2 mt-1 text-big text-gray-900">
+                    <span className="font-semibold">
+                      ₹ {p.price.toLocaleString()}
+                    </span>
+
+                    {p.oldPrice && (
+                      <span className="line-through text-gray-400">
+                        ₹ {p.oldPrice.toLocaleString()}
+                      </span>
+                    )}
+
+                    {p.oldPrice && (
+                      <span className="text-red-600 font-medium">
+                        {Math.round(
+                          ((p.oldPrice - p.price) / p.oldPrice) * 100,
+                        )}
+                        % OFF
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <LoginGate open={showLogin} onClose={() => setShowLogin(false)} />
+      </section>
+
+      {/* ===== CART MODAL (PORTAL, SAME AS BESTPRODUCTS) ===== */}
+      {showCartModal &&
+        typeof window !== "undefined" &&
+        createPortal(
+          <div className="added-bar-wrapper">
+            <div className="added-bar">
+              <span
+                className="close-icon"
+                onClick={() => setShowCartModal(false)}
+              >
+                ✕
+              </span>
+
+              <div className="added-content">
+                <img src={addedItem?.image} alt="product" />
+                <span>Added to cart ✔</span>
               </div>
 
-              {/* Cart icon */}
               <button
-                onClick={() => requireLogin()}
-                className="absolute bottom-3 right-3 bg-white w-10 h-10 rounded-full flex items-center justify-center"
+                className="go-to-cart-btn"
+                onClick={() => router.push("/cart")}
               >
-                <FiShoppingCart size={18} className="text-[#0f243e]" />
+                Go to Cart
               </button>
             </div>
-
-            {/* Text */}
-            <div className="mt-3">
-              <p className="text-mid font-medium text-gray-900">{p.name}</p>
-
-              <div className="flex items-center gap-2 mt-1 text-big text-gray-900">
-                <span className="font-semibold">
-                  ₹ {p.price.toLocaleString()}
-                </span>
-                <span className="line-through text-gray-400">
-                  ₹ {p.oldPrice.toLocaleString()}
-                </span>
-                <span className="text-red-600 font-medium">{p.off}</span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <LoginGate open={showLogin} onClose={() => setShowLogin(false)} />
-    </section>
+          </div>,
+          document.body,
+        )}
+    </>
   );
 }

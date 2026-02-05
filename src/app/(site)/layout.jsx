@@ -7,15 +7,15 @@ import { AddressProvider } from "@/context/AddressContext";
 export default function SiteLayout({ children }) {
   return (
     <>
-      <Header />
-
       <AuthProvider>
         <AddressProvider>
+          <Header />
+
           <main className="min-h-screen">{children}</main>
         </AddressProvider>
       </AuthProvider>
 
-      <BottomNav />
+      {/* <BottomNav /> */}
       <Footer />
 
       {/* Portal root for modals */}

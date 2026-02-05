@@ -4,6 +4,30 @@ export const getToken = () => {
 };
 
 export const getRoleFromToken = () => {
-  // TEMP: backend not ready
-  return "admin";
+  const token = getToken();
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.role;
+  } catch (e) {
+    return null;
+  }
+};
+
+export const getUserIdFromToken = () => {
+  const token = getToken();
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.userId;
+  } catch {
+    return null;
+  }
+};
+
+export const isLoggedIn = () => {
+  if (typeof window === "undefined") return false;
+  return !!localStorage.getItem("token");
 };
