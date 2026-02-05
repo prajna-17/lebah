@@ -31,7 +31,7 @@ export default function BrandIntro({ onFinish }) {
         autoPlay
         muted
         playsInline
-        className="w-[80%] max-w-[420px] aspect-video object-contain"
+        className="w-[95%] max-w-[420px] aspect-video object-contain"
       />
     </div>
   );
