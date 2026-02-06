@@ -14,7 +14,14 @@ export default function FabricTabs() {
     fetch(`${API}/sub-categories`)
       .then((res) => res.json())
       .then((data) => {
-        setSubCategories(Array.isArray(data) ? data : []);
+        if (!Array.isArray(data)) return;
+
+        // ✅ remove duplicates by name
+        const uniqueByName = Array.from(
+          new Map(data.map((s) => [s.name.toLowerCase(), s])).values(),
+        );
+
+        setSubCategories(uniqueByName);
       });
   }, []);
 
