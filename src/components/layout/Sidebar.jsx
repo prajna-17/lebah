@@ -17,6 +17,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthContext";
 import { useAddress } from "@/context/AddressContext";
+import { clearCart } from "@/utils/cart";
+import { clearWishlist } from "@/utils/wishlist";
 
 export default function Sidebar({ open, onClose }) {
   const router = useRouter();
@@ -32,7 +34,11 @@ export default function Sidebar({ open, onClose }) {
   }, [open]);
 
   const handleLogout = () => {
+    // 🔥 clear everything
     clearAddress();
+    clearCart();
+    clearWishlist();
+
     logout();
     onClose();
 
@@ -68,9 +74,9 @@ export default function Sidebar({ open, onClose }) {
       {open && (
         <>
           {/* BACKDROP */}
-          <div className="fixed inset-0 bg-black/40 z-40" onClick={onClose} />
+          <div className="fixed inset-0 bg-black/40 z-9998" onClick={onClose} />
 
-          <aside className="fixed top-0 left-0 h-full w-[85%] max-w-[340px] bg-white z-50 animate-sidebar shadow-xl">
+          <aside className="fixed top-0 left-0 h-full w-[85%] max-w-[340px] bg-white z-[9999] animate-sidebar shadow-xl">
             {/* HEADER IMAGE */}
             <div className="relative h-[160px]">
               <img
