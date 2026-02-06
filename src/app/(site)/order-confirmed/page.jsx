@@ -6,19 +6,20 @@ import { FaWhatsapp, FaFacebookF, FaInstagram } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import SuccessAnimation from "@/components/SuccessAnimation";
 import { useEffect, useState } from "react";
-import { getCart } from "@/utils/cart";
 
 export const dynamic = "force-dynamic";
 
 export default function OrderConfirmedPage() {
   const router = useRouter();
   const [openShare, setOpenShare] = useState(false);
-  const [cart, setCart] = useState([]);
   const [productLink, setProductLink] = useState("");
+  const [order, setOrder] = useState(null);
 
-  /* LOAD CART */
   useEffect(() => {
-    setCart(getCart());
+    const savedOrder = localStorage.getItem("lastOrder");
+    if (savedOrder) {
+      setOrder(JSON.parse(savedOrder));
+    }
   }, []);
 
   /* GET CURRENT URL (CLIENT ONLY) */
@@ -29,8 +30,10 @@ export default function OrderConfirmedPage() {
   }, []);
 
   /* ORDER DATA */
-  const orderNumber = `#${Math.floor(1000 + Math.random() * 9000)}`;
-  const subTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  // const orderNumber = `#${Math.floor(1000 + Math.random() * 9000)}`;
+  if (!order) return null;
+
+  const { orderNumber, items, subTotal, grandTotal, paymentMethod } = order;
 
   const today = new Date();
   const fromDate = new Date(today);
@@ -87,7 +90,7 @@ Total ₹${subTotal.toLocaleString("en-IN")}`;
           </p>
           <p>
             Payment Method :
-            <span className="font-semibold"> Selected Payment</span>
+            <span className="font-semibold"> {paymentMethod}</span>
           </p>
         </div>
       </div>
@@ -99,7 +102,7 @@ Total ₹${subTotal.toLocaleString("en-IN")}`;
         </div>
 
         <div className="px-4 py-4 space-y-4">
-          {cart.map((item) => (
+          {items.map((item) => (
             <Item key={item.variantId} item={item} />
           ))}
 
@@ -121,9 +124,10 @@ Lebah - Invoice
 Order Number: ${orderNumber}
 Total Amount: ₹ ${subTotal}
 
-${cart
+${items
   .map((i) => `- ${i.title} (${i.color}) x${i.qty} - ₹ ${i.price * i.qty}`)
   .join("\n")}
+
 `;
             const blob = new Blob([invoice], { type: "text/plain" });
             const url = URL.createObjectURL(blob);

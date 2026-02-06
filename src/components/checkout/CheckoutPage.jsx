@@ -321,8 +321,21 @@ export default function CheckoutPage() {
                 return;
               }
 
-              clearCart(); // 🧹 empty cart
-              window.dispatchEvent(new Event("cart-updated")); // 🔔 sync UI
+              const orderData = {
+                orderNumber: `#${Math.floor(1000 + Math.random() * 9000)}`,
+                items: cart,
+                subTotal,
+                discount,
+                tax,
+                grandTotal,
+                arrivalText,
+                paymentMethod: "Selected Payment",
+              };
+
+              localStorage.setItem("lastOrder", JSON.stringify(orderData));
+
+              clearCart(); // clear AFTER saving
+              window.dispatchEvent(new Event("cart-updated"));
               router.push("/order-confirmed");
             }}
             className="bg-[#0f1e3a] text-white px-8 py-4 rounded-lg font-bold"
