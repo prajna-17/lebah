@@ -5,44 +5,40 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { API } from "@/utils/api";
 
 export default function FabricTabs() {
-  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const activeCategory = searchParams.get("category");
+  const activeSubCategory = searchParams.get("subCategory");
 
   useEffect(() => {
-    fetch(`${API}/categories`)
+    fetch(`${API}/sub-categories`)
       .then((res) => res.json())
       .then((data) => {
-        setCategories(Array.isArray(data) ? data : data.data || []);
+        setSubCategories(Array.isArray(data) ? data : []);
       });
   }, []);
 
-  const handleTabClick = (cat) => {
-    router.push(`/products?category=${cat._id}`);
+  const handleTabClick = (sub) => {
+    router.push(`/products?subCategory=${sub._id}`);
   };
 
   return (
     <div className="px-4 pt-4 mt-3">
       <p className="mt-1 text-xs text-gray-500">
-        Showing {categories.length} categories
+        Showing {subCategories.length} subcategories
       </p>
       <div className="flex gap-3 overflow-x-auto no-scrollbar mt-2">
-        {categories.map((cat) => {
-          const isActive = activeCategory === cat._id;
+        {subCategories.map((sub) => {
+          const isActive = activeSubCategory === sub._id;
 
           return (
             <button
-              key={cat._id}
-              onClick={() => handleTabClick(cat)}
+              key={sub._id}
+              onClick={() => handleTabClick(sub)}
               className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap transition
-                ${
-                  isActive
-                    ? "bg-[#0f243e] text-white"
-                    : "bg-gray-200 text-gray-700"
-                }`}
+        ${isActive ? "bg-[#0f243e] text-white" : "bg-gray-200 text-gray-700"}`}
             >
-              {cat.name}
+              {sub.name}
             </button>
           );
         })}

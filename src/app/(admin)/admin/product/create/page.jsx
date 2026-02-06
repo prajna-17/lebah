@@ -13,6 +13,11 @@ export default function AdminCreateProduct() {
   const [images, setImages] = useState([]);
   const [colorImages, setColorImages] = useState([]);
   const [currentColor, setCurrentColor] = useState("");
+  const [superCategories, setSuperCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+
+  const [superCategoryId, setSuperCategoryId] = useState("");
+  const [subCategoryId, setSubCategoryId] = useState("");
 
   // 🔹 form fields
   const [categories, setCategories] = useState([]);
@@ -29,15 +34,35 @@ export default function AdminCreateProduct() {
   const mainFileRef = React.useRef(null);
   const colorFileRef = React.useRef(null);
 
+  // useEffect(() => {
+  //   fetch(`${API}/categories`)
+  //     .then((r) => r.json())
+  //     .then((d) => {
+  //       console.log("CATEGORY RESPONSE:", d);
+  //       setCategories(Array.isArray(d) ? d : d.data || []);
+  //     })
+  //     .catch(() => console.log("Category fetch failed ❌"));
+  // }, []);
+
   useEffect(() => {
-    fetch(`${API}/categories`)
+    fetch(`${API}/super-categories`)
       .then((r) => r.json())
-      .then((d) => {
-        console.log("CATEGORY RESPONSE:", d);
-        setCategories(Array.isArray(d) ? d : d.data || []);
-      })
-      .catch(() => console.log("Category fetch failed ❌"));
+      .then(setSuperCategories);
   }, []);
+  useEffect(() => {
+    if (!superCategoryId) return;
+
+    fetch(`${API}/categories?superCategory=${superCategoryId}`)
+      .then((r) => r.json())
+      .then((d) => setCategories(Array.isArray(d) ? d : d.data || []));
+  }, [superCategoryId]);
+  useEffect(() => {
+    if (!categoryId) return;
+
+    fetch(`${API}/sub-categories?category=${categoryId}`)
+      .then((r) => r.json())
+      .then(setSubCategories);
+  }, [categoryId]);
 
   // 🔹 MAIN IMAGES UPLOAD
   const handleImagesUpload = async (files) => {
@@ -113,6 +138,8 @@ export default function AdminCreateProduct() {
       sizes: sizes.split(",").map((s) => s.trim()),
       colors: colors.split(",").map((s) => s.trim()),
       category: categoryId,
+      subCategory: subCategoryId,
+
       productSellingCategory: sellingCategory,
       inStock,
     };
@@ -207,13 +234,46 @@ export default function AdminCreateProduct() {
 
         <select
           className="modal-input"
+          value={superCategoryId}
+          onChange={(e) => {
+            setSuperCategoryId(e.target.value);
+            setCategoryId("");
+            setSubCategoryId("");
+          }}
+        >
+          <option value="">Select Super Category</option>
+          {superCategories.map((s) => (
+            <option key={s._id} value={s._id}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="modal-input"
           value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
+          onChange={(e) => {
+            setCategoryId(e.target.value);
+            setSubCategoryId("");
+          }}
         >
           <option value="">Select Category</option>
           {categories.map((c) => (
             <option key={c._id} value={c._id}>
               {c.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="modal-input"
+          value={subCategoryId}
+          onChange={(e) => setSubCategoryId(e.target.value)}
+        >
+          <option value="">Select Sub Category</option>
+          {subCategories.map((s) => (
+            <option key={s._id} value={s._id}>
+              {s.name}
             </option>
           ))}
         </select>
@@ -224,11 +284,13 @@ export default function AdminCreateProduct() {
           value={currentColor}
           onChange={(e) => setCurrentColor(e.target.value)}
         />
+
         <input
           ref={colorFileRef}
           type="file"
           multiple
           accept="image/*"
+          className="modal-input"
           onChange={(e) => handleColorUpload([...e.target.files])}
         />
 

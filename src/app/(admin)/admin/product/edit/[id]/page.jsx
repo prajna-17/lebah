@@ -32,6 +32,11 @@ export default function EditProductPage() {
   const [categoryId, setCategoryId] = useState("");
   const [sellingCategory, setSellingCategory] = useState("featured");
   const [inStock, setInStock] = useState(true);
+  const [superCategories, setSuperCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+
+  const [superCategoryId, setSuperCategoryId] = useState("");
+  const [subCategoryId, setSubCategoryId] = useState("");
 
   const mainFileRef = React.useRef(null);
   const colorFileRef = React.useRef(null);

@@ -15,6 +15,7 @@ import CinematicScrollReveal from "@/components/CinematicScrollReveal";
 export default function ProductsClient() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
+  const subCategory = searchParams.get("subCategory");
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,9 +23,17 @@ export default function ProductsClient() {
   useEffect(() => {
     setLoading(true);
 
-    const url = category
-      ? `${API}/products?category=${category}`
-      : `${API}/products`;
+    let url = `${API}/products`;
+
+    if (category) {
+      url += `?category=${category}`;
+    }
+
+    if (subCategory) {
+      url += category
+        ? `&subCategory=${subCategory}`
+        : `?subCategory=${subCategory}`;
+    }
 
     fetch(url)
       .then((res) => res.json())
@@ -33,7 +42,7 @@ export default function ProductsClient() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [category]);
+  }, [category, subCategory]);
 
   return (
     <main>
