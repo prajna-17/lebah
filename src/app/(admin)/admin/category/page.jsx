@@ -10,6 +10,9 @@ import { API } from "@/utils/api";
 
 export default function AdminCategory() {
   const [categories, setCategories] = useState([]);
+  const [step, setStep] = useState(1); // 1-super | 2-category | 3-sub
+  const [superCategory, setSuperCategory] = useState(""); // Men | Women
+  const [subCategory, setSubCategory] = useState("");
 
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -69,7 +72,10 @@ export default function AdminCategory() {
           className="primary-btn"
           onClick={() => {
             setEditMode(false);
+            setStep(1);
+            setSuperCategory("");
             setName("");
+            setSubCategory("");
             setImage("");
             setPreview("");
             setOpenModal(true);
@@ -125,131 +131,132 @@ export default function AdminCategory() {
         title={editMode ? "Edit Category" : "Create Category"}
         onClose={() => setOpenModal(false)}
       >
-        <input
-          type="text"
-          className="modal-input"
-          placeholder="Category Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        {/* STEP 1 – SUPER CATEGORY */}
+        {step === 1 && (
+          <div className="text-gray-900">
+            <h3 className="mb-3 font-medium">Select Super Category</h3>
 
-        <input
-          type="file"
-          accept="image/*"
-          className="modal-input"
-          disabled={isUploading}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-
-            setPreview(URL.createObjectURL(file));
-            startUpload([file]);
-          }}
-        />
-        {/* <input
-          type="text"
-          placeholder="Image URL"
-          className="modal-input"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
-        /> */}
-
-        {preview && (
-          <img
-            src={preview}
-            style={{
-              width: 100,
-              height: 100,
-              borderRadius: 8,
-              marginTop: 10,
-            }}
-          />
+            <div style={{ display: "flex", gap: 12 }}>
+              {["Men", "Women"].map((s) => (
+                <button
+                  key={s}
+                  className={`primary-btn ${superCategory === s ? "active" : ""}`}
+                  onClick={() => {
+                    setSuperCategory(s);
+                    setStep(2);
+                  }}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
         )}
 
-        <button
-          className="primary-btn create-btn"
-          disabled={isUploading}
-          onClick={async () => {
-            if (!API) {
-              alert("API URL not configured");
-              return;
-            }
+        {/* STEP 2 – CATEGORY */}
+        {step === 2 && (
+          <div className="text-gray-900">
+            <input
+              type="text"
+              className="modal-input"
+              placeholder="Category Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
 
-            // if (!token) {
-            //   alert("Login expired. Please login again.");
-            //   return;
-            // }
+            <input
+              type="file"
+              accept="image/*"
+              disabled={isUploading}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                setPreview(URL.createObjectURL(file));
+                startUpload([file]);
+              }}
+            />
 
-            if (!name || !image) {
-              alert("Name required & image upload must finish");
-              return;
-            }
+            {preview && (
+              <img
+                src={preview}
+                style={{ width: 100, height: 100, borderRadius: 8 }}
+              />
+            )}
 
-            const payload = { name, image };
+            <button
+              className="primary-btn create-btn"
+              onClick={() => {
+                if (!name || !image) {
+                  alert("Category name & image required");
+                  return;
+                }
+                setStep(3);
+              }}
+            >
+              Next
+            </button>
+          </div>
+        )}
 
-            try {
-              if (!editMode) {
-                const r = await fetch(`${API}/categories`, {
-                  method: "POST",
-                  // headers: {
-                  //   "Content-Type": "application/json",
-                  //   Authorization: `Bearer ${token}`,
-                  // },
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
+        {/* STEP 3 – SUB CATEGORY */}
+        {step === 3 && (
+          <div className="text-gray-900">
+            <input
+              type="text"
+              className="modal-input"
+              placeholder="Sub Category Name"
+              value={subCategory}
+              onChange={(e) => setSubCategory(e.target.value)}
+            />
 
-                  body: JSON.stringify(payload),
-                });
+            <button
+              className="primary-btn create-btn"
+              onClick={async () => {
+                if (!subCategory) {
+                  alert("Sub category required");
+                  return;
+                }
 
-                if (!r.ok) {
-                  const err = await r.text();
-                  console.error("CREATE CATEGORY ERROR:", err);
+                try {
+                  const scRes = await fetch(`${API}/super-categories`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: superCategory }),
+                  });
+                  const sc = await scRes.json();
+
+                  const catRes = await fetch(`${API}/categories`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      name,
+                      image,
+                      superCategory: sc._id,
+                    }),
+                  });
+                  const cat = await catRes.json();
+
+                  await fetch(`${API}/sub-categories`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      name: subCategory,
+                      category: cat._id,
+                    }),
+                  });
+
+                  setCategories((p) => [...p, cat]);
+                  alert("Category created ✔");
+                  setOpenModal(false);
+                } catch {
                   alert("Create failed ❌");
-                  return;
                 }
-
-                const newCat = await r.json();
-                setCategories((p) => [...p, newCat]);
-                alert("Created ✔");
-              } else {
-                const r = await fetch(`${API}/categories/${currentId}`, {
-                  method: "PUT",
-                  // headers: {
-                  //   "Content-Type": "application/json",
-                  //   Authorization: `Bearer ${token}`,
-                  // },
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-
-                  body: JSON.stringify(payload),
-                });
-
-                if (!r.ok) {
-                  const err = await r.text();
-                  console.error("UPDATE CATEGORY ERROR:", err);
-                  alert("Update failed ❌");
-                  return;
-                }
-
-                setCategories((p) =>
-                  p.map((c) =>
-                    c._id === currentId ? { ...c, ...payload } : c,
-                  ),
-                );
-                alert("Updated ✔");
-              }
-
-              setOpenModal(false);
-            } catch (e) {
-              console.error("REQUEST FAILED:", e);
-              alert("Network error ❌");
-            }
-          }}
-        >
-          {editMode ? "Update" : "Create"}
-        </button>
+              }}
+            >
+              Save
+            </button>
+          </div>
+        )}
       </Modal>
 
       <ConfirmModal
