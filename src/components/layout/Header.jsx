@@ -52,11 +52,13 @@ export default function Header() {
             className="text-white text-2xl cursor-pointer"
           />
           {/* Brand */}
-          <img
-            src="/img/montoaklynlogo1.png"
-            alt="Lebah"
-            className="h-12 object-contain absolute left-1/2 -translate-x-1/2"
-          />
+          <Link href="/" className="absolute left-1/2 -translate-x-1/2">
+            <img
+              src="/img/montoaklynlogo1.png"
+              alt="Lebah"
+              className="h-12 object-contain cursor-pointer"
+            />
+          </Link>
 
           {/* Icons */}
           <div className="flex gap-4">
