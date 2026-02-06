@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { useAddress } from "@/context/AddressContext";
-import { getCart } from "@/utils/cart";
+import { getCart, clearCart } from "@/utils/cart";
 
 export default function CheckoutPage() {
   const [openSummary, setOpenSummary] = useState(false);
@@ -321,6 +321,8 @@ export default function CheckoutPage() {
                 return;
               }
 
+              clearCart(); // 🧹 empty cart
+              window.dispatchEvent(new Event("cart-updated")); // 🔔 sync UI
               router.push("/order-confirmed");
             }}
             className="bg-[#0f1e3a] text-white px-8 py-4 rounded-lg font-bold"
