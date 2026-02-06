@@ -25,30 +25,19 @@ export default function ProductsClient() {
     setLoading(true);
 
     let url = `${API}/products`;
-    const params = [];
+    const params = new URLSearchParams();
 
-    if (category) params.push(`category=${category}`);
-    if (subCategory) params.push(`subCategory=${subCategory}`);
-    if (search) params.push(`search=${search}`);
+    if (category) params.append("category", category);
+    if (subCategory) params.append("subCategory", subCategory);
+    if (search) params.append("search", search);
 
-    if (params.length) {
-      url += `?${params.join("&")}`;
-    }
-
-    if (category) {
-      url += `?category=${category}`;
-    }
-
-    if (subCategory) {
-      url += category
-        ? `&subCategory=${subCategory}`
-        : `?subCategory=${subCategory}`;
-    }
+    const query = params.toString();
+    if (query) url += `?${query}`;
 
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : data.data || []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
