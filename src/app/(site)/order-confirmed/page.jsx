@@ -157,7 +157,7 @@ ${items
 
       {/* CONTINUE SHOPPING */}
       <button
-        onClick={() => router.push("/products")}
+        onClick={() => router.push("/")}
         className="w-full text-sm font-semibold text-[#0f1e3a]"
       >
         CONTINUE SHOPPING
