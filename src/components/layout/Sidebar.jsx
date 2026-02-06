@@ -19,6 +19,7 @@ import { useAuth } from "@/components/auth/AuthContext";
 import { useAddress } from "@/context/AddressContext";
 import { clearCart } from "@/utils/cart";
 import { clearWishlist } from "@/utils/wishlist";
+import { Shield } from "lucide-react";
 
 export default function Sidebar({ open, onClose }) {
   const router = useRouter();
@@ -143,6 +144,13 @@ export default function Sidebar({ open, onClose }) {
                 label="Settings"
                 onClick={() => go("/settings")}
               />
+              {user?.role === "ADMIN" && (
+                <MenuItem
+                  icon={Shield}
+                  label="Admin Panel"
+                  onClick={() => go("/admin")}
+                />
+              )}
 
               <div className="border-t mt-2">
                 <MenuItem

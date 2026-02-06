@@ -16,6 +16,7 @@ export default function ProductsClient() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
   const subCategory = searchParams.get("subCategory");
+  const search = searchParams.get("search");
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,6 +25,15 @@ export default function ProductsClient() {
     setLoading(true);
 
     let url = `${API}/products`;
+    const params = [];
+
+    if (category) params.push(`category=${category}`);
+    if (subCategory) params.push(`subCategory=${subCategory}`);
+    if (search) params.push(`search=${search}`);
+
+    if (params.length) {
+      url += `?${params.join("&")}`;
+    }
 
     if (category) {
       url += `?category=${category}`;
@@ -42,7 +52,7 @@ export default function ProductsClient() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [category, subCategory]);
+  }, [category, subCategory, search]);
 
   return (
     <main>

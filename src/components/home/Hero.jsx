@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { FiSearch, FiMic } from "react-icons/fi";
 import HeroBanner from "./HeroBanner";
+import { FiArrowRight } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
 const placeholderText = "Search for Shirts";
 
@@ -16,6 +18,11 @@ export default function Hero() {
 
   const [activeTab, setActiveTab] = useState("men");
   const recognitionRef = useRef(null);
+  const router = useRouter();
+  const handleSearch = () => {
+    if (!query.trim()) return;
+    router.push(`/products?search=${encodeURIComponent(query)}`);
+  };
 
   const handleMicClick = () => {
     // 🔊 Play click sound
@@ -103,16 +110,20 @@ export default function Hero() {
       <div className="px-4 mb-6">
         <div className="relative">
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600" />
+
           <input
             value={query}
             onChange={(e) => {
               setIsUserTyping(true);
               setQuery(e.target.value);
             }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch();
+            }}
             onFocus={() => setIsUserTyping(true)}
             placeholder={placeholder}
             className="
-    w-full rounded-full border px-12 py-3
+    w-full rounded-full border px-12 py-3 pr-14
     text-sm font-semibold text-black
     focus:outline-none
     placeholder:font-normal placeholder:text-gray-500
@@ -120,10 +131,22 @@ export default function Hero() {
   "
           />
 
-          <FiMic
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-900 cursor-pointer active:scale-90 transition"
-            onClick={handleMicClick}
-          />
+          {/* RIGHT ICON */}
+          {query ? (
+            <FiArrowRight
+              onClick={handleSearch}
+              className="absolute right-4 top-1/2 -translate-y-1/2
+      text-black cursor-pointer
+      transition active:scale-90"
+            />
+          ) : (
+            <FiMic
+              className="absolute right-4 top-1/2 -translate-y-1/2
+      text-gray-900 cursor-pointer
+      active:scale-90 transition"
+              onClick={handleMicClick}
+            />
+          )}
         </div>
       </div>
 
