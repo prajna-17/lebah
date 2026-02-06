@@ -67,7 +67,7 @@ Total ₹${subTotal.toLocaleString("en-IN")}`;
         <SuccessAnimation />
         <h2 className="text-lg font-semibold">Order Confirmed</h2>
         <p className="text-gray-600 text-sm">
-          Thank you for your order with Lebah!
+          Thank you for your order with Montoaklyn!
         </p>
       </div>
 
@@ -107,7 +107,7 @@ Total ₹${subTotal.toLocaleString("en-IN")}`;
           ))}
 
           <div className="text-sm font-semibold text-right">
-            Total Amount : ₹ {subTotal.toLocaleString("en-IN")}
+            Total Amount : ₹ {grandTotal.toLocaleString("en-IN")}
           </div>
         </div>
       </div>
@@ -122,7 +122,7 @@ Total ₹${subTotal.toLocaleString("en-IN")}`;
 Lebah - Invoice
 
 Order Number: ${orderNumber}
-Total Amount: ₹ ${subTotal}
+Total Amount: ₹ ${grandTotal}
 
 ${items
   .map((i) => `- ${i.title} (${i.color}) x${i.qty} - ₹ ${i.price * i.qty}`)
