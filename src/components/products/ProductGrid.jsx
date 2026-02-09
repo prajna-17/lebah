@@ -8,7 +8,7 @@ import { addToCart } from "@/utils/cart";
 import { toggleWishlist, isInWishlist } from "@/utils/wishlist";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import LuxuryLoader from "@/components/LuxuryLoader";
+import LuxuryLoader from "@/components/home/LuxuryLoader";
 
 const PRODUCTS_PER_PAGE = 8;
 
