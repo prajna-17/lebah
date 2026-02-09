@@ -7,15 +7,17 @@ import LoginGate from "@/components/auth/LoginGate";
 import { addToCart } from "@/utils/cart";
 import { toggleWishlist, isInWishlist } from "@/utils/wishlist";
 import { createPortal } from "react-dom";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ProductHero({ product }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const colorFromURL = searchParams.get("color");
 
   const [activeImg, setActiveImg] = useState(0);
   const [activeImages, setActiveImages] = useState(product.images || []);
-  const [selectedColor, setSelectedColor] = useState("Default");
-  const [size, setSize] = useState("M");
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || null);
 
   const { isLoggedIn } = useAuth();
   const [showLogin, setShowLogin] = useState(false);
@@ -25,7 +27,19 @@ export default function ProductHero({ product }) {
   const [addedItem, setAddedItem] = useState(null);
 
   const images = activeImages.length ? activeImages : product.images || [];
-  const variantId = `${product._id}-${selectedColor}`;
+  const variantId = `${product._id}-${selectedColor}-${selectedSize}`;
+  useEffect(() => {
+    if (!product) return;
+
+    // ALWAYS start with default product.images
+    setActiveImages(product.images || []);
+    setActiveImg(0);
+
+    // colorImages override ONLY when user clicks color
+    if (product.colorImages?.length > 0) {
+      setSelectedColor(product.colors?.[0] || "Default");
+    }
+  }, [product]);
 
   /* sync wishlist for this variant */
   useEffect(() => {
@@ -199,6 +213,42 @@ export default function ProductHero({ product }) {
             </div>
           )}
 
+          {/* SIZES */}
+          {(
+            product.colorImages?.find((c) => c.color === selectedColor)
+              ?.sizes || product.sizes
+          )?.length > 0 && (
+            <div className="mt-7">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium">
+                  Size : <span className="font-semibold">{selectedSize}</span>
+                </p>
+                <button className="text-sm underline text-gray-600">
+                  View Size Chart
+                </button>
+              </div>
+
+              <div className="flex gap-3 mt-3 flex-wrap">
+                {(
+                  product.colorImages?.find((c) => c.color === selectedColor)
+                    ?.sizes || product.sizes
+                ).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setSelectedSize(s)}
+                    className={`px-4 py-2 rounded-md text-sm border ${
+                      selectedSize === s
+                        ? "bg-[#0f243e] text-white border-[#0f243e]"
+                        : "bg-gray-100 border-gray-300"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* ACTION BUTTONS */}
           <div className="flex gap-4 mt-9">
             <button
@@ -211,13 +261,27 @@ export default function ProductHero({ product }) {
             <button
               onClick={() =>
                 requireLogin(() => {
+                  if (!selectedSize) {
+                    alert("Please select a size");
+                    return;
+                  }
+                  console.log("ADDING TO CART 👉", {
+                    size: selectedSize,
+                    color: selectedColor,
+                  });
+
                   addToCart({
                     productId: product._id,
                     variantId,
                     title: product.title,
-                    image: images[0],
+                    image:
+                      product.colorImages?.find(
+                        (c) => c.color === selectedColor,
+                      )?.images?.[0] || images[0],
                     price: product.price,
+                    oldPrice: product.oldPrice,
                     color: selectedColor,
+                    size: selectedSize, // 🔥 THIS FIXES CART SIZE
                   });
 
                   const audio = new Audio("/sounds/pop.mp3");

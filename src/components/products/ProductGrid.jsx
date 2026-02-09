@@ -83,7 +83,10 @@ export default function ProductGrid({ products = [] }) {
           className="grid grid-cols-2 gap-4 px-4 mt-4 text-gray-900"
         >
           {visibleProducts.map((product) => {
-            const variantId = `${product._id}-Default`;
+            const defaultColor = product.colorImages?.[0]?.color || "Default";
+            const defaultSize = product.sizes?.[0] || "Free";
+
+            const variantId = `${product._id}-${defaultColor}-${defaultSize}`;
             const liked = likedMap[variantId];
 
             return (
@@ -111,7 +114,16 @@ export default function ProductGrid({ products = [] }) {
                       title: product.title,
                       image: product.images?.[0],
                       price: product.price,
-                      color: "Default",
+                      oldPrice: product.oldPrice,
+                      discount: product.oldPrice
+                        ? Math.round(
+                            ((product.oldPrice - product.price) /
+                              product.oldPrice) *
+                              100,
+                          )
+                        : null,
+                      color: product.colorImages?.[0]?.color || "Default",
+                      size: product.sizes?.[0] || null,
                     });
 
                     showToast(
@@ -159,7 +171,9 @@ export default function ProductGrid({ products = [] }) {
                       title: product.title,
                       image: product.images?.[0],
                       price: product.price,
+                      oldPrice: product.oldPrice,
                       color: "Default",
+                      size: product.sizes?.[0] || "Default", // 🔥 THIS
                     });
 
                     const audio = new Audio("/sounds/pop.mp3");

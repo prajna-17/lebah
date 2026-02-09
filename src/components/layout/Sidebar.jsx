@@ -116,10 +116,10 @@ export default function Sidebar({ open, onClose }) {
               <MenuItem
                 icon={ShoppingBag}
                 label="My Orders"
-                onClick={() => go("/orders")}
+                onClick={() => go("/order-his")}
               />
-              <MenuItem icon={Tag} label="Sale" onClick={() => go("/sale")} />
-              <MenuItem
+              {/* <MenuItem icon={Tag} label="Sale" onClick={() => go("/sale")} /> */}
+              {/* <MenuItem
                 icon={Gift}
                 label="Gift Cards & Vouchers"
                 onClick={() => go("/gift-cards")}
@@ -133,8 +133,8 @@ export default function Sidebar({ open, onClose }) {
                 icon={HelpCircle}
                 label="Help & Support"
                 onClick={() => go("/support")}
-              />
-              <MenuItem
+              /> */}
+              {/* <MenuItem
                 icon={Star}
                 label="Rate This App"
                 onClick={() => go("/rate")}
@@ -143,7 +143,7 @@ export default function Sidebar({ open, onClose }) {
                 icon={Settings}
                 label="Settings"
                 onClick={() => go("/settings")}
-              />
+              /> */}
               {user?.role === "ADMIN" && (
                 <MenuItem
                   icon={Shield}

@@ -12,12 +12,19 @@ import LuxuryLoader from "./LuxuryLoader";
 
 export default function ProductSlider() {
   const { isLoggedIn } = useAuth();
+  const router = useRouter();
+
   const [showLogin, setShowLogin] = useState(false);
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // modal states
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+
+  // cart toast
   const [showCartModal, setShowCartModal] = useState(false);
   const [addedItem, setAddedItem] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     fetch(`${API}/products`)
@@ -26,10 +33,7 @@ export default function ProductSlider() {
         setProducts(data);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error("Failed to fetch products", err);
-        setLoading(false);
-      });
+      .catch(() => setLoading(false));
   }, []);
 
   const requireLogin = () => {
@@ -48,97 +52,157 @@ export default function ProductSlider() {
           <LuxuryLoader />
         ) : (
           <div className="flex gap-5 overflow-x-auto scrollbar-hide font-semibold">
-            {products.map((p) => {
-              const variantId = `${p._id}-Default`;
+            {products.map((p) => (
+              <div
+                key={p._id}
+                className="min-w-[220px] flex-shrink-0 cursor-pointer"
+              >
+                {/* IMAGE CARD */}
+                <div className="relative rounded-xl overflow-hidden">
+                  <img
+                    src={p.images?.[0]}
+                    alt={p.title}
+                    className="h-[300px] w-full object-cover"
+                    onClick={() => {
+                      // 🔥 detect color from image
+                      const matchedColor =
+                        p.colorImages?.find((c) =>
+                          c.images?.includes(p.images?.[0]),
+                        )?.color || null;
 
-              return (
-                <div
-                  key={p._id}
-                  className="min-w-[220px] flex-shrink-0 cursor-pointer"
-                  onClick={() => router.push(`/products/${p._id}`)}
-                >
-                  {/* Image card */}
-                  <div className="relative rounded-xl overflow-hidden">
-                    <img
-                      src={p.images?.[0]}
-                      alt={p.title}
-                      className="h-[300px] w-full object-cover"
-                    />
+                      router.push(
+                        matchedColor
+                          ? `/products/${p._id}?color=${encodeURIComponent(matchedColor)}`
+                          : `/products/${p._id}`,
+                      );
+                    }}
+                  />
 
-                    {/* Rating */}
-                    <div className="absolute bottom-3 left-3 bg-white px-2 py-1 rounded-md text-mid text-gray-800 flex items-center gap-1 font-semibold">
-                      <span>{p.rating || 4.3}</span>
-                      <span>★</span>
-                    </div>
-
-                    {/* Cart icon */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (!requireLogin()) return;
-
-                        addToCart({
-                          productId: p._id,
-                          variantId,
-                          title: p.title,
-                          image: p.images?.[0],
-                          price: p.price,
-                          color: "Default",
-                        });
-
-                        const audio = new Audio("/sounds/pop.mp3");
-                        audio.volume = 0.6;
-                        audio.play();
-
-                        setAddedItem({
-                          image: p.images?.[0],
-                          title: p.title,
-                        });
-                        setShowCartModal(true);
-                      }}
-                      className="absolute bottom-3 right-3 bg-white w-10 h-10 rounded-full flex items-center justify-center"
-                    >
-                      <FiShoppingCart size={18} className="text-[#0f243e]" />
-                    </button>
+                  {/* RATING */}
+                  <div className="absolute bottom-3 left-3 bg-white px-2 py-1 rounded-md text-mid text-gray-800 flex items-center gap-1 font-semibold">
+                    <span>{p.rating || 4.3}</span>
+                    <span>★</span>
                   </div>
 
-                  {/* Text */}
-                  <div className="mt-3">
-                    <p className="text-mid font-medium text-gray-900">
-                      {p.title}
-                    </p>
+                  {/* CART ICON */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!requireLogin()) return;
 
-                    <div className="flex items-center gap-2 mt-1 text-big text-gray-900">
-                      <span className="font-semibold">
-                        ₹ {p.price.toLocaleString()}
-                      </span>
+                      fetch(`${API}/products/${p._id}`)
+                        .then((res) => res.json())
+                        .then((data) => {
+                          setSelectedProduct(data);
+                          setSelectedSize(null);
+                        });
+                    }}
+                    className="absolute bottom-3 right-3 bg-white w-10 h-10 rounded-full flex items-center justify-center"
+                  >
+                    <FiShoppingCart size={18} className="text-[#0f243e]" />
+                  </button>
+                </div>
 
-                      {p.oldPrice && (
-                        <>
-                          <span className="line-through text-gray-400">
-                            ₹ {p.oldPrice.toLocaleString()}
-                          </span>
-                          <span className="text-red-600 font-medium">
-                            {Math.round(
-                              ((p.oldPrice - p.price) / p.oldPrice) * 100,
-                            )}
-                            % OFF
-                          </span>
-                        </>
-                      )}
-                    </div>
+                {/* TEXT (UNCHANGED) */}
+                <div className="mt-3">
+                  <p className="text-mid font-medium text-gray-900">
+                    {p.title}
+                  </p>
+
+                  <div className="flex items-center gap-2 mt-1 text-big text-gray-900">
+                    <span className="font-semibold">
+                      ₹ {p.price.toLocaleString()}
+                    </span>
+
+                    {p.oldPrice && (
+                      <>
+                        <span className="line-through text-gray-400">
+                          ₹ {p.oldPrice.toLocaleString()}
+                        </span>
+                        <span className="text-red-600 font-medium">
+                          {Math.round(
+                            ((p.oldPrice - p.price) / p.oldPrice) * 100,
+                          )}
+                          % OFF
+                        </span>
+                      </>
+                    )}
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
 
-        {/* ✅ ALWAYS OUTSIDE TERNARY */}
         <LoginGate open={showLogin} onClose={() => setShowLogin(false)} />
       </section>
 
-      {/* ===== CART MODAL ===== */}
+      {/* ===== SIZE MODAL (LIKE WISHLIST) ===== */}
+      {selectedProduct &&
+        typeof window !== "undefined" &&
+        createPortal(
+          <>
+            <div
+              className="fixed inset-0 bg-black/40 z-40"
+              onClick={() => setSelectedProduct(null)}
+            />
+
+            <div className="fixed inset-x-4 bottom-6 z-50 bg-white rounded-2xl p-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-900">
+                Select Size
+              </h3>
+
+              <div className="flex gap-3 flex-wrap mb-6">
+                {(
+                  selectedProduct.sizes ||
+                  selectedProduct.colorImages?.[0]?.sizes ||
+                  []
+                ).map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`px-4 py-2 rounded-full border text-gray-900 ${
+                      selectedSize === size
+                        ? "bg-[#0f243e] text-white"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                disabled={!selectedSize}
+                onClick={() => {
+                  addToCart({
+                    productId: selectedProduct._id,
+                    variantId: `${selectedProduct._id}-${selectedSize}`,
+                    title: selectedProduct.title,
+                    image: selectedProduct.images?.[0],
+                    price: selectedProduct.price,
+                    color: "Default",
+                    size: selectedSize,
+                  });
+
+                  setAddedItem({
+                    image: selectedProduct.images?.[0],
+                    title: selectedProduct.title,
+                  });
+
+                  setSelectedProduct(null);
+                  setShowCartModal(true);
+                }}
+                className="w-full py-3 bg-[#0f243e] text-white rounded-full disabled:opacity-40"
+              >
+                Add to cart
+              </button>
+            </div>
+          </>,
+          document.body,
+        )}
+
+      {/* ===== CART TOAST ===== */}
       {showCartModal &&
         typeof window !== "undefined" &&
         createPortal(

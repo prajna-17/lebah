@@ -151,9 +151,9 @@ ${items
       </div>
 
       {/* TRACK ORDER */}
-      <button className="w-full bg-[#0f1e3a] text-white py-4 rounded-lg flex items-center justify-center gap-2 font-medium">
+      {/* <button className="w-full bg-[#0f1e3a] text-white py-4 rounded-lg flex items-center justify-center gap-2 font-medium">
         <Truck size={18} /> TRACK ORDER
-      </button>
+      </button> */}
 
       {/* CONTINUE SHOPPING */}
       <button

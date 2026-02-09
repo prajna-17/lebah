@@ -19,6 +19,12 @@ export default function TrendingWeek() {
   const [showCartModal, setShowCartModal] = useState(false);
   const [addedItem, setAddedItem] = useState(null);
 
+  const [showVariantModal, setShowVariantModal] = useState(false);
+  const [activeProduct, setActiveProduct] = useState(null);
+
+  // 🔥 SIZE ONLY
+  const [selectedSize, setSelectedSize] = useState(null);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -63,26 +69,23 @@ export default function TrendingWeek() {
 
   return (
     <>
-      {/* ===== MAIN SECTION (UI UNCHANGED) ===== */}
+      {/* ===== MAIN SECTION (UNCHANGED) ===== */}
       <section className="mt-20 mb-24 px-4">
         <h2 className="text-xl font-bold text-center mb-8 text-gray-900">
           Trending In This Week
         </h2>
 
-        {/* SLIDER */}
         <div className="flex gap-6 overflow-x-auto no-scrollbar pb-2">
           {products.map((p, i) => {
             const variantId = `${p._id}-Default`;
             const liked = likedMap[variantId];
 
             return (
-              /* ✅ CARD CLICK */
               <div
                 key={i}
                 className="min-w-[260px] cursor-pointer"
                 onClick={() => router.push(`/products/${p._id}`)}
               >
-                {/* IMAGE CARD */}
                 <div className="relative overflow-hidden">
                   <img
                     src={p.images?.[0]}
@@ -93,7 +96,7 @@ export default function TrendingWeek() {
                   {/* ❤️ WISHLIST */}
                   <button
                     onClick={(e) => {
-                      e.stopPropagation(); // 🔥 prevent navigation
+                      e.stopPropagation();
                       if (!requireLogin()) return;
 
                       toggleWishlist({
@@ -119,88 +122,37 @@ export default function TrendingWeek() {
                         ...prev,
                         [variantId]: !liked,
                       }));
-
-                      const audio = new Audio("/sounds/pop.mp3");
-                      audio.volume = 0.6;
-                      audio.play();
                     }}
                     className="absolute top-3 right-3 bg-white p-2 rounded-full shadow"
                   >
                     <Heart size={16} fill={liked ? "#5b2d1f" : "none"} />
                   </button>
 
-                  {/* BLACK TRANSPARENT OVERLAY */}
+                  {/* OVERLAY */}
                   <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4">
-                    <div className="flex items-end gap-3">
-                      <img
-                        src={p.images?.[0]}
-                        alt={p.title}
-                        className="w-10 h-14 object-cover rounded"
-                      />
-
-                      <div>
-                        <p className="text-white text-sm leading-tight">
-                          {p.title}
-                        </p>
-
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-white font-semibold">
-                            ₹ {p.price}
-                          </span>
-
-                          {p.oldPrice && (
-                            <span className="line-through text-gray-300 text-xs">
-                              ₹ {p.oldPrice}
-                            </span>
-                          )}
-                        </div>
-
-                        {p.oldPrice && (
-                          <p className="text-green-400 text-sm">
-                            {Math.round(
-                              ((p.oldPrice - p.price) / p.oldPrice) * 100,
-                            )}
-                            % OFF
-                          </p>
-                        )}
-                      </div>
+                    <p className="text-white text-sm">{p.title}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-white font-semibold">
+                        ₹ {p.price}
+                      </span>
+                      {p.oldPrice && (
+                        <span className="line-through text-gray-300 text-xs">
+                          ₹ {p.oldPrice}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {/* 🛒 ADD TO CART */}
+                {/* ADD TO CART */}
                 <button
                   onClick={(e) => {
-                    e.stopPropagation(); // 🔥 prevent navigation
+                    e.stopPropagation();
                     if (!requireLogin()) return;
 
-                    addToCart({
-                      productId: p._id,
-                      variantId,
-                      title: p.title,
-                      image: p.images?.[0],
-                      price: p.price,
-                      color: "Default",
-                    });
-
-                    const audio = new Audio("/sounds/pop.mp3");
-                    audio.volume = 0.6;
-                    audio.play();
-
-                    setAddedItem({
-                      image: p.images?.[0],
-                      title: p.title,
-                    });
-                    setShowCartModal(true);
-
-                    document
-                      .querySelector(".cart-icon")
-                      ?.classList.add("cart-bounce");
-                    setTimeout(() => {
-                      document
-                        .querySelector(".cart-icon")
-                        ?.classList.remove("cart-bounce");
-                    }, 600);
+                    setActiveProduct(p);
+                    setSelectedSize(null);
+                    setShowVariantModal(true);
                   }}
                   className="w-full mt-4 py-3 bg-[#0f243e] text-white text-sm"
                 >
@@ -214,9 +166,8 @@ export default function TrendingWeek() {
         <LoginGate open={showLogin} onClose={() => setShowLogin(false)} />
       </section>
 
-      {/* ===== CART MODAL (GLOBAL) ===== */}
+      {/* ===== CART MODAL (UNCHANGED) ===== */}
       {showCartModal &&
-        typeof window !== "undefined" &&
         createPortal(
           <div className="added-bar-wrapper">
             <div className="added-bar">
@@ -240,6 +191,72 @@ export default function TrendingWeek() {
               </button>
             </div>
           </div>,
+          document.body,
+        )}
+
+      {/* ===== SIZE ONLY MODAL (WISHLIST STYLE) ===== */}
+      {showVariantModal &&
+        activeProduct &&
+        createPortal(
+          <>
+            <div
+              className="fixed inset-0 bg-black/40 z-40"
+              onClick={() => {
+                setShowVariantModal(false);
+                setActiveProduct(null);
+              }}
+            />
+
+            <div className="fixed inset-x-4 bottom-6 z-50 bg-white rounded-2xl p-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-900">
+                Select Size
+              </h3>
+
+              <div className="flex gap-3 flex-wrap mb-6">
+                {activeProduct.sizes?.map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`px-4 py-2 rounded-full border text-gray-900 ${
+                      selectedSize === size
+                        ? "bg-[#0f243e] text-white"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                disabled={!selectedSize}
+                onClick={() => {
+                  addToCart({
+                    productId: activeProduct._id,
+                    variantId: `${activeProduct._id}-${selectedSize}`,
+                    title: activeProduct.title,
+                    image: activeProduct.images?.[0],
+                    price: activeProduct.price,
+                    oldPrice: activeProduct.oldPrice,
+                    color: "Default",
+                    size: selectedSize,
+                  });
+
+                  setAddedItem({
+                    image: activeProduct.images?.[0],
+                    title: activeProduct.title,
+                  });
+
+                  setShowVariantModal(false);
+                  setActiveProduct(null);
+                  setShowCartModal(true);
+                }}
+                className="w-full py-3 bg-[#0f243e] text-white rounded-full disabled:opacity-40"
+              >
+                Add to cart
+              </button>
+            </div>
+          </>,
           document.body,
         )}
     </>

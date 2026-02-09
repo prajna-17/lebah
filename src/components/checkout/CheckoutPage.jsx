@@ -7,6 +7,7 @@ import { FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { useAddress } from "@/context/AddressContext";
 import { getCart, clearCart } from "@/utils/cart";
+import { API } from "@/utils/api";
 
 export default function CheckoutPage() {
   const [openSummary, setOpenSummary] = useState(false);
@@ -120,12 +121,12 @@ export default function CheckoutPage() {
         </div>
 
         {/* CARDS */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Credit & Debit Cards</h3>
+        {/* <div className="space-y-4"> */}
+        {/* <h3 className="text-lg font-semibold">Credit & Debit Cards</h3> */}
 
-          <div className="bg-white rounded-2xl p-4 shadow-[0_10px_25px_rgba(0,0,0,0.15)] space-y-3">
-            {/* CARD 1 */}
-            <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
+        {/* <div className="bg-white rounded-2xl p-4 shadow-[0_10px_25px_rgba(0,0,0,0.15)] space-y-3"> */}
+        {/* CARD 1 */}
+        {/* <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
               <div className="flex items-center gap-3">
                 <img
                   src="/img/mastercard.png"
@@ -137,10 +138,10 @@ export default function CheckoutPage() {
                 </span>
               </div>
               <input type="radio" name="card" />
-            </div>
+            </div> */}
 
-            {/* CARD 2 */}
-            <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
+        {/* CARD 2 */}
+        {/* <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
               <div className="flex items-center gap-3">
                 <img src="/img/visa.png" className="h-5" alt="visa" />
                 <span className="text-sm text-gray-700">
@@ -148,75 +149,75 @@ export default function CheckoutPage() {
                 </span>
               </div>
               <input type="radio" name="card" />
-            </div>
+            </div> */}
 
-            {/* ADD CARD */}
-            <div className="flex items-center gap-4 px-1 py-3">
+        {/* ADD CARD */}
+        {/* <div className="flex items-center gap-4 px-1 py-3">
               <div className="w-10 h-10 rounded-lg bg-gray-200 flex items-center justify-center text-xl">
                 +
               </div>
               <span className="text-sm font-medium text-gray-600">
                 Add New Card
               </span>
-            </div>
-          </div>
-        </div>
+            </div> */}
+        {/* </div> */}
+        {/* </div> */}
 
         {/* UPI */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">UPI</h3>
+        {/* <div className="space-y-4"> */}
+        {/* <h3 className="text-lg font-semibold">UPI</h3> */}
 
-          <div className="bg-white rounded-2xl p-4 shadow-[0_10px_25px_rgba(0,0,0,0.15)] space-y-3">
-            {/* GOOGLE PAY */}
-            <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
+        {/* <div className="bg-white rounded-2xl p-4 shadow-[0_10px_25px_rgba(0,0,0,0.15)] space-y-3"> */}
+        {/* GOOGLE PAY */}
+        {/* <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
               <div className="flex items-center gap-3">
                 <img src="/img/gpay.png" className="h-6" alt="gpay" />
                 <span className="text-sm text-gray-700">Google pay</span>
               </div>
               <input type="radio" name="upi" />
-            </div>
+            </div> */}
 
-            {/* PHONEPE */}
-            <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
+        {/* PHONEPE */}
+        {/* <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
               <div className="flex items-center gap-3">
                 <img src="/img/phonepe.png" className="h-6" alt="phonepe" />
                 <span className="text-sm text-gray-700">PhonePe</span>
               </div>
               <input type="radio" name="upi" />
-            </div>
+            </div> */}
 
-            {/* ADD UPI */}
-            <div className="flex items-center gap-4 px-1 py-3">
+        {/* ADD UPI */}
+        {/* <div className="flex items-center gap-4 px-1 py-3">
               <div className="w-10 h-10 rounded-lg bg-gray-200 flex items-center justify-center text-xl">
                 +
               </div>
               <span className="text-sm font-medium text-gray-600">
                 Add New UPI ID
               </span>
-            </div>
-          </div>
-        </div>
+            </div> */}
+        {/* </div> */}
+        {/* </div> */}
 
         {/* MORE OPTIONS */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">More Payment Options</h3>
+          {/* <h3 className="text-lg font-semibold">More Payment Options</h3> */}
 
           <div className="bg-white rounded-2xl p-4 shadow-[0_10px_25px_rgba(0,0,0,0.15)] space-y-3">
-            <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
+            {/* <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
               <div className="flex items-center gap-3">
                 <img src="/img/wallet.png" className="h-6" alt="wallet" />
                 <span className="text-sm text-gray-700">Wallet</span>
               </div>
               <FiChevronRight />
-            </div>
+            </div> */}
 
-            <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
+            {/* <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
               <div className="flex items-center gap-3">
                 <img src="/img/bank.png" className="h-6" alt="bank" />
                 <span className="text-sm text-gray-700">Net Banking</span>
               </div>
               <FiChevronRight />
-            </div>
+            </div> */}
 
             <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
               <div className="flex items-center gap-3">
@@ -308,35 +309,72 @@ export default function CheckoutPage() {
           </div>
 
           <button
-            onClick={() => {
+            onClick={async () => {
               if (!address) {
                 setShowAddressError(true);
-
-                // 📳 vibration (mobile only)
-                if (navigator.vibrate) {
-                  navigator.vibrate([80, 40, 80]);
-                }
-
+                if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
                 setTimeout(() => setShowAddressError(false), 2500);
                 return;
               }
 
-              const orderData = {
-                orderNumber: `#${Math.floor(1000 + Math.random() * 9000)}`,
-                items: cart,
-                subTotal,
-                discount,
-                tax,
-                grandTotal,
-                arrivalText,
-                paymentMethod: "Selected Payment",
+              const token = localStorage.getItem("lebah-token");
+              if (!token) {
+                alert("Please login to place order");
+                return;
+              }
+
+              const products = cart.map((item) => ({
+                product: item.productId || item._id,
+                quantity: item.qty,
+              }));
+
+              const shippingAddress = {
+                fullName: address.name,
+                phone: address.phone,
+                addressLine: address.line1,
+                landmark: address.landmark || "",
+                city: address.city,
+                state: address.state || "",
+                postalCode: address.pincode,
               };
 
-              localStorage.setItem("lastOrder", JSON.stringify(orderData));
+              try {
+                const res = await fetch(`${API}/orders/create-cod`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({ products, shippingAddress }),
+                });
 
-              clearCart(); // clear AFTER saving
-              window.dispatchEvent(new Event("cart-updated"));
-              router.push("/order-confirmed");
+                const data = await res.json();
+
+                if (!res.ok) {
+                  alert(data.message || "Order failed");
+                  return;
+                }
+
+                localStorage.setItem(
+                  "lastOrder",
+                  JSON.stringify({
+                    orderNumber: data.data.orderId,
+                    items: cart,
+                    subTotal,
+                    discount,
+                    tax,
+                    grandTotal,
+                    arrivalText,
+                    paymentMethod: "COD",
+                  }),
+                );
+
+                clearCart();
+                window.dispatchEvent(new Event("cart-updated"));
+                router.push("/order-confirmed");
+              } catch (err) {
+                alert("Something went wrong. Please try again.");
+              }
             }}
             className="bg-[#0f1e3a] text-white px-8 py-4 rounded-lg font-bold"
           >

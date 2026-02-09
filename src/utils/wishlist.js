@@ -40,13 +40,17 @@ export const toggleWishlist = (item) => {
   } else {
     wishlist.push({
       variantId: item.variantId,
-      productId: item.productId,
-      color: item.color,
-      name: item.name,
+      productId: item.productId || item.id,
+
+      title: item.title, // ✅ FIXED
       image: item.image,
+
       price: item.price,
-      mrp: item.mrp,
+      oldPrice: item.oldPrice, // ✅ FIXED
       discount: item.discount,
+
+      color: item.color,
+      size: item.size, // 🔥 THIS WAS MISSING
     });
   }
 

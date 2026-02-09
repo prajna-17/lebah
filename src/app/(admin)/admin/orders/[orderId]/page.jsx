@@ -20,7 +20,7 @@ export default function AdminOrderDetails() {
     try {
       const res = await fetch(`${API}/orders/order-details/${orderId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("lebah-token")}`,
         },
       });
       const data = await res.json();
@@ -37,7 +37,7 @@ export default function AdminOrderDetails() {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem("lebah-token")}`,
       },
       body: JSON.stringify({ orderStatus: status }),
     });
@@ -61,7 +61,7 @@ export default function AdminOrderDetails() {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem("lebah-token")}`,
       },
       body: JSON.stringify({
         orderStatus: "CANCELLED",
@@ -91,7 +91,7 @@ export default function AdminOrderDetails() {
   if (!order) return <div style={{ padding: 30 }}>Order not found</div>;
 
   return (
-    <div>
+    <div className="font-semibold text-gray-900">
       <h1 className="page-title">Order Details</h1>
 
       <div className="product-card">

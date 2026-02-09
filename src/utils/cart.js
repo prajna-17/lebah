@@ -18,11 +18,18 @@ export const getCart = () => {
 export const addToCart = (product) => {
   const cart = getCart();
 
-  const variantId =
-    product.variantId ||
-    `${product.productId || product.id}-${product.color || "Default"}`;
+  const color = product.color || "Default";
+  const size = product.size || "Free";
 
-  const discount = getDiscount(product.price, product.mrp || product.oldPrice);
+  const variantId =
+    product.variantId || `${product.productId || product.id}-${color}-${size}`;
+
+  const oldPrice = product.oldPrice; // ✅ FROM DB
+  const price = product.price;
+
+  const discount = oldPrice
+    ? Math.round(((oldPrice - price) / oldPrice) * 100)
+    : 0;
 
   const existing = cart.find((item) => item.variantId === variantId);
 
@@ -30,10 +37,21 @@ export const addToCart = (product) => {
     existing.qty += 1;
   } else {
     cart.push({
-      ...product,
       variantId,
-      qty: 1,
+
+      productId: product.productId || product.id, // 🔥 REQUIRED FIX
+
+      title: product.title,
+      image: product.image || product.images?.[0],
+
+      price,
+      oldPrice,
       discount,
+
+      color: product.color,
+      size: product.size,
+
+      qty: 1,
     });
   }
 

@@ -18,6 +18,11 @@ export default function BestProducts() {
   const [likedMap, setLikedMap] = useState({});
   const [showCartModal, setShowCartModal] = useState(false);
   const [addedItem, setAddedItem] = useState(null);
+  const [showVariantModal, setShowVariantModal] = useState(false);
+  const [activeProduct, setActiveProduct] = useState(null);
+
+  // 🔥 SIZE ONLY (NO COLOR STATE)
+  const [selectedSize, setSelectedSize] = useState(null);
 
   useEffect(() => {
     fetch(`${API}/products`)
@@ -143,40 +148,9 @@ export default function BestProducts() {
                     e.stopPropagation();
                     if (!requireLogin()) return;
 
-                    addToCart({
-                      productId: p._id,
-                      variantId,
-                      title: p.title,
-                      image: p.images?.[0],
-                      price: p.price,
-                      color: "Default",
-                    });
-
-                    const btn = e.currentTarget;
-                    btn.classList.add("cart-anim");
-
-                    setTimeout(() => {
-                      btn.classList.remove("cart-anim");
-
-                      const audio = new Audio("/sounds/pop.mp3");
-                      audio.volume = 0.6;
-                      audio.play();
-
-                      setAddedItem({
-                        image: p.images?.[0],
-                        title: p.title,
-                      });
-                      setShowCartModal(true);
-
-                      document
-                        .querySelector(".cart-icon")
-                        ?.classList.add("cart-bounce");
-                      setTimeout(() => {
-                        document
-                          .querySelector(".cart-icon")
-                          ?.classList.remove("cart-bounce");
-                      }, 600);
-                    }, 600);
+                    setActiveProduct(p);
+                    setSelectedSize(null);
+                    setShowVariantModal(true);
                   }}
                   className="mt-2 w-full bg-[#0b1d36] py-3 text-sm text-white active:scale-[0.97]"
                 >
@@ -199,7 +173,7 @@ export default function BestProducts() {
         <LoginGate open={showLogin} onClose={() => setShowLogin(false)} />
       </section>
 
-      {/* ===== CART MODAL (PORTAL FIX) ===== */}
+      {/* ===== CART MODAL (UNCHANGED) ===== */}
       {showCartModal &&
         typeof window !== "undefined" &&
         createPortal(
@@ -225,6 +199,72 @@ export default function BestProducts() {
               </button>
             </div>
           </div>,
+          document.body,
+        )}
+
+      {/* ===== SIZE-ONLY MODAL (WISHLIST STYLE) ===== */}
+      {showVariantModal &&
+        activeProduct &&
+        createPortal(
+          <>
+            <div
+              className="fixed inset-0 bg-black/40 z-40"
+              onClick={() => {
+                setShowVariantModal(false);
+                setActiveProduct(null);
+              }}
+            />
+
+            <div className="fixed inset-x-4 bottom-6 z-50 bg-white rounded-2xl p-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-900">
+                Select Size
+              </h3>
+
+              <div className="flex gap-3 flex-wrap mb-6">
+                {activeProduct.sizes?.map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`px-4 py-2 rounded-full border text-gray-900 ${
+                      selectedSize === size
+                        ? "bg-[#0f243e] text-white"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                disabled={!selectedSize}
+                onClick={() => {
+                  addToCart({
+                    productId: activeProduct._id,
+                    variantId: `${activeProduct._id}-${selectedSize}`,
+                    title: activeProduct.title,
+                    image: activeProduct.images?.[0],
+                    price: activeProduct.price,
+                    oldPrice: activeProduct.oldPrice,
+                    color: "Default",
+                    size: selectedSize,
+                  });
+
+                  setAddedItem({
+                    image: activeProduct.images?.[0],
+                    title: activeProduct.title,
+                  });
+
+                  setShowVariantModal(false);
+                  setActiveProduct(null);
+                  setShowCartModal(true);
+                }}
+                className="w-full py-3 bg-[#0f243e] text-white rounded-full disabled:opacity-40"
+              >
+                Add to cart
+              </button>
+            </div>
+          </>,
           document.body,
         )}
     </>

@@ -34,22 +34,22 @@ export default function AdminLayout({ children }) {
             ☰
           </button>
 
-          <span className="admin-app-name">Lebah</span>
+          <span className="admin-app-name">Montoaklyn</span>
         </div>
 
         {/* RIGHT SIDE */}
         <button
-          onClick={handleLogout}
+          onClick={() => router.push("/")}
           style={{
             marginRight: 20,
             background: "transparent",
             border: "none",
             cursor: "pointer",
             fontWeight: 600,
-            color: "#6b3430",
+            color: "#ffffff",
           }}
         >
-          Logout
+          Home
         </button>
       </header>
 

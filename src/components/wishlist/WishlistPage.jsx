@@ -8,6 +8,9 @@ import { API } from "@/utils/api";
 
 export default function WishlistPage() {
   const [items, setItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     async function loadWishlist() {
@@ -21,6 +24,11 @@ export default function WishlistPage() {
 
       for (const item of stored) {
         try {
+          if (!item.productId) {
+            updated.push(item);
+            continue;
+          }
+
           const res = await fetch(`${API}/products/${item.productId}`);
           if (!res.ok) {
             updated.push(item);
@@ -37,6 +45,9 @@ export default function WishlistPage() {
             discount: data.oldPrice
               ? Math.round(((data.oldPrice - data.price) / data.oldPrice) * 100)
               : null,
+
+            sizes: data.sizes, // 🔥 THIS IS THE FIX
+
             image:
               data.colorImages?.find((c) => c.color === item.color)
                 ?.images?.[0] ||
@@ -136,8 +147,7 @@ export default function WishlistPage() {
 
                 <button
                   onClick={() => {
-                    addToCart(item);
-                    removeFromWishlist(item.variantId);
+                    setSelectedItem(item); // open modal
                   }}
                   className="text-sm font-medium text-[#0f243e] underline"
                 >
@@ -148,6 +158,60 @@ export default function WishlistPage() {
           </div>
         ))}
       </div>
+      {selectedItem && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/40 z-40"
+            onClick={() => setSelectedItem(null)}
+          />
+
+          <div className="fixed inset-x-4 bottom-6 z-50 bg-white rounded-2xl p-6">
+            <h3 className="text-lg font-semibold mb-4">Select Size</h3>
+
+            <div className="flex gap-3 flex-wrap mb-6">
+              {selectedItem.sizes?.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`px-4 py-2 rounded-full border
+              ${
+                selectedSize === size
+                  ? "bg-[#0f243e] text-white"
+                  : "border-gray-300"
+              }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+
+            <button
+              disabled={!selectedSize}
+              onClick={() => {
+                addToCart({ ...selectedItem, size: selectedSize });
+                removeFromWishlist(selectedItem.variantId);
+
+                setSelectedItem(null);
+                setSelectedSize(null);
+
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 2000);
+              }}
+              className="w-full py-3 bg-[#0f243e] text-white rounded-full disabled:opacity-40"
+            >
+              Add to cart
+            </button>
+          </div>
+        </>
+      )}
+      {showToast && (
+        <div
+          className="fixed top-4 left-1/2 -translate-x-1/2 z-50
+    bg-[#0b1b2f] text-white px-5 py-3 rounded-xl shadow-lg"
+        >
+          Added to cart 🛒
+        </div>
+      )}
     </section>
   );
 }

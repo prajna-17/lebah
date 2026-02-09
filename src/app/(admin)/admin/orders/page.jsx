@@ -18,7 +18,7 @@ export default function AdminOrders() {
     try {
       const res = await fetch(`${API}/orders`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("lebah-token")}`,
         },
       });
 
@@ -69,7 +69,7 @@ export default function AdminOrders() {
   }
 
   return (
-    <div>
+    <div className="font-semibold text-gray-900">
       <h1 className="page-title">Manage Orders</h1>
 
       {/* FILTER BUTTONS */}
