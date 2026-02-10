@@ -2,19 +2,23 @@ import CategoryCard from "./CategoryCard";
 import { API } from "@/utils/api";
 import { useEffect, useState } from "react";
 import LuxuryLoader from "./LuxuryLoader";
+import { SUPER_CATEGORY_MAP } from "@/utils/superCategoryMap";
 
-export default function CategoryCards() {
+export default function CategoryCards({ activeTab }) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API}/categories`)
+    setLoading(true);
+    console.log("ACTIVE TAB:", activeTab);
+
+    fetch(`${API}/categories?superCategory=${SUPER_CATEGORY_MAP[activeTab]}`)
       .then((res) => res.json())
       .then((data) => {
         setCategories(Array.isArray(data) ? data : data.data || []);
         setLoading(false);
       });
-  }, []);
+  }, [activeTab]);
 
   return (
     <section className="bg-white px-4 py-10">
@@ -29,6 +33,7 @@ export default function CategoryCards() {
               title={cat.name}
               subtitle={cat.description || "Explore"}
               img={cat.image || "/img/placeholder.png"}
+              superCategory={activeTab}
             />
           ))}
         </div>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { API } from "@/utils/api";
+import { SUPER_CATEGORY_MAP } from "@/utils/superCategoryMap";
 
 import SaleHero from "@/components/products/SaleHero";
 import SortFilterBar from "@/components/products/SortFilterBar";
@@ -14,7 +15,9 @@ import CinematicScrollReveal from "@/components/CinematicScrollReveal";
 
 export default function ProductsClient() {
   const searchParams = useSearchParams();
+  const superCategoryKey = searchParams.get("superCategory"); // men | women
   const category = searchParams.get("category");
+
   const subCategory = searchParams.get("subCategory");
   const search = searchParams.get("search");
 
@@ -29,9 +32,15 @@ export default function ProductsClient() {
 
     let url = `${API}/products`;
     const params = new URLSearchParams();
-
-    if (category) params.append("category", category);
+    if (category) {
+      // ✅ category click → category only
+      params.append("category", category);
+    } else if (superCategoryKey) {
+      // ✅ men/women browsing → convert to ObjectId
+      params.append("superCategory", SUPER_CATEGORY_MAP[superCategoryKey]);
+    }
     if (subCategory) params.append("subCategory", subCategory);
+
     if (search) params.append("search", search);
 
     const query = params.toString();
@@ -44,8 +53,14 @@ export default function ProductsClient() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [category, subCategory, search]);
+  }, [superCategoryKey, category, subCategory, search]);
   let sortedProducts = [...products];
+  // ✅ SUBCATEGORY FILTER (FRONTEND SAFETY)
+  if (subCategory) {
+    sortedProducts = sortedProducts.filter(
+      (p) => p.subCategory === subCategory,
+    );
+  }
 
   // SORT
   if (sort === "price-low") {
@@ -71,7 +86,7 @@ export default function ProductsClient() {
 
   return (
     <main>
-      <SaleHero />
+      <SaleHero superCategory={superCategoryKey || "men"} />
 
       <CinematicScrollReveal>
         <SortFilterBar
@@ -107,7 +122,7 @@ export default function ProductsClient() {
       </CinematicScrollReveal>
 
       <CinematicScrollReveal>
-        <TrendingWeek />
+        <TrendingWeek activeTab={superCategoryKey || "men"} />
       </CinematicScrollReveal>
     </main>
   );

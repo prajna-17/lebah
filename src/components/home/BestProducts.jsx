@@ -9,8 +9,9 @@ import { FiHeart } from "react-icons/fi";
 import { addToCart } from "@/utils/cart";
 import { toggleWishlist, isInWishlist } from "@/utils/wishlist";
 import { createPortal } from "react-dom";
+import { SUPER_CATEGORY_MAP } from "@/utils/superCategoryMap";
 
-export default function BestProducts() {
+export default function BestProducts({ activeTab }) {
   const { isLoggedIn } = useAuth();
   const [showLogin, setShowLogin] = useState(false);
   const router = useRouter();
@@ -25,12 +26,22 @@ export default function BestProducts() {
   const [selectedSize, setSelectedSize] = useState(null);
 
   useEffect(() => {
-    fetch(`${API}/products`)
+    fetch(`${API}/products?superCategory=${SUPER_CATEGORY_MAP[activeTab]}`)
       .then((res) => res.json())
       .then((data) => {
         const bestSelling = data.filter(
-          (p) => p.productSellingCategory === "best-selling",
+          (p) =>
+            p.productSellingCategory === "best-selling" && p.category !== null,
         );
+        console.log(
+          "BEST SELLING FINAL:",
+          bestSelling.map((p) => ({
+            title: p.title,
+            selling: p.productSellingCategory,
+            category: p.category?.name,
+          })),
+        );
+
         setProducts(bestSelling);
 
         const map = {};
@@ -47,7 +58,7 @@ export default function BestProducts() {
 
     window.addEventListener("wishlist-updated", sync);
     return () => window.removeEventListener("wishlist-updated", sync);
-  }, []);
+  }, [activeTab]);
 
   const requireLogin = () => {
     if (!isLoggedIn) {

@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 const placeholderText = "Search for Shirts";
 
-export default function Hero() {
+export default function Hero({ activeTab, setActiveTab }) {
   const [query, setQuery] = useState("");
   const [isUserTyping, setIsUserTyping] = useState(false);
 
@@ -16,7 +16,6 @@ export default function Hero() {
   const timerRef = useRef(null);
   const clickSoundRef = useRef(null);
 
-  const [activeTab, setActiveTab] = useState("men");
   const recognitionRef = useRef(null);
   const router = useRouter();
   const handleSearch = () => {
@@ -163,16 +162,20 @@ export default function Hero() {
 
           <button
             onClick={() => setActiveTab("men")}
-            className={`transition-all duration-300 active:scale-95
-      ${activeTab === "men" ? "text-black font-semibold" : "text-gray-400"}`}
+            className={
+              activeTab === "men" ? "text-black font-semibold" : "text-gray-400"
+            }
           >
             MEN
           </button>
 
           <button
             onClick={() => setActiveTab("women")}
-            className={`transition-all duration-300 active:scale-95
-      ${activeTab === "women" ? "text-black font-semibold" : "text-gray-400"}`}
+            className={
+              activeTab === "women"
+                ? "text-black font-semibold"
+                : "text-gray-400"
+            }
           >
             WOMEN
           </button>
@@ -181,7 +184,7 @@ export default function Hero() {
 
       {/* Blue strip */}
       <div className="w-full bg-[#fffff] py-3">
-        <HeroBanner />
+        <HeroBanner activeTab={activeTab} />
       </div>
     </section>
   );

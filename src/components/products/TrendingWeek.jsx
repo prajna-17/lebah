@@ -10,7 +10,11 @@ import { toggleWishlist, isInWishlist } from "@/utils/wishlist";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 
-export default function TrendingWeek() {
+import { SUPER_CATEGORY_MAP } from "@/utils/superCategoryMap";
+
+export default function TrendingWeek({ activeTab }) {
+  const tab = activeTab || "men";
+
   const { isLoggedIn } = useAuth();
   const [showLogin, setShowLogin] = useState(false);
   const [products, setProducts] = useState([]);
@@ -33,9 +37,11 @@ export default function TrendingWeek() {
       .then((data) => {
         const trending = data.filter(
           (p) =>
-            p.productSellingCategory === "best-selling" ||
-            p.productSellingCategory === "featured",
+            (p.productSellingCategory === "best-selling" ||
+              p.productSellingCategory === "featured") &&
+            p.superCategory === SUPER_CATEGORY_MAP[tab],
         );
+
         setProducts(trending);
 
         const map = {};
@@ -49,7 +55,7 @@ export default function TrendingWeek() {
     const sync = () => setLikedMap((prev) => ({ ...prev }));
     window.addEventListener("wishlist-updated", sync);
     return () => window.removeEventListener("wishlist-updated", sync);
-  }, []);
+  }, [tab]);
 
   const requireLogin = () => {
     if (!isLoggedIn) {

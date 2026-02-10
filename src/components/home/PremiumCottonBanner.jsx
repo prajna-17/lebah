@@ -2,15 +2,17 @@
 
 import { useRouter } from "next/navigation";
 
-export default function PremiumCottonBanner() {
+export default function PremiumCottonBanner({ activeTab }) {
   const router = useRouter();
 
   return (
     <section className="w-full">
       <img
-        src="/img/precotton.jpeg"
-        alt="Premium Cotton Shirts"
-        onClick={() => router.push("/products")}
+        src={
+          activeTab === "women"
+            ? "/img/women-cotton.jpeg"
+            : "/img/precotton.jpeg"
+        }
         className="
           w-full h-[180px] object-cover
           cursor-pointer

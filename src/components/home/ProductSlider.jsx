@@ -9,8 +9,9 @@ import { useRouter } from "next/navigation";
 import { addToCart } from "@/utils/cart";
 import { createPortal } from "react-dom";
 import LuxuryLoader from "./LuxuryLoader";
+import { SUPER_CATEGORY_MAP } from "@/utils/superCategoryMap";
 
-export default function ProductSlider() {
+export default function ProductSlider({ activeTab }) {
   const { isLoggedIn } = useAuth();
   const router = useRouter();
 
@@ -27,14 +28,16 @@ export default function ProductSlider() {
   const [addedItem, setAddedItem] = useState(null);
 
   useEffect(() => {
-    fetch(`${API}/products`)
+    setLoading(true);
+
+    fetch(`${API}/products?superCategory=${SUPER_CATEGORY_MAP[activeTab]}`)
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [activeTab]);
 
   const requireLogin = () => {
     if (!isLoggedIn) {

@@ -12,6 +12,7 @@ import ProductReviews from "@/components/productdetail/ProductReviews";
 import RelatedProducts from "@/components/productdetail/RelatedProducts";
 import TrendingWeek from "@/components/products/TrendingWeek";
 import CinematicScrollReveal from "@/components/CinematicScrollReveal";
+import { SUPER_CATEGORY_MAP } from "@/utils/superCategoryMap";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -42,6 +43,8 @@ export default function ProductDetailPage() {
       </div>
     );
   }
+  const activeTab =
+    product.superCategory === SUPER_CATEGORY_MAP.women ? "women" : "men";
 
   return (
     <main>
@@ -72,7 +75,7 @@ export default function ProductDetailPage() {
       </CinematicScrollReveal>
 
       <CinematicScrollReveal>
-        <TrendingWeek />
+        <TrendingWeek activeTab={activeTab} />
       </CinematicScrollReveal>
     </main>
   );

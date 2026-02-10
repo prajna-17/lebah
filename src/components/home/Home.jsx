@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 import Hero from "@/components/home/Hero";
 import CategoryCards from "@/components/home/CategoryCards";
 import NewArrivalsBanner from "@/components/home/NewArrivalsBanner";
@@ -9,28 +13,36 @@ import Testimonials from "@/components/home/Testimonials";
 import CinematicScrollReveal from "@/components/CinematicScrollReveal";
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState("men");
+
   return (
     <>
-      <Hero />
+      <Hero activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <CinematicScrollReveal>
-        <CategoryCards />
+        <CategoryCards activeTab={activeTab} />
       </CinematicScrollReveal>
+
       <CinematicScrollReveal>
-        <NewArrivalsBanner />
+        <NewArrivalsBanner activeTab={activeTab} />
       </CinematicScrollReveal>
+
       <CinematicScrollReveal>
-        <ProductSlider />
+        <ProductSlider activeTab={activeTab} />
       </CinematicScrollReveal>
+
       <CinematicScrollReveal>
-        <PremiumCottonBanner />
+        <PremiumCottonBanner activeTab={activeTab} />
       </CinematicScrollReveal>
+
       <CinematicScrollReveal>
-        <BestProducts />
+        <BestProducts activeTab={activeTab} />
       </CinematicScrollReveal>
+
       <CinematicScrollReveal>
-        <CoreFeatures />
+        <CoreFeatures activeTab={activeTab} />
       </CinematicScrollReveal>
+
       <CinematicScrollReveal>
         <Testimonials />
       </CinematicScrollReveal>

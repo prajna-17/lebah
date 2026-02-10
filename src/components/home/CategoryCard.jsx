@@ -1,11 +1,19 @@
 "use client";
 import { useRouter } from "next/navigation";
 
-export default function CategoryCard({ id, img, title, subtitle }) {
+export default function CategoryCard({
+  id,
+  img,
+  title,
+  subtitle,
+  superCategory,
+}) {
   const router = useRouter();
   return (
     <div
-      onClick={() => router.push(`/products?category=${id}`)}
+      onClick={() =>
+        router.push(`/products?category=${id}&superCategory=${superCategory}`)
+      }
       className="relative w-full h-[190px] rounded-xl overflow-hidden cursor-pointer"
     >
       {/* GOLDEN BACKGROUND IMAGE */}

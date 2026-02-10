@@ -9,6 +9,7 @@ export default function FabricTabs() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeSubCategory = searchParams.get("subCategory");
+  const superCategory = searchParams.get("superCategory");
 
   useEffect(() => {
     fetch(`${API}/sub-categories`)
@@ -26,7 +27,15 @@ export default function FabricTabs() {
   }, []);
 
   const handleTabClick = (sub) => {
-    router.push(`/products?subCategory=${sub._id}`);
+    const params = new URLSearchParams();
+
+    params.set("subCategory", sub._id);
+
+    if (superCategory) {
+      params.set("superCategory", superCategory);
+    }
+
+    router.push(`/products?${params.toString()}`);
   };
 
   return (
@@ -35,6 +44,22 @@ export default function FabricTabs() {
         Showing {subCategories.length} subcategories
       </p>
       <div className="flex gap-3 overflow-x-auto no-scrollbar mt-2">
+        <button
+          onClick={() => {
+            const params = new URLSearchParams();
+
+            if (superCategory) {
+              params.set("superCategory", superCategory);
+            }
+
+            router.push(`/products?${params.toString()}`);
+          }}
+          className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap transition
+    ${!activeSubCategory ? "bg-[#0f243e] text-white" : "bg-gray-200 text-gray-700"}`}
+        >
+          All
+        </button>
+
         {subCategories.map((sub) => {
           const isActive = activeSubCategory === sub._id;
 
