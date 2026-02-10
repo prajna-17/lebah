@@ -324,7 +324,7 @@ export default function CheckoutPage() {
               }
 
               const products = cart.map((item) => ({
-                product: item.productId || item._id,
+                product: item.productId,
                 quantity: item.qty,
               }));
 
