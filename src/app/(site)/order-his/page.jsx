@@ -7,7 +7,7 @@ import { useAuth } from "@/components/auth/AuthContext";
 import { API } from "@/utils/api";
 
 export default function OrderHistoryPage() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
@@ -40,19 +40,33 @@ export default function OrderHistoryPage() {
   useEffect(() => {
     setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
   }, []);
+  console.log("AUTH USER ID:", user?._id);
 
   // 🔹 Fetch orders
   useEffect(() => {
     const token = localStorage.getItem("lebah-token");
 
-    // user logged in (context) but token missing
     if (!token) {
       setLoading(false);
       return;
     }
 
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    const userId = payload.userId;
+    let userId;
+
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      userId = payload._id || payload.id || payload.userId;
+    } catch (e) {
+      console.error("Token decode failed", e);
+      setLoading(false);
+      return;
+    }
+
+    if (!userId) {
+      console.error("User ID missing in token");
+      setLoading(false);
+      return;
+    }
 
     const fetchOrders = async () => {
       try {
@@ -71,11 +85,17 @@ export default function OrderHistoryPage() {
     };
 
     fetchOrders();
-  }, []);
+  }, []); // 🔒 DO NOT CHANGE THIS EVER
 
   // 🔒 KEEP ALL HOOKS ABOVE THIS LINE
   if (!mounted) return null;
-  if (!isLoggedIn) return null;
+  if (!isLoggedIn) {
+    return (
+      <p className="text-center mt-20 text-gray-500">
+        Please log in to view your orders
+      </p>
+    );
+  }
 
   // ⏳ Loading UI
   if (loading) {

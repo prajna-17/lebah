@@ -5,7 +5,7 @@ export default function DeliveryInfo() {
         {/* FREE SHIPPING */}
         <div className="flex flex-col items-center gap-2">
           <img
-            src="/img/free-shipping.png"
+            src="/img/freeship.png"
             alt="Free Shipping"
             className="w-8 h-8 object-contain"
           />

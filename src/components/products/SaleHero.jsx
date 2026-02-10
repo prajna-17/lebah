@@ -1,9 +1,11 @@
-export default function SaleHero() {
+"use client";
+
+export default function SaleHero({ activeTab }) {
   return (
-    <section className="w-full mt-0.1 h-[150px]">
+    <section className="w-full mt-0.5 h-[150px]">
       <img
-        src="/img/pro.jpg"
-        alt="Benefits"
+        src={activeTab === "women" ? "/img/c6.jpeg" : "/img/flat.png"}
+        alt="Sale Banner"
         className="w-full h-full object-cover"
       />
     </section>
