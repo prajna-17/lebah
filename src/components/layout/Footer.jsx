@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -14,15 +15,21 @@ export default function Footer() {
     return null;
   }
 
-  const links = ["ABOUT US", "CONTACT US", "FAQ'S", "SERVICES", "QUICK LINKS"];
+  const links = [
+    { name: "ABOUT US", href: "/about-us" },
+    { name: "CONTACT US", href: "/contact-us" },
+    { name: "FAQ'S", href: "/faqs" },
+  ];
 
   return (
     <footer className="bg-[#0f2742] text-white text-center">
       {/* Links */}
       <div className="divide-y divide-white/10">
         {links.map((item) => (
-          <div key={item} className="py-6 text-sm tracking-[0.2em]">
-            {item}
+          <div key={item.name} className="py-6 text-sm tracking-[0.2em]">
+            <Link href={item.href} className="hover:opacity-70 transition">
+              {item.name}
+            </Link>
           </div>
         ))}
       </div>
@@ -59,7 +66,11 @@ export default function Footer() {
 
       {/* Brand */}
       <div className="mt-10 pb-8 flex justify-center">
-        <img src="/img/Lebah.png" alt="Lebah" className="h-8 object-contain" />
+        <img
+          src="/img/montoaklynlogo1.png"
+          alt="Lebah"
+          className="h-8 object-contain"
+        />
       </div>
     </footer>
   );

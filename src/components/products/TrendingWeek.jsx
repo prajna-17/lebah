@@ -83,7 +83,7 @@ export default function TrendingWeek() {
             return (
               <div
                 key={i}
-                className="min-w-[260px] cursor-pointer"
+                className="min-w-[260px] cursor-pointer text-gray-900"
                 onClick={() => router.push(`/products/${p._id}`)}
               >
                 <div className="relative overflow-hidden">
