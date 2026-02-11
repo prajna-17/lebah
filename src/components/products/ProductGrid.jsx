@@ -163,7 +163,7 @@ export default function ProductGrid({ products = [] }) {
                     </button>
 
                     {/* RATING */}
-                    <div className="absolute bottom-16 left-2 bg-white px-2 py-1 rounded-md text-sm flex items-center gap-1 shadow">
+                    <div className="absolute bottom-24 left-2 bg-white px-2 py-1 rounded-md text-sm flex items-center gap-1 shadow">
                       <span>{product.rating || 4.3}</span>
                       <Star size={12} fill="black" />
                       <span className="text-gray-500">
