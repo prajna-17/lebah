@@ -42,17 +42,23 @@ export default function Footer() {
           className="w-14 h-14 rounded-full bg-white p-3 cursor-pointer hover:scale-110 transition"
         />
 
-        <img
+        {/* <img
           src="/img/facebook.jpeg"
           alt="Facebook"
           className="w-14 h-14 rounded-full bg-white p-3 cursor-pointer hover:scale-110 transition"
-        />
+        /> */}
 
-        <img
-          src="/img/insta.jpeg"
-          alt="Instagram"
-          className="w-14 h-14 rounded-full bg-white p-3 cursor-pointer hover:scale-110 transition"
-        />
+        <a
+          href="https://instagram.com/your_username"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="/img/insta.jpeg"
+            alt="Instagram"
+            className="w-14 h-14 rounded-full bg-white p-3 cursor-pointer hover:scale-110 transition"
+          />
+        </a>
       </div>
 
       {/* Copyright */}

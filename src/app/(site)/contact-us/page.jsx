@@ -18,7 +18,7 @@ export default function ContactUsPage() {
         <div className="grid md:grid-cols-3 gap-10">
           {/* Email */}
           <motion.a
-            href="mailto:support@lebah.com"
+            href="mailto:montoaklyn@gmail.com"
             rel="noopener noreferrer"
             whileHover={{ y: -6 }}
             className="border border-[#0f2742]/20 p-10 rounded-2xl hover:shadow-xl transition"
@@ -29,7 +29,7 @@ export default function ContactUsPage() {
 
           {/* Phone */}
           <motion.a
-            href="tel:+919876543210"
+            href="tel:+918791676705"
             whileHover={{ y: -6 }}
             className="border border-[#0f2742]/20 p-10 rounded-2xl hover:shadow-xl transition"
           >
@@ -40,7 +40,7 @@ export default function ContactUsPage() {
           {/* WhatsApp */}
           <motion.a
             whileHover={{ y: -6 }}
-            href="https://wa.me/919876543210"
+            href="https://wa.me/918791676705"
             target="_blank"
             className="border border-[#0f2742]/20 p-10 rounded-2xl hover:shadow-xl transition"
           >
