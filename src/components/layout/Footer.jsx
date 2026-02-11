@@ -36,11 +36,11 @@ export default function Footer() {
 
       {/* Social icons */}
       <div className="flex justify-center gap-8 py-10">
-        <img
+        {/* <img
           src="/img/youtube.jpeg"
           alt="YouTube"
           className="w-14 h-14 rounded-full bg-white p-3 cursor-pointer hover:scale-110 transition"
-        />
+        /> */}
 
         {/* <img
           src="/img/facebook.jpeg"
@@ -49,7 +49,7 @@ export default function Footer() {
         /> */}
 
         <a
-          href="https://instagram.com/your_username"
+          href="https://www.instagram.com/mont_oaklyn?igsh=MXIxMmE0ZWZveWZlZQ=="
           target="_blank"
           rel="noopener noreferrer"
         >
