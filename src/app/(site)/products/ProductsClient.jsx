@@ -26,7 +26,6 @@ export default function ProductsClient() {
 
   const [sort, setSort] = useState("newest");
   const [priceRange, setPriceRange] = useState([0, 5000]);
-  const [activeTab, setActiveTab] = useState("men");
 
   useEffect(() => {
     setLoading(true);
@@ -87,11 +86,7 @@ export default function ProductsClient() {
 
   return (
     <main>
-      <SaleHero
-        superCategory={superCategoryKey || "men"}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
+      <SaleHero superCategory={superCategoryKey || "men"} />
 
       <CinematicScrollReveal>
         <SortFilterBar

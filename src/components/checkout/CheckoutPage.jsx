@@ -18,10 +18,12 @@ export default function CheckoutPage() {
   const [cart, setCart] = useState([]);
   const subTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  const discount = cart.reduce((sum, item) => {
+  const rawDiscount = cart.reduce((sum, item) => {
     if (!item.oldPrice) return sum;
     return sum + (item.oldPrice - item.price) * item.qty;
   }, 0);
+
+  const discount = Math.min(rawDiscount, 100);
 
   const tax = Math.round(subTotal * 0.02); // 2%
   const grandTotal = subTotal - discount + tax;

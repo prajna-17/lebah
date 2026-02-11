@@ -51,22 +51,8 @@ export default function OrderHistoryPage() {
       return;
     }
 
-    let userId;
-
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      userId = payload._id || payload.id || payload.userId;
-    } catch (e) {
-      console.error("Token decode failed", e);
-      setLoading(false);
-      return;
-    }
-
-    if (!userId) {
-      console.error("User ID missing in token");
-      setLoading(false);
-      return;
-    }
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const userId = payload.userId;
 
     const fetchOrders = async () => {
       try {
@@ -85,7 +71,7 @@ export default function OrderHistoryPage() {
     };
 
     fetchOrders();
-  }, []); // 🔒 DO NOT CHANGE THIS EVER
+  }, []);
 
   // 🔒 KEEP ALL HOOKS ABOVE THIS LINE
   if (!mounted) return null;

@@ -71,7 +71,7 @@ export default function ProductDetailPage() {
       </CinematicScrollReveal>
 
       <CinematicScrollReveal>
-        <Banner />
+        <Banner activeTab={activeTab} />
       </CinematicScrollReveal>
 
       <CinematicScrollReveal>

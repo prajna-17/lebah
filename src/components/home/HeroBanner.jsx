@@ -8,7 +8,7 @@ export default function HeroBanner({ activeTab }) {
 
   const banners =
     activeTab === "women"
-      ? ["/img/womenim.png", "/img/womenim.png", "/img/womenim.png"]
+      ? ["/img/womenim.png", "/img/womenim2.png", "/img/womenim.png"]
       : ["/img/heroim.jpeg", "/img/heroim.jpeg", "/img/heroim.jpeg"];
 
   const [index, setIndex] = useState(0);
@@ -27,7 +27,7 @@ export default function HeroBanner({ activeTab }) {
         key={index}
         src={banners[index]}
         alt="banner"
-        onClick={() => router.push(`/products?superCategory=${superCategory}`)}
+        onClick={() => router.push(`/products?superCategory=${activeTab}`)}
         className="absolute inset-0 w-full h-full object-cover animate-banner-slide cursor-pointer active:scale-[0.98] transition"
       />
 
