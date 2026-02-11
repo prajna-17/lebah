@@ -207,7 +207,7 @@ export default function ProductGrid({ products = [] }) {
                             ?.classList.remove("cart-bounce");
                         }, 600);
                       }}
-                      className="absolute bottom-16 right-2 bg-white p-1.5 rounded-full shadow"
+                      className="absolute bottom-24 right-2 bg-white p-1.5 rounded-full shadow"
                     >
                       <ShoppingCart size={16} />
                     </button>
