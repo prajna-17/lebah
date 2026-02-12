@@ -215,32 +215,30 @@ export default function ProductGrid({ products = [] }) {
                       >
                         <ShoppingCart size={16} />
                       </button>
+                    </div>
 
-                      {/* TEXT */}
-                      <div className="mt-2">
-                        <p className="font-medium">{product.title}</p>
+                    {/* TEXT */}
+                    <div className="mt-2">
+                      <p className="font-medium">{product.title}</p>
 
-                        <div className="flex items-center gap-2 text-sm">
-                          <span className="font-semibold">
-                            ₹ {product.price}
-                          </span>
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="font-semibold">₹ {product.price}</span>
 
-                          {product.oldPrice && (
-                            <>
-                              <span className="line-through text-gray-400 text-xs">
-                                ₹ {product.oldPrice}
-                              </span>
-                              <span className="text-red-500 text-xs">
-                                {Math.round(
-                                  ((product.oldPrice - product.price) /
-                                    product.oldPrice) *
-                                    100,
-                                )}
-                                % OFF
-                              </span>
-                            </>
-                          )}
-                        </div>
+                        {product.oldPrice && (
+                          <>
+                            <span className="line-through text-gray-400 text-xs">
+                              ₹ {product.oldPrice}
+                            </span>
+                            <span className="text-red-500 text-xs">
+                              {Math.round(
+                                ((product.oldPrice - product.price) /
+                                  product.oldPrice) *
+                                  100,
+                              )}
+                              % OFF
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
