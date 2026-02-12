@@ -52,7 +52,7 @@ export default function ProductMeta({ product }) {
       content: (
         <div className="text-sm leading-relaxed space-y-2">
           <p>
-            <strong>Manufactured By:</strong> Lebah Fashion Pvt. Ltd.
+            <strong>Manufactured By:</strong> Montoaklyn Fashion Pvt. Ltd.
           </p>
           <p>
             <strong>Country of Origin:</strong> India
@@ -65,7 +65,7 @@ export default function ProductMeta({ product }) {
             bleach.
           </p>
           <p>
-            <strong>Packed By:</strong> Lebah Warehouse, Bengaluru
+            <strong>Packed By:</strong> Montoaklyn Warehouse
           </p>
         </div>
       ),
