@@ -34,7 +34,7 @@ export default function HeroBanner({ activeTab }) {
             src={img}
             alt="banner"
             onClick={() => router.push(`/products?superCategory=${activeTab}`)}
-            className="w-full h-full object-contain bg-blue-900
+            className="w-full h-full object-contain bg-white
  flex-shrink-0 cursor-pointer"
           />
         ))}
