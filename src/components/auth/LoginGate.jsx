@@ -72,7 +72,7 @@ export default function LoginGate({ open, onClose }) {
         </button>
 
         <h2 className="text-lg font-semibold mb-1">
-          {step === "form" ? "Welcome to Lebah" : "Verify OTP"}
+          {step === "form" ? "Welcome to Montoaklyn" : "Verify OTP"}
         </h2>
 
         <p className="text-sm text-gray-500 mb-6">
@@ -193,7 +193,7 @@ export default function LoginGate({ open, onClose }) {
         )}
 
         <p className="text-xs text-center text-gray-400 mt-6">
-          By continuing, you agree to Lebah’s Terms & Privacy Policy
+          By continuing, you agree to Montoaklyn Terms & Privacy Policy
         </p>
       </div>
       {showSuccess && (
