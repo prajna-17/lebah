@@ -106,7 +106,7 @@ export default function Hero({ activeTab, setActiveTab }) {
   return (
     <section className="bg-white pt-6">
       {/* Search bar */}
-      <div className="px-4 mb-6">
+      <div className="px-4 mb-3">
         <div className="relative">
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600" />
 
@@ -151,7 +151,7 @@ export default function Hero({ activeTab, setActiveTab }) {
 
       {/* Men | Women */}
       {/* Men | Women */}
-      <div className="relative flex justify-center items-center mb-6">
+      <div className="relative flex justify-center items-center mb-3">
         <div className="flex gap-16 text-sm tracking-widest relative">
           {/* Animated underline */}
           <span
