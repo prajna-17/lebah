@@ -81,21 +81,21 @@ export default function ProductReviews() {
       <div className="mt-8">
         <div className="flex justify-between items-center mb-3">
           <p className="text-sm font-semibold">Review Lists</p>
-          <button className="p-2 border rounded-md">
+          {/* <button className="p-2 border rounded-md">
             <SlidersHorizontal size={14} />
-          </button>
+          </button> */}
         </div>
 
         <div className="flex gap-2">
           <button className="px-3 py-1 text-sm border rounded-full bg-gray-100">
             All Reviews
           </button>
-          <button className="px-3 py-1 text-sm border rounded-full">
+          {/* <button className="px-3 py-1 text-sm border rounded-full">
             With Photo & Video
           </button>
           <button className="px-3 py-1 text-sm border rounded-full">
             With Description
-          </button>
+          </button> */}
         </div>
       </div>
 
