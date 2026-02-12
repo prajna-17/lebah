@@ -23,14 +23,23 @@ export default function HeroBanner({ activeTab }) {
 
   return (
     <div className="relative w-full h-[260px] overflow-hidden">
-      <img
-        key={index}
-        src={banners[index]}
-        alt="banner"
-        onClick={() => router.push(`/products?superCategory=${activeTab}`)}
-        className="absolute inset-0 w-full h-full object-cover animate-banner-slide cursor-pointer active:scale-[0.98] transition"
-      />
+      {/* SLIDER TRACK */}
+      <div
+        className="flex transition-transform duration-700 ease-in-out h-full"
+        style={{ transform: `translateX(-${index * 100}%)` }}
+      >
+        {banners.map((img, i) => (
+          <img
+            key={i}
+            src={img}
+            alt="banner"
+            onClick={() => router.push(`/products?superCategory=${activeTab}`)}
+            className="w-full h-full object-cover flex-shrink-0 cursor-pointer"
+          />
+        ))}
+      </div>
 
+      {/* DOTS */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3">
         {banners.map((_, i) => (
           <span
