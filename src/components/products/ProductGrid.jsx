@@ -32,7 +32,11 @@ export default function ProductGrid({ products = [] }) {
   const [showCartModal, setShowCartModal] = useState(false);
   const [addedItem, setAddedItem] = useState(null);
   useEffect(() => {
-    setLoading(false);
+    if (products.length === 0) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
   }, [products]);
 
   /* sync wishlist state */
@@ -68,7 +72,7 @@ export default function ProductGrid({ products = [] }) {
   return (
     <>
       {loading ? (
-        <div className="py-20">
+        <div className="flex justify-center items-center min-h-[60vh]">
           <LuxuryLoader />
         </div>
       ) : (
