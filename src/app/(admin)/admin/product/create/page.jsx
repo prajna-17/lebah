@@ -11,6 +11,8 @@ export default function AdminCreateProduct() {
 
   // 🔹 images
   const [images, setImages] = useState([]);
+  const [previewImages, setPreviewImages] = useState([]);
+
   const [colorImages, setColorImages] = useState([]);
   const [currentColor, setCurrentColor] = useState("");
   const [superCategories, setSuperCategories] = useState([]);
@@ -66,15 +68,16 @@ export default function AdminCreateProduct() {
 
   // 🔹 MAIN IMAGES UPLOAD
   const handleImagesUpload = async (files) => {
+    // Preview only
     const previews = files.map((f) => URL.createObjectURL(f));
-    setImages((p) => [...p, ...previews]);
+    setPreviewImages((p) => [...p, ...previews]);
 
+    // Upload to UploadThing
     const upload = await startUpload(files);
+
     if (upload) {
-      setImages((p) => [
-        ...p.filter((i) => !i.startsWith("blob:")),
-        ...upload.map((u) => u.ufsUrl),
-      ]);
+      const realUrls = upload.map((u) => u.ufsUrl);
+      setImages((p) => [...p, ...realUrls]);
     }
   };
 
@@ -126,6 +129,11 @@ export default function AdminCreateProduct() {
 
   // 🔹 SUBMIT
   const submitProduct = async () => {
+    if (images.length === 0) {
+      alert("Upload images first!");
+      return;
+    }
+
     const payload = {
       id: "PID-" + Date.now(),
       title,
@@ -185,7 +193,7 @@ export default function AdminCreateProduct() {
         />
 
         <div className="image-preview-box">
-          {images.map((img, i) => (
+          {[...previewImages, ...images].map((img, i) => (
             <div key={i} style={{ position: "relative" }}>
               <img src={img} className="preview-img" />
               <span

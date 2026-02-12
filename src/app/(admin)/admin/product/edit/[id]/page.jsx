@@ -19,6 +19,8 @@ export default function EditProductPage() {
   const [categories, setCategories] = useState([]);
 
   const [images, setImages] = useState([]);
+  const [previewImages, setPreviewImages] = useState([]);
+
   const [colorImages, setColorImages] = useState([]);
   const [currentColor, setCurrentColor] = useState("");
 
@@ -72,15 +74,18 @@ export default function EditProductPage() {
   };
 
   const handleImageUpload = async (files) => {
-    const previews = Array.from(files).map((f) => URL.createObjectURL(f));
-    setImages((p) => [...p, ...previews]);
+    const fileArray = Array.from(files);
 
-    const uploaded = await startUpload(Array.from(files));
+    // Preview only
+    const previews = fileArray.map((f) => URL.createObjectURL(f));
+    setPreviewImages((p) => [...p, ...previews]);
+
+    // Upload
+    const uploaded = await startUpload(fileArray);
+
     if (uploaded) {
-      setImages((p) => [
-        ...p.filter((i) => !i.startsWith("blob:")),
-        ...uploaded.map((u) => u.ufsUrl),
-      ]);
+      const realUrls = uploaded.map((u) => u.ufsUrl);
+      setImages((p) => [...p, ...realUrls]);
     }
   };
 
@@ -177,7 +182,7 @@ export default function EditProductPage() {
         />
 
         <div className="image-preview-box">
-          {images.map((img, i) => (
+          {[...previewImages, ...images].map((img, i) => (
             <div key={i} style={{ position: "relative" }}>
               <img src={img} className="preview-img" />
               <span

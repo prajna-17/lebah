@@ -1,40 +1,35 @@
 "use client";
 
 import { Star, ThumbsUp, MessageCircle, SlidersHorizontal } from "lucide-react";
-import { useState } from "react";
-
-const ratingBars = [
-  { stars: 5, count: 2823, width: "85%" },
-  { stars: 4, count: 38, width: "20%" },
-  { stars: 3, count: 4, width: "8%" },
-  { stars: 2, count: 0, width: "0%" },
-  { stars: 1, count: 0, width: "0%" },
-];
-
-const reviews = [
-  {
-    name: "Darrell Steward",
-    date: "July 2, 2020 03:29 PM",
-    likes: 128,
-  },
-  {
-    name: "Darlene Robertson",
-    date: "July 2, 2020 10:44 PM",
-    likes: 32,
-  },
-  {
-    name: "Kathryn Murphy",
-    date: "June 26, 2020 10:03 PM",
-    likes: 9,
-  },
-];
+import { useState, useMemo } from "react";
+import { getRandomReviews } from "@/utils/review";
 
 export default function ProductReviews() {
-  const [showAll, setShowAll] = useState(false);
+  // Only 5 reviews per product
+  const reviews = useMemo(() => getRandomReviews(5), []);
+
+  const [visibleCount, setVisibleCount] = useState(3);
+
+  // Calculate average rating
+  const averageRating =
+    reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
+
+  const formattedRating = averageRating.toFixed(1);
+
+  // Calculate rating distribution
+  const ratingCounts = [5, 4, 3, 2, 1].map((star) => {
+    const count = reviews.filter((r) => r.rating === star).length;
+    const percentage = (count / reviews.length) * 100;
+
+    return {
+      stars: star,
+      count,
+      width: `${percentage}%`,
+    };
+  });
 
   return (
     <section className="px-4 mt-16 text-gray-900">
-      {/* TITLE */}
       <h2 className="text-base font-semibold mb-6">Product Reviews</h2>
 
       {/* SUMMARY */}
@@ -42,7 +37,7 @@ export default function ProductReviews() {
         {/* LEFT */}
         <div className="flex flex-col items-center">
           <div className="w-16 h-16 rounded-full border-4 border-orange-400 flex items-center justify-center text-lg font-semibold">
-            4.8
+            {formattedRating}
           </div>
 
           <div className="flex gap-1 mt-2">
@@ -50,24 +45,28 @@ export default function ProductReviews() {
               <Star
                 key={i}
                 size={14}
-                className="text-orange-400 fill-orange-400"
+                className={
+                  i < Math.round(averageRating)
+                    ? "text-orange-400 fill-orange-400"
+                    : "text-gray-300"
+                }
               />
             ))}
           </div>
 
-          <p className="text-sm mt-1">from 1.25k reviews</p>
+          <p className="text-sm mt-1">from {reviews.length} reviews</p>
         </div>
 
         {/* RIGHT */}
         <div className="flex-1">
-          {ratingBars.map((r) => (
+          {ratingCounts.map((r) => (
             <div key={r.stars} className="flex items-center gap-2 mb-2">
               <span className="text-sm w-6">{r.stars}.0</span>
               <Star size={12} className="text-orange-400 fill-orange-400" />
 
               <div className="flex-1 h-2 bg-gray-200 rounded">
                 <div
-                  className="h-2 bg-gray-700 rounded"
+                  className="h-2 bg-gray-700 rounded transition-all duration-500"
                   style={{ width: r.width }}
                 />
               </div>
@@ -78,7 +77,7 @@ export default function ProductReviews() {
         </div>
       </div>
 
-      {/* FILTERS */}
+      {/* FILTER HEADER */}
       <div className="mt-8">
         <div className="flex justify-between items-center mb-3">
           <p className="text-sm font-semibold">Review Lists</p>
@@ -102,52 +101,73 @@ export default function ProductReviews() {
 
       {/* REVIEWS */}
       <div className="mt-6 space-y-6">
-        {(showAll ? reviews : reviews.slice(0, 2)).map((r, i) => (
-          <div key={i}>
+        {reviews.slice(0, visibleCount).map((r) => (
+          <div key={r.id} className="border-b pb-5">
+            {/* Rating */}
             <div className="flex gap-1 mb-1">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
                   size={14}
-                  className="text-orange-400 fill-orange-400"
+                  className={
+                    i < r.rating
+                      ? "text-orange-400 fill-orange-400"
+                      : "text-gray-300"
+                  }
                 />
               ))}
             </div>
 
-            <p className="text-sm font-semibold">
-              This is amazing product I have.
-            </p>
+            {/* Comment */}
+            <p className="text-sm font-semibold">{r.comment}</p>
 
-            <p className="text-sm mt-1">{r.date}</p>
+            <p className="text-sm mt-1 text-gray-500">{r.date}</p>
 
+            {/* User Info */}
             <div className="flex justify-between items-center mt-3">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-gray-300" />
+                <img
+                  src={r.avatar}
+                  alt={r.name}
+                  className="w-7 h-7 rounded-full object-cover"
+                />
                 <p className="text-sm">{r.name}</p>
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1 text-sm">
+                <div className="flex items-center gap-1 text-sm cursor-pointer hover:text-blue-600 transition">
                   <ThumbsUp size={14} />
                   {r.likes}
                 </div>
-                <MessageCircle size={14} />
+                <MessageCircle size={14} className="cursor-pointer" />
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* TOGGLE BUTTON */}
-      {reviews.length > 2 && (
-        <button
-          onClick={() => setShowAll(!showAll)}
-          className="mt-6 flex items-center gap-2 text-sm font-medium text-[#0f243e]"
-        >
-          <span className="text-lg">{showAll ? "−" : "+"}</span>
-          {showAll ? "Show less reviews" : "View all reviews"}
-        </button>
-      )}
+      {/* BUTTON LOGIC */}
+      <div className="mt-6">
+        {visibleCount === 3 && (
+          <button
+            onClick={() => setVisibleCount(5)}
+            className="flex items-center gap-2 text-sm font-medium text-[#0f243e]"
+          >
+            <span className="text-lg">+</span>
+            View more reviews
+          </button>
+        )}
+
+        {visibleCount === 5 && (
+          <button
+            onClick={() => setVisibleCount(3)}
+            className="flex items-center gap-2 text-sm font-medium text-[#0f243e]"
+          >
+            <span className="text-lg">−</span>
+            View less reviews
+          </button>
+        )}
+      </div>
     </section>
   );
 }

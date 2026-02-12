@@ -24,11 +24,12 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
     fetch(`${API}/products`)
       .then((res) => res.json())
       .then((data) => {
-        const filtered = data.filter(
-          (p) =>
-            p._id !== currentProductId &&
-            (p.category === categoryId || p.category?._id === categoryId),
-        );
+        const filtered = data.filter((p) => {
+          const productCategoryId =
+            typeof p.category === "object" ? p.category?._id : p.category;
+
+          return p._id !== currentProductId && productCategoryId === categoryId;
+        });
 
         const sliced = filtered.slice(0, 4);
         setProducts(sliced);
