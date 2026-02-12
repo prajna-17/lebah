@@ -8,8 +8,8 @@ export default function HeroBanner({ activeTab }) {
 
   const banners =
     activeTab === "women"
-      ? ["/img/womenim.png", "/img/womenim2.png", "/img/womenim.png"]
-      : ["/img/heroim.jpeg", "/img/heroim.jpeg", "/img/heroim.jpeg"];
+      ? ["/img/womenim.png", "/img/women2.png", "/img/women3.png"]
+      : ["/img/heroim.jpeg", "/img/men2.png", "/img/men3.png"];
 
   const [index, setIndex] = useState(0);
 

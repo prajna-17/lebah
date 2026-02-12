@@ -19,6 +19,8 @@ export default function Footer() {
     { name: "ABOUT US", href: "/about-us" },
     { name: "CONTACT US", href: "/contact-us" },
     { name: "FAQ'S", href: "/faqs" },
+    { name: "Privacy Policy", href: "/privacy" },
+    { name: "Return Policy", href: "/return" },
   ];
 
   return (
