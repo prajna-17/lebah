@@ -14,7 +14,7 @@ export default function CategoryCard({
       onClick={() =>
         router.push(`/products?category=${id}&superCategory=${superCategory}`)
       }
-      className="relative w-full h-[190px] rounded-xl overflow-hidden cursor-pointer"
+      className="relative w-full h-[190px] rounded-xl overflow-hidden cursor-pointer transition-all duration-200 ease-in-out active:scale-95 active:shadow-inner hover:scale-[1.02]"
     >
       {/* GOLDEN BACKGROUND IMAGE */}
       <img

@@ -89,10 +89,10 @@ export default function BestProducts({ activeTab }) {
               <div
                 key={p._id}
                 onClick={() => router.push(`/products/${p._id}`)}
-                className="cursor-pointer relative"
+                className="cursor-pointer relative transition-all duration-200 ease-in-out active:scale-95"
               >
                 {/* IMAGE */}
-                <div className="relative overflow-hidden">
+                <div className="relative overflow-hidden transition-all duration-200 active:scale-[0.98]">
                   <img
                     src={p.images?.[0]}
                     alt={p.title}
@@ -163,7 +163,7 @@ export default function BestProducts({ activeTab }) {
                     setSelectedSize(null);
                     setShowVariantModal(true);
                   }}
-                  className="mt-2 w-full bg-[#0b1d36] py-3 text-sm text-white active:scale-[0.97]"
+                  className="mt-2 w-full bg-[#0b1d36] py-3 text-sm text-white transition-all duration-150 active:scale-95"
                 >
                   Add to cart
                 </button>

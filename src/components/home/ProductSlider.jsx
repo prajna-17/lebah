@@ -58,10 +58,10 @@ export default function ProductSlider({ activeTab }) {
             {products.map((p) => (
               <div
                 key={p._id}
-                className="min-w-[220px] flex-shrink-0 cursor-pointer"
+                className="min-w-[220px] flex-shrink-0 cursor-pointer transition-all duration-200 ease-in-out active:scale-95"
               >
                 {/* IMAGE CARD */}
-                <div className="relative rounded-xl overflow-hidden">
+                <div className="relative rounded-xl overflow-hidden transition-all duration-200 active:scale-[0.98]">
                   <img
                     src={p.images?.[0]}
                     alt={p.title}
@@ -100,7 +100,7 @@ export default function ProductSlider({ activeTab }) {
                           setSelectedSize(null);
                         });
                     }}
-                    className="absolute bottom-3 right-3 bg-white w-10 h-10 rounded-full flex items-center justify-center"
+                    className="absolute bottom-3 right-3 bg-white w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150 active:scale-90"
                   >
                     <FiShoppingCart size={18} className="text-[#0f243e]" />
                   </button>
