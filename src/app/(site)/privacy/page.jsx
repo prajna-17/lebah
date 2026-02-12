@@ -1,105 +1,94 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { HiOutlinePlus } from "react-icons/hi2";
-import { useState } from "react";
+import { motion } from "framer-motion";
 
-const faqs = [
-  {
-    q: "How long does delivery take?",
-    a: "Delivery usually takes 5–7 business days depending on your location.",
-  },
-  {
-    q: "Can I return my order?",
-    a: "Yes. Returns are accepted within 7 days of delivery, provided the product is unused.",
-  },
-  {
-    q: "Is payment secure?",
-    a: "All payments are encrypted and processed through trusted, secure gateways.",
-  },
-];
-
-export default function FaqsPage() {
-  const [open, setOpen] = useState(null);
-
+export default function PrivacyPolicyPage() {
   return (
-    <section className="min-h-screen bg-white text-[#0f2742] px-6 md:px-24 py-28">
-      {/* Header */}
-      <div className="max-w-6xl mx-auto mb-24">
+    <section className="min-h-screen bg-white text-[#0f2742] overflow-hidden">
+      {/* HERO */}
+      <div className="relative px-6 md:px-24 pt-32 pb-24">
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-4xl md:text-7xl tracking-[0.25em] font-light"
+          className="text-6xl md:text-7xl tracking-[0.25em] font-light"
         >
-          FREQUENTLY
+          PRIVACY
         </motion.h1>
 
         <motion.h2
-          initial={{ opacity: 0, x: 30 }}
+          initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-4xl md:text-7xl tracking-[0.25em] font-light mt-4"
+          className="text-6xl md:text-7xl tracking-[0.25em] font-light mt-4"
         >
-          ASKED
+          POLICY
         </motion.h2>
 
-        <motion.h3
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="text-4xl md:text-7xl tracking-[0.25em] font-light mt-4"
-        >
-          QUESTIONS
-        </motion.h3>
-
-        {/* Divider */}
         <motion.div
           initial={{ width: 0 }}
-          animate={{ width: "220px" }}
-          transition={{ duration: 1, delay: 0.8 }}
+          animate={{ width: "180px" }}
+          transition={{ duration: 1, delay: 0.6 }}
           className="h-[1px] bg-[#0f2742] mt-10"
         />
       </div>
 
-      {/* FAQ LIST */}
-      <div className="max-w-4xl mx-auto space-y-12">
-        {faqs.map((item, i) => (
-          <div key={i}>
-            <button
-              onClick={() => setOpen(open === i ? null : i)}
-              className="w-full flex justify-between items-start text-left group"
-            >
-              <span className="text-xl font-light tracking-wide group-hover:opacity-70 transition">
-                {item.q}
-              </span>
+      {/* CONTENT */}
+      <div className="px-6 md:px-24 pb-32 max-w-5xl">
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="space-y-10 text-[#0f2742]/80 text-lg leading-relaxed"
+        >
+          <p>
+            At our company, your privacy is treated with the highest level of
+            respect and responsibility. We are committed to protecting your
+            personal information and ensuring complete transparency in how it is
+            used.
+          </p>
 
-              <HiOutlinePlus
-                className={`text-2xl mt-1 transition-transform duration-300 ${
-                  open === i ? "rotate-45" : ""
-                }`}
-              />
-            </button>
+          <p>
+            We collect only the information necessary to process your orders,
+            provide customer support, and enhance your shopping experience. This
+            may include your name, contact details, shipping address, and
+            payment information.
+          </p>
 
-            <AnimatePresence>
-              {open === i && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-6 max-w-3xl text-[#0f2742]/70 leading-relaxed"
-                >
-                  {item.a}
-                </motion.div>
-              )}
-            </AnimatePresence>
+          <p>
+            All payment transactions are encrypted and securely processed
+            through trusted gateways. We do not store or have access to your
+            card details.
+          </p>
 
-            {/* subtle divider */}
-            <div className="h-[1px] bg-[#0f2742]/15 mt-12" />
-          </div>
-        ))}
+          <p>
+            Your data is never sold, rented, or traded. Information may only be
+            shared with logistics and payment partners strictly for order
+            fulfillment purposes.
+          </p>
+
+          <p>
+            You retain the right to access, modify, or request deletion of your
+            personal information at any time. For any privacy-related concerns,
+            please contact our support team.
+          </p>
+
+          <p>
+            By using our website, you agree to the terms outlined in this
+            Privacy Policy.
+          </p>
+        </motion.div>
       </div>
+
+      {/* BOTTOM ACCENT */}
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        transition={{ duration: 1 }}
+        viewport={{ once: true }}
+        className="origin-left h-[1px] bg-[#0f2742]/20 mx-6 md:mx-24 mb-20"
+      />
     </section>
   );
 }
