@@ -105,135 +105,142 @@ export default function ProductGrid({ products = [] }) {
                   /* ✅ CARD CLICK */
                   <div
                     key={product._id}
-                    className="relative cursor-pointer"
+                    className="cursor-pointer"
                     onClick={() => router.push(`/products/${product._id}`)}
                   >
-                    <img
-                      src={product.images?.[0]}
-                      alt={product.title}
-                      className="w-full h-[260px] object-cover"
-                    />
+                    {/* IMAGE WRAPPER */}
+                    <div className="relative w-full h-[260px]">
+                      <img
+                        src={product.images?.[0]}
+                        alt={product.title}
+                        className="w-full h-full object-cover"
+                      />
 
-                    {/* ❤️ WISHLIST */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation(); // 🔥 prevent navigation
-                        if (!requireLogin()) return;
+                      {/* ❤️ WISHLIST */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); // 🔥 prevent navigation
+                          if (!requireLogin()) return;
 
-                        toggleWishlist({
-                          variantId,
-                          productId: product._id,
-                          title: product.title,
-                          image: product.images?.[0],
-                          price: product.price,
-                          oldPrice: product.oldPrice,
-                          discount: product.oldPrice
-                            ? Math.round(
-                                ((product.oldPrice - product.price) /
-                                  product.oldPrice) *
-                                  100,
-                              )
-                            : null,
-                          color: product.colorImages?.[0]?.color || "Default",
-                          size: product.sizes?.[0] || null,
-                        });
+                          toggleWishlist({
+                            variantId,
+                            productId: product._id,
+                            title: product.title,
+                            image: product.images?.[0],
+                            price: product.price,
+                            oldPrice: product.oldPrice,
+                            discount: product.oldPrice
+                              ? Math.round(
+                                  ((product.oldPrice - product.price) /
+                                    product.oldPrice) *
+                                    100,
+                                )
+                              : null,
+                            color: product.colorImages?.[0]?.color || "Default",
+                            size: product.sizes?.[0] || null,
+                          });
 
-                        showToast(
-                          liked ? "Removed from Wishlist" : "Added to Wishlist",
-                        );
+                          showToast(
+                            liked
+                              ? "Removed from Wishlist"
+                              : "Added to Wishlist",
+                          );
 
-                        const heart = document.createElement("div");
-                        heart.innerHTML = "💙";
-                        heart.className = "pop-heart";
-                        e.currentTarget.appendChild(heart);
-                        setTimeout(() => heart.remove(), 700);
+                          const heart = document.createElement("div");
+                          heart.innerHTML = "💙";
+                          heart.className = "pop-heart";
+                          e.currentTarget.appendChild(heart);
+                          setTimeout(() => heart.remove(), 700);
 
-                        setLikedMap((prev) => ({
-                          ...prev,
-                          [variantId]: !liked,
-                        }));
+                          setLikedMap((prev) => ({
+                            ...prev,
+                            [variantId]: !liked,
+                          }));
 
-                        const audio = new Audio("/sounds/pop.mp3");
-                        audio.volume = 0.6;
-                        audio.play();
-                      }}
-                      className="absolute top-2 right-2 bg-white p-1.5 rounded-full shadow"
-                    >
-                      <Heart size={16} fill={liked ? "#5b2d1f" : "none"} />
-                    </button>
+                          const audio = new Audio("/sounds/pop.mp3");
+                          audio.volume = 0.6;
+                          audio.play();
+                        }}
+                        className="absolute top-2 right-2 bg-white p-1.5 rounded-full shadow"
+                      >
+                        <Heart size={16} fill={liked ? "#5b2d1f" : "none"} />
+                      </button>
 
-                    {/* RATING */}
-                    <div className="absolute bottom-20 left-2 bg-white px-2 py-1 rounded-md text-sm flex items-center gap-1 shadow">
-                      <span>{product.rating || 4.3}</span>
-                      <Star size={12} fill="black" />
-                      <span className="text-gray-500">
-                        ({product.reviews?.length || 56})
-                      </span>
-                    </div>
+                      {/* RATING */}
+                      <div className="absolute bottom-3 left-2 bg-white px-2 py-1 rounded-md text-sm flex items-center gap-1 shadow">
+                        <span>{product.rating || 4.3}</span>
+                        <Star size={12} fill="black" />
+                        <span className="text-gray-500">
+                          ({product.reviews?.length || 56})
+                        </span>
+                      </div>
 
-                    {/* 🛒 CART */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation(); // 🔥 prevent navigation
-                        if (!requireLogin()) return;
+                      {/* 🛒 CART */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); // 🔥 prevent navigation
+                          if (!requireLogin()) return;
 
-                        addToCart({
-                          productId: product._id,
-                          variantId,
-                          title: product.title,
-                          image: product.images?.[0],
-                          price: product.price,
-                          oldPrice: product.oldPrice,
-                          color: "Default",
-                          size: product.sizes?.[0] || "Default", // 🔥 THIS
-                        });
+                          addToCart({
+                            productId: product._id,
+                            variantId,
+                            title: product.title,
+                            image: product.images?.[0],
+                            price: product.price,
+                            oldPrice: product.oldPrice,
+                            color: "Default",
+                            size: product.sizes?.[0] || "Default", // 🔥 THIS
+                          });
 
-                        const audio = new Audio("/sounds/pop.mp3");
-                        audio.volume = 0.6;
-                        audio.play();
+                          const audio = new Audio("/sounds/pop.mp3");
+                          audio.volume = 0.6;
+                          audio.play();
 
-                        setAddedItem({
-                          image: product.images?.[0],
-                          title: product.title,
-                        });
-                        setShowCartModal(true);
+                          setAddedItem({
+                            image: product.images?.[0],
+                            title: product.title,
+                          });
+                          setShowCartModal(true);
 
-                        document
-                          .querySelector(".cart-icon")
-                          ?.classList.add("cart-bounce");
-                        setTimeout(() => {
                           document
                             .querySelector(".cart-icon")
-                            ?.classList.remove("cart-bounce");
-                        }, 600);
-                      }}
-                      className="absolute bottom-20 right-2 bg-white p-1.5 rounded-full shadow"
-                    >
-                      <ShoppingCart size={16} />
-                    </button>
+                            ?.classList.add("cart-bounce");
+                          setTimeout(() => {
+                            document
+                              .querySelector(".cart-icon")
+                              ?.classList.remove("cart-bounce");
+                          }, 600);
+                        }}
+                        className="absolute bottom-3 right-2 bg-white p-1.5 rounded-full shadow"
+                      >
+                        <ShoppingCart size={16} />
+                      </button>
 
-                    {/* TEXT */}
-                    <div className="mt-2">
-                      <p className="font-medium">{product.title}</p>
+                      {/* TEXT */}
+                      <div className="mt-2">
+                        <p className="font-medium">{product.title}</p>
 
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="font-semibold">₹ {product.price}</span>
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="font-semibold">
+                            ₹ {product.price}
+                          </span>
 
-                        {product.oldPrice && (
-                          <>
-                            <span className="line-through text-gray-400 text-xs">
-                              ₹ {product.oldPrice}
-                            </span>
-                            <span className="text-red-500 text-xs">
-                              {Math.round(
-                                ((product.oldPrice - product.price) /
-                                  product.oldPrice) *
-                                  100,
-                              )}
-                              % OFF
-                            </span>
-                          </>
-                        )}
+                          {product.oldPrice && (
+                            <>
+                              <span className="line-through text-gray-400 text-xs">
+                                ₹ {product.oldPrice}
+                              </span>
+                              <span className="text-red-500 text-xs">
+                                {Math.round(
+                                  ((product.oldPrice - product.price) /
+                                    product.oldPrice) *
+                                    100,
+                                )}
+                                % OFF
+                              </span>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
