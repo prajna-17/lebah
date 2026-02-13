@@ -56,11 +56,11 @@ export default function ProductsClient() {
   }, [superCategoryKey, category, subCategory, search]);
   let sortedProducts = [...products];
   // ✅ SUBCATEGORY FILTER (FRONTEND SAFETY)
-  if (subCategory) {
-    sortedProducts = sortedProducts.filter(
-      (p) => p.subCategory === subCategory,
-    );
-  }
+  // if (subCategory) {
+  //   sortedProducts = sortedProducts.filter(
+  //     (p) => String(p.subCategory) === String(subCategory),
+  //   );
+  // }
 
   // SORT
   if (sort === "price-low") {

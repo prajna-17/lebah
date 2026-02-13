@@ -257,12 +257,20 @@ export default function AdminCategory() {
               <button
                 className="primary-btn"
                 onClick={() => {
-                  if (!subCategory) return;
+                  if (!subCategory.trim()) return;
 
-                  setSubCategories((p) => [
-                    ...p,
-                    { name: subCategory }, // 🔥 NO _id
-                  ]);
+                  const exists = subCategories.some(
+                    (s) =>
+                      s.name.trim().toLowerCase() ===
+                      subCategory.trim().toLowerCase(),
+                  );
+
+                  if (exists) {
+                    alert("SubCategory already added in this category ⚠️");
+                    return;
+                  }
+
+                  setSubCategories((p) => [...p, { name: subCategory.trim() }]);
 
                   setSubCategory("");
                 }}
@@ -285,7 +293,7 @@ export default function AdminCategory() {
                   <span>{s.name}</span>
                   <button
                     onClick={() =>
-                      setSubCategories((p) => p.filter((x) => x._id !== s._id))
+                      setSubCategories((p) => p.filter((_, i) => i !== index))
                     }
                   >
                     ✕
