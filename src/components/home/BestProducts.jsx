@@ -30,10 +30,13 @@ export default function BestProducts({ activeTab }) {
     fetch(`${API}/products?superCategory=${SUPER_CATEGORY_MAP[activeTab]}`)
       .then((res) => res.json())
       .then((data) => {
-        const bestSelling = data.filter(
+        const productArray = Array.isArray(data) ? data : data.data || [];
+
+        const bestSelling = productArray.filter(
           (p) =>
             p.productSellingCategory === "best-selling" && p.category !== null,
         );
+
         console.log(
           "BEST SELLING FINAL:",
           bestSelling.map((p) => ({

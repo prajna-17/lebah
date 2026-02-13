@@ -13,6 +13,8 @@ import RelatedProducts from "@/components/productdetail/RelatedProducts";
 import TrendingWeek from "@/components/products/TrendingWeek";
 import CinematicScrollReveal from "@/components/CinematicScrollReveal";
 import { SUPER_CATEGORY_MAP } from "@/utils/superCategoryMap";
+import LuxuryLoader from "@/components/home/LuxuryLoader";
+import BestProducts from "@/components/home/BestProducts";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -32,7 +34,9 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="py-32 text-center text-gray-500">Loading product…</div>
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <LuxuryLoader />
+      </div>
     );
   }
 
@@ -60,6 +64,9 @@ export default function ProductDetailPage() {
           categoryId={product.category?._id || product.category}
           currentProductId={product._id}
         /> */}
+      </CinematicScrollReveal>
+      <CinematicScrollReveal>
+        <BestProducts />
       </CinematicScrollReveal>
 
       <CinematicScrollReveal>

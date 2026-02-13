@@ -12,6 +12,7 @@ import ProductGrid from "@/components/products/ProductGrid";
 import BenefitsBanner from "@/components/products/BenefitsBanner";
 import TrendingWeek from "@/components/products/TrendingWeek";
 import CinematicScrollReveal from "@/components/CinematicScrollReveal";
+import LuxuryLoader from "@/components/home/LuxuryLoader";
 
 export default function ProductsClient() {
   const searchParams = useSearchParams();
@@ -92,13 +93,11 @@ export default function ProductsClient() {
         <SortFilterBar
           sort={sort}
           setSort={setSort}
-          openFilter={() => {
-            const min = prompt("Min price?", priceRange[0]);
-            const max = prompt("Max price?", priceRange[1]);
+          openFilter={({ minPrice, maxPrice }) => {
+            const min = Number(minPrice) || 0;
+            const max = Number(maxPrice) || 5000;
 
-            if (min !== null && max !== null) {
-              setPriceRange([Number(min), Number(max)]);
-            }
+            setPriceRange([min, max]);
           }}
         />
       </CinematicScrollReveal>
@@ -109,8 +108,8 @@ export default function ProductsClient() {
 
       <CinematicScrollReveal>
         {loading ? (
-          <div className="py-24 text-center text-gray-500">
-            Loading products…
+          <div className="flex justify-center items-center min-h-[60vh]">
+            <LuxuryLoader />
           </div>
         ) : (
           <ProductGrid products={sortedProducts} />

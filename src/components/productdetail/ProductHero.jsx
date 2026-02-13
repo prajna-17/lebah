@@ -104,11 +104,24 @@ export default function ProductHero({ product }) {
       <section className="px-4 pt-4">
         {/* IMAGE SLIDER */}
         <div className="relative w-screen -mx-4 overflow-hidden -top-[16px]">
-          <img
-            src={images[activeImg]}
-            className="w-full h-[550px] md:h-[520px] object-cover"
-          />
-
+          <div
+            className="flex overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar"
+            onScroll={(e) => {
+              const index = Math.round(
+                e.target.scrollLeft / e.target.clientWidth,
+              );
+              setActiveImg(index);
+            }}
+          >
+            {images.map((img, i) => (
+              <div key={i} className="w-full flex-shrink-0 snap-center">
+                <img
+                  src={img}
+                  className="w-full h-[550px] md:h-[520px] object-cover"
+                />
+              </div>
+            ))}
+          </div>
           {/* SHARE */}
           <button
             onClick={() => setOpenShare(true)}
@@ -172,8 +185,19 @@ export default function ProductHero({ product }) {
           </button>
         </div>
 
+        <div className="flex justify-center gap-2 mt-4">
+          {images.map((_, i) => (
+            <div
+              key={i}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                activeImg === i ? "w-6 bg-[#0f243e]" : "w-2 bg-gray-300"
+              }`}
+            />
+          ))}
+        </div>
+
         {/* THUMBNAILS */}
-        <div className="flex gap-3 mt-0.5 justify-center">
+        {/* <div className="flex gap-3 mt-0.5 justify-center">
           {images.map((img, i) => (
             <img
               key={i}
@@ -184,14 +208,14 @@ export default function ProductHero({ product }) {
               }`}
             />
           ))}
-        </div>
+        </div> */}
 
         {/* DETAILS */}
         <div className="mt-6 text-gray-900">
           <h1 className="text-lg font-semibold">{product.title}</h1>
 
           <div className="flex items-center gap-2 mt-2">
-            <span className="text-2xl font-bold">₹ {product.price}</span>
+            <span className="text-3xl font-bold">₹ {product.price}</span>
 
             {product.oldPrice && (
               <>
@@ -209,9 +233,9 @@ export default function ProductHero({ product }) {
             )}
           </div>
 
-          <div className="flex items-center gap-1 mt-2 text-sm">
-            <Star size={16} className="text-blue-900 fill-blue-900" />
-            <span>{product.rating || 4.3}</span>
+          <div className="flex items-center gap-1 mt-5 text-sm">
+            <Star size={16} className="text-gray-600 fill-blue-900" />
+            <span>{product.rating || 4.3} (256) </span>
           </div>
 
           <p className="mt-4 text-sm text-gray-700">{product.description}</p>

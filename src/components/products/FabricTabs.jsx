@@ -39,7 +39,7 @@ export default function FabricTabs() {
   };
 
   return (
-    <div className="px-4 pt-4 mt-3">
+    <div className="px-4 pt-4 mt-3 mb-10">
       <p className="mt-1 text-xs text-gray-500">
         Showing {subCategories.length} subcategories
       </p>
