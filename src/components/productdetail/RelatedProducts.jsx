@@ -24,12 +24,9 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
     fetch(`${API}/products`)
       .then((res) => res.json())
       .then((data) => {
-        const filtered = data.filter((p) => {
-          const productCategoryId =
-            typeof p.category === "object" ? p.category?._id : p.category;
+        const productArray = Array.isArray(data) ? data : data.data || [];
 
-          return p._id !== currentProductId && productCategoryId === categoryId;
-        });
+        const filtered = productArray.filter((p) => p._id !== currentProductId);
 
         const sliced = filtered.slice(0, 4);
         setProducts(sliced);
@@ -182,10 +179,10 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
 
                   {/* RATING */}
                   <div className="absolute bottom-2 left-2 bg-white text-xs font-medium px-2 py-0.5 rounded flex items-center gap-1 shadow">
-                    <span className="font-semibold">{p.rating || 0}</span>
+                    <span className="font-semibold">{p.rating || 4.6}</span>
                     <Star size={12} className="fill-black text-black" />
                     <span className="text-gray-500">
-                      ({p.reviews?.length || 0})
+                      ({p.reviews?.length || 256})
                     </span>
                   </div>
                 </div>

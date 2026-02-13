@@ -89,14 +89,14 @@ export default function TrendingWeek({ activeTab }) {
             return (
               <div
                 key={i}
-                className="min-w-[230px] cursor-pointer text-gray-900"
+                className="min-w-[200px] cursor-pointer text-gray-900"
                 onClick={() => router.push(`/products/${p._id}`)}
               >
                 <div className="relative overflow-hidden">
                   <img
                     src={p.images?.[0]}
                     alt={p.title}
-                    className="w-full h-[330px] object-cover"
+                    className="w-full h-[300px] object-cover"
                   />
 
                   {/* ❤️ WISHLIST */}

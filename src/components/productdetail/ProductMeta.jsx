@@ -122,7 +122,7 @@ export default function ProductMeta({ product }) {
   ];
 
   return (
-    <section className="px-4 mt-20 text-gray-900">
+    <section className="px-4 mt-20 text-gray-900 gap-y-10">
       <div className="space-y-3">
         {sections.map((section, index) => (
           <div

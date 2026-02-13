@@ -66,7 +66,7 @@ export default function ProductDetailPage() {
         /> */}
       </CinematicScrollReveal>
       <CinematicScrollReveal>
-        <BestProducts />
+        <RelatedProducts activeTab={activeTab} />
       </CinematicScrollReveal>
 
       <CinematicScrollReveal>
