@@ -68,11 +68,6 @@ export default function AdminCreateProduct() {
 
   // 🔹 MAIN IMAGES UPLOAD
   const handleImagesUpload = async (files) => {
-    // Preview only
-    const previews = files.map((f) => URL.createObjectURL(f));
-    setPreviewImages((p) => [...p, ...previews]);
-
-    // Upload to UploadThing
     const upload = await startUpload(files);
 
     if (upload) {
@@ -193,7 +188,7 @@ export default function AdminCreateProduct() {
         />
 
         <div className="image-preview-box">
-          {[...previewImages, ...images].map((img, i) => (
+          {images.map((img, i) => (
             <div key={i} style={{ position: "relative" }}>
               <img src={img} className="preview-img" />
               <span
