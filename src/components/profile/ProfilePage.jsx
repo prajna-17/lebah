@@ -61,11 +61,11 @@ export default function ProfilePage() {
 
         {/* QUICK ACTIONS */}
         <div className="grid grid-cols-3 gap-4 mb-10">
+          onClick={() => router.push("/order-his")}
           <div className="bg-white rounded-2xl py-4 flex flex-col items-center gap-2 shadow-sm opacity-50">
             <Package size={20} />
             <p className="text-xs font-medium">Orders</p>
           </div>
-
           <button
             onClick={() => router.push("/wishlist")}
             className="bg-white rounded-2xl py-4 flex flex-col items-center gap-2 shadow-sm"
@@ -73,7 +73,6 @@ export default function ProfilePage() {
             <Heart size={20} className="text-[#0f243e]" />
             <p className="text-xs font-medium">Wishlist</p>
           </button>
-
           <button
             onClick={() => setOpenAddress(true)}
             className="bg-white rounded-2xl py-4 flex flex-col items-center gap-2 shadow-sm"
