@@ -58,7 +58,7 @@ export default function ProductSlider({ activeTab }) {
             {products.map((p) => (
               <div
                 key={p._id}
-                className="min-w-[180px] max-w-[220px] flex-shrink-0 cursor-pointer transition-all duration-200 ease-in-out active:scale-95"
+                className="min-w-[100px] max-w-[200px] flex-shrink-0 cursor-pointer transition-all duration-200 ease-in-out active:scale-95"
               >
                 {/* IMAGE CARD */}
                 <div className="relative rounded-xl overflow-hidden transition-all duration-200 active:scale-[0.98]">

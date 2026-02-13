@@ -10,6 +10,7 @@ import { addToCart } from "@/utils/cart";
 import { toggleWishlist, isInWishlist } from "@/utils/wishlist";
 import { createPortal } from "react-dom";
 import { SUPER_CATEGORY_MAP } from "@/utils/superCategoryMap";
+import { FiStar } from "react-icons/fi";
 
 export default function BestProducts({ activeTab }) {
   const { isLoggedIn } = useAuth();
@@ -81,105 +82,131 @@ export default function BestProducts({ activeTab }) {
       {/* ===== MAIN SECTION (UNCHANGED UI) ===== */}
       <section className="bg-white px-4 py-10">
         <div className="grid grid-cols-2 gap-5">
-          {products.map((p) => {
-            const variantId = `${p._id}-Default`;
-            const liked = likedMap[variantId];
+          {products.length === 0 ? (
+            <div className="col-span-2 flex flex-col items-center justify-center py-28 text-center">
+              {/* <div className="w-14 h-14 flex items-center justify-center rounded-full border border-gray-200 mb-6"> */}
+              {/* <FiStar size={26} className="text-gray-400" /> */}
+              {/* </div> */}
 
-            return (
-              <div
-                key={p._id}
-                onClick={() => router.push(`/products/${p._id}`)}
-                className="cursor-pointer relative transition-all duration-200 ease-in-out active:scale-95"
+              <h3 className="text-xl font-semibold text-[#0b1d36] tracking-wide">
+                No Best Sellers Yet
+              </h3>
+
+              <p className="text-sm text-gray-500 mt-3 max-w-sm leading-relaxed">
+                Our curated best-selling pieces will appear here once selected.
+                Discover our full collection in the meantime.
+              </p>
+
+              <button
+                onClick={() => router.push("/products")}
+                className="mt-8 border border-[#0b1d36] px-8 py-3 text-sm tracking-wide text-[#0b1d36] font-bold hover:bg-[#0b1d36] hover:text-white transition-all duration-300"
               >
-                {/* IMAGE */}
-                <div className="relative overflow-hidden transition-all duration-200 active:scale-[0.98]">
-                  <img
-                    src={p.images?.[0]}
-                    alt={p.title}
-                    className="h-[260px] w-full object-cover"
-                  />
+                Explore Collection
+              </button>
+            </div>
+          ) : (
+            products.map((p) => {
+              const variantId = `${p._id}-Default`;
+              const liked = likedMap[variantId];
 
-                  {/* ❤️ HEART */}
+              return (
+                <div
+                  key={p._id}
+                  onClick={() => router.push(`/products/${p._id}`)}
+                  className="cursor-pointer relative transition-all duration-200 ease-in-out active:scale-95"
+                >
+                  {/* IMAGE */}
+                  <div className="relative overflow-hidden transition-all duration-200 active:scale-[0.98]">
+                    <img
+                      src={p.images?.[0]}
+                      alt={p.title}
+                      className="h-[260px] w-full object-cover"
+                    />
+
+                    {/* ❤️ HEART */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!requireLogin()) return;
+
+                        toggleWishlist({
+                          variantId,
+                          productId: p._id,
+                          title: p.title,
+                          image: p.images?.[0],
+                          price: p.price,
+                          color: "Default",
+                        });
+
+                        showToast(
+                          liked ? "Removed from Wishlist" : "Added to Wishlist",
+                        );
+
+                        const heart = document.createElement("div");
+                        heart.innerHTML = "💙";
+                        heart.className = "pop-heart";
+                        e.currentTarget.appendChild(heart);
+                        setTimeout(() => heart.remove(), 700);
+
+                        setLikedMap((prev) => ({
+                          ...prev,
+                          [variantId]: !liked,
+                        }));
+
+                        const audio = new Audio("/sounds/pop.mp3");
+                        audio.volume = 0.6;
+                        audio.play();
+                      }}
+                      className="absolute top-2 right-2 bg-white w-8 h-8 rounded-full flex items-center justify-center shadow z-50"
+                      style={{ color: liked ? "#0b1b2f" : "#333" }}
+                    >
+                      <FiHeart size={18} fill={liked ? "#5b2d1f" : "none"} />
+                    </button>
+
+                    {/* PRICE OVERLAY */}
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 text-white">
+                      <p className="text-xs">{p.title}</p>
+                      <div className="mt-1 text-xs">
+                        ₹ {p.price}
+                        {p.oldPrice && (
+                          <span className="line-through ml-2 text-gray-300">
+                            ₹ {p.oldPrice}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ADD TO CART */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       if (!requireLogin()) return;
 
-                      toggleWishlist({
-                        variantId,
-                        productId: p._id,
-                        title: p.title,
-                        image: p.images?.[0],
-                        price: p.price,
-                        color: "Default",
-                      });
-
-                      showToast(
-                        liked ? "Removed from Wishlist" : "Added to Wishlist",
-                      );
-
-                      const heart = document.createElement("div");
-                      heart.innerHTML = "💙";
-                      heart.className = "pop-heart";
-                      e.currentTarget.appendChild(heart);
-                      setTimeout(() => heart.remove(), 700);
-
-                      setLikedMap((prev) => ({
-                        ...prev,
-                        [variantId]: !liked,
-                      }));
-
-                      const audio = new Audio("/sounds/pop.mp3");
-                      audio.volume = 0.6;
-                      audio.play();
+                      setActiveProduct(p);
+                      setSelectedSize(null);
+                      setShowVariantModal(true);
                     }}
-                    className="absolute top-2 right-2 bg-white w-8 h-8 rounded-full flex items-center justify-center shadow z-50"
-                    style={{ color: liked ? "#0b1b2f" : "#333" }}
+                    className="mt-2 w-full bg-[#0b1d36] py-3 text-sm text-white transition-all duration-150 active:scale-95"
                   >
-                    <FiHeart size={18} fill={liked ? "#5b2d1f" : "none"} />
+                    Add to cart
                   </button>
-
-                  {/* PRICE OVERLAY */}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 text-white">
-                    <p className="text-xs">{p.title}</p>
-                    <div className="mt-1 text-xs">
-                      ₹ {p.price}
-                      {p.oldPrice && (
-                        <span className="line-through ml-2 text-gray-300">
-                          ₹ {p.oldPrice}
-                        </span>
-                      )}
-                    </div>
-                  </div>
                 </div>
-
-                {/* ADD TO CART */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (!requireLogin()) return;
-
-                    setActiveProduct(p);
-                    setSelectedSize(null);
-                    setShowVariantModal(true);
-                  }}
-                  className="mt-2 w-full bg-[#0b1d36] py-3 text-sm text-white transition-all duration-150 active:scale-95"
-                >
-                  Add to cart
-                </button>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
 
-        <div className="mt-10 flex justify-center">
-          <button
-            onClick={() => router.push("/products")}
-            className="border border-black px-10 py-3 text-sm text-[#0b1d36]"
-          >
-            View All
-          </button>
-        </div>
+        {products.length > 0 && (
+          <div className="mt-10 flex justify-center">
+            <button
+              onClick={() => router.push("/products")}
+              className="border border-black px-10 py-3 text-sm text-[#0b1d36]"
+            >
+              View All
+            </button>
+          </div>
+        )}
 
         <LoginGate open={showLogin} onClose={() => setShowLogin(false)} />
       </section>

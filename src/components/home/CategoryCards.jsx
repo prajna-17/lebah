@@ -21,7 +21,7 @@ export default function CategoryCards({ activeTab }) {
   }, [activeTab]);
 
   return (
-    <section className="bg-white px-4 py-4">
+    <section className="bg-white px-4 py-6">
       {loading ? (
         <LuxuryLoader />
       ) : (

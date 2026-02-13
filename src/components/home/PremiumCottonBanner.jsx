@@ -10,7 +10,7 @@ export default function PremiumCottonBanner({ activeTab }) {
       <img
         src={activeTab === "women" ? "/img/bet.jpg" : "/img/precotton.jpeg"}
         className="
-          w-full h-[120px] object-cover
+          w-full h-[160px] object-cover
           cursor-pointer
           transition-transform duration-200
           active:scale-[0.97]

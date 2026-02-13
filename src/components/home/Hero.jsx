@@ -106,7 +106,7 @@ export default function Hero({ activeTab, setActiveTab }) {
   return (
     <section className="bg-white pt-6">
       {/* Search bar */}
-      <div className="px-4 mb-3">
+      <div className="px-4 mb-5 mt-4">
         <div className="relative">
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600" />
 
