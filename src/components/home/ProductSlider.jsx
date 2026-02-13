@@ -54,18 +54,18 @@ export default function ProductSlider({ activeTab }) {
         {loading ? (
           <LuxuryLoader />
         ) : (
-          <div className="flex gap-5 overflow-x-auto scrollbar-hide font-semibold">
+          <div className="flex gap-5 overflow-x-auto scrollbar-hide">
             {products.map((p) => (
               <div
                 key={p._id}
-                className="min-w-[220px] flex-shrink-0 cursor-pointer transition-all duration-200 ease-in-out active:scale-95"
+                className="min-w-[180px] max-w-[220px] flex-shrink-0 cursor-pointer transition-all duration-200 ease-in-out active:scale-95"
               >
                 {/* IMAGE CARD */}
                 <div className="relative rounded-xl overflow-hidden transition-all duration-200 active:scale-[0.98]">
                   <img
                     src={p.images?.[0]}
                     alt={p.title}
-                    className="h-[300px] w-full object-cover"
+                    className="w-full aspect-[4/5] object-cover"
                     onClick={() => {
                       // 🔥 detect color from image
                       const matchedColor =
