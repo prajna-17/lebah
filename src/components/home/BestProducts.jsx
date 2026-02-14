@@ -86,7 +86,7 @@ export default function BestProducts({ activeTab }) {
   return (
     <>
       {/* ===== MAIN SECTION (UNCHANGED UI) ===== */}
-      <section className="bg-white px-2 md:px-6 py-10 max-w-[1200px] mx-auto">
+      <section className="bg-white px-2 md:px-6 py-10 max-w-[1600px] mx-auto">
         <div className="grid grid-cols-2 gap-5">
           {products.length === 0 ? (
             <div className="col-span-2 flex flex-col items-center justify-center py-28 text-center">
@@ -131,7 +131,7 @@ export default function BestProducts({ activeTab }) {
                       <img
                         src={p.images?.[0]}
                         alt={p.title}
-                        className="h-[300px] w-full object-cover"
+                        className="h-[280px] w-full object-cover"
                       />
 
                       {/* Bottom Black Gradient Overlay */}
