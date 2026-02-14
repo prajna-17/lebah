@@ -126,11 +126,51 @@ export default function BestProducts({ activeTab }) {
                 >
                   {/* IMAGE */}
                   <div className="relative overflow-hidden transition-all duration-200 active:scale-[0.98]">
-                    <img
-                      src={p.images?.[0]}
-                      alt={p.title}
-                      className="h-[260px] w-full object-cover"
-                    />
+                    <div className="relative overflow-hidden">
+                      {/* Main Image */}
+                      <img
+                        src={p.images?.[0]}
+                        alt={p.title}
+                        className="h-[300px] w-full object-cover"
+                      />
+
+                      {/* Bottom Black Gradient Overlay */}
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 text-white">
+                        <div className="flex items-end gap-3">
+                          {/* Small Preview Image */}
+                          <img
+                            src={p.images?.[0]}
+                            alt="preview"
+                            className="w-12 h-12 object-cover rounded-md border border-white/30"
+                          />
+
+                          {/* Text Content */}
+                          <div className="flex-1">
+                            <p className="text-xs font-medium leading-tight">
+                              {p.title}
+                            </p>
+
+                            <div className="text-xs mt-1">
+                              ₹ {p.price}
+                              {p.oldPrice && (
+                                <span className="line-through ml-2 text-gray-300">
+                                  ₹ {p.oldPrice}
+                                </span>
+                              )}
+                            </div>
+
+                            {p.oldPrice && (
+                              <p className="text-green-500 text-xs font-semibold mt-1">
+                                {Math.round(
+                                  ((p.oldPrice - p.price) / p.oldPrice) * 100,
+                                )}
+                                % OFF
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
                     {/* ❤️ HEART */}
                     <button
