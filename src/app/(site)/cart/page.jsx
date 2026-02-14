@@ -7,9 +7,9 @@ export default function CartRoute() {
   return (
     <main>
       <CartPage />
-      <DeliveryInfo />
       <CartSummary />
       <RelatedProducts />
+      <DeliveryInfo />
     </main>
   );
 }
