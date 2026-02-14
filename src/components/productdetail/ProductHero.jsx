@@ -135,17 +135,20 @@ export default function ProductHero({ product }) {
             onClick={() =>
               requireLogin(() => {
                 toggleWishlist({
-                  // variantId,
+                  variantId,
                   productId: product._id,
                   title: product.title,
                   image: images[0],
                   price: product.price,
                   color: selectedColor,
+                  size: selectedSize || "Free",
                 });
-                setLiked((prev) => !prev);
+
+                const updatedState = isInWishlist(variantId);
+                setLiked(updatedState);
 
                 showToast(
-                  liked ? "Removed from Wishlist" : "Added to Wishlist",
+                  updatedState ? "Added to Wishlist" : "Removed from Wishlist",
                 );
 
                 const heart = document.createElement("div");
