@@ -80,7 +80,7 @@ export default function CartPage() {
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-24 h-40 object-cover rounded-md mx-auto"
+                  className="w-24 h-42 object-cover rounded-md mx-auto"
                 />
 
                 {/* QTY + WISHLIST (SAME ROW) */}
