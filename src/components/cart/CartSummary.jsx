@@ -34,7 +34,7 @@ export default function CartSummary() {
     <>
       {/* SUMMARY CARD */}
       <section className="px-4 mt-5 pb-28 text-gray-900">
-        <div className="bg-gray-300 rounded-2xl p-5 shadow-sm border border-gray-100">
+        <div className="bg-gray-200 rounded-2xl p-5 shadow-sm border border-gray-100">
           {/* COUPON */}
           <div className="flex items-center gap-2 mb-6">
             <div className="w-8 h-8 rounded-full bg-[#0f243e]/10 flex items-center justify-center">
