@@ -654,3 +654,57 @@ body.login-open {
 .animate-scaleIn {
   animation: scaleIn 0.25s ease-in-out;
 }
+.subcategory-box {
+  margin-top: 10px;
+  background: #f8f9fb;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.subcategory-header {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #1f2937;
+}
+
+.subcategory-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.subcategory-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.subcategory-item:hover {
+  background: #eef2ff;
+}
+
+.sub-delete-btn {
+  background: #fee2e2;
+  border: none;
+  color: #dc2626;
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.sub-delete-btn:hover {
+  background: #fecaca;
+}
+
+.no-sub {
+  font-size: 13px;
+  opacity: 0.6;
+}

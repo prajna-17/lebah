@@ -70,7 +70,7 @@ export default function FabricTabs() {
               className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap transition
         ${isActive ? "bg-[#0f243e] text-white" : "bg-gray-200 text-gray-700"}`}
             >
-              {sub.name}
+              {sub.name.charAt(0).toUpperCase() + sub.name.slice(1)}
             </button>
           );
         })}

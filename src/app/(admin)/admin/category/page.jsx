@@ -15,25 +15,41 @@ export default function AdminCategory() {
   const [subCategory, setSubCategory] = useState("");
   const [subCategoryId, setSubCategoryId] = useState(null);
   const [subCategories, setSubCategories] = useState([]); // list for modal
+  const [subMap, setSubMap] = useState({});
+  const [openDropdown, setOpenDropdown] = useState(null);
 
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   useEffect(() => {
-    if (!API) {
-      console.error("API URL not configured");
-      return;
-    }
+    if (!API) return;
 
-    fetch(`${API}/categories`)
-      .then((r) => r.json())
-      .then((d) => {
-        console.log("CATEGORY RESPONSE:", d);
-        setCategories(Array.isArray(d) ? d : d.data || []);
-      })
-      .catch((e) => {
-        console.error("Fetch error ❌", e);
-      });
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`${API}/categories`);
+        const data = await res.json();
+
+        const cats = data?.data || [];
+        setCategories(cats);
+        console.log("CATEGORIES:", cats);
+
+        const map = {};
+        for (const cat of cats) {
+          const subRes = await fetch(
+            `${API}/sub-categories?category=${cat._id}`,
+          );
+          const subsData = await subRes.json();
+          map[cat._id] = subsData?.data || subsData || [];
+          console.log("Fetching subs for:", cat._id);
+        }
+
+        setSubMap(map);
+      } catch (err) {
+        console.error("Fetch error ❌", err);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const [openModal, setOpenModal] = useState(false);
@@ -94,12 +110,69 @@ export default function AdminCategory() {
 
       <div className="category-grid">
         {filtered.map((cat) => (
-          <div key={cat._id} className="category-card">
+          <div key={cat._id} className="category-card text-gray-900">
             <img
               src={cat.image || "/img/placeholder.jpg"}
               className="category-img"
             />
             <div className="category-title">{cat.name}</div>
+            <div className="mt-2 mb-4 font-bold">
+              <button
+                onClick={() =>
+                  setOpenDropdown(openDropdown === cat._id ? null : cat._id)
+                }
+                className="w-full flex justify-between items-center bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200 transition"
+              >
+                <span className="text-sm font-bold text-gray-800 gap-3">
+                  Subcategories
+                </span>
+
+                <span className="text-xs bg-gray-300 px-2 py-1 rounded-full">
+                  {subMap[cat._id]?.length || 0}
+                </span>
+              </button>
+
+              {openDropdown === cat._id && (
+                <div className="mt-3 bg-white rounded-xl shadow-md p-3 flex flex-col gap-2 animate-fadeIn">
+                  {subMap[cat._id]?.length > 0 ? (
+                    subMap[cat._id].map((sub) => (
+                      <div
+                        key={sub._id}
+                        className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-lg hover:bg-gray-100 transition"
+                      >
+                        <span className="text-sm text-gray-700">
+                          {sub.name}
+                        </span>
+
+                        <button
+                          onClick={async () => {
+                            if (!confirm("Delete this subcategory?")) return;
+
+                            await fetch(`${API}/sub-categories/${sub._id}`, {
+                              method: "DELETE",
+                            });
+
+                            setSubMap((prev) => ({
+                              ...prev,
+                              [cat._id]: prev[cat._id].filter(
+                                (s) => s._id !== sub._id,
+                              ),
+                            }));
+                          }}
+                          className="text-xs font-medium px-3 py-1 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-sm text-gray-400 italic">
+                      No subcategories available
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             <div className="category-actions">
               <button
@@ -121,7 +194,7 @@ export default function AdminCategory() {
                     `${API}/sub-categories?category=${cat._id}`,
                   );
                   const subs = await subRes.json();
-                  setSubCategories(subs); // 🔥 store ALL
+                  setSubCategories(subs?.data || subs || []);
                   setSubCategory(""); // clear input
 
                   setOpenModal(true);
@@ -295,9 +368,7 @@ export default function AdminCategory() {
                     onClick={() =>
                       setSubCategories((p) => p.filter((_, i) => i !== index))
                     }
-                  >
-                    ✕
-                  </button>
+                  ></button>
                 </div>
               ))}
             </div>
@@ -391,6 +462,17 @@ export default function AdminCategory() {
                   }
 
                   setCategories((p) => [...p, cat]);
+                  // fetch subcategories again for this category
+                  const subRes = await fetch(
+                    `${API}/sub-categories?category=${cat._id}`,
+                  );
+                  const subs = await subRes.json();
+
+                  setSubMap((prev) => ({
+                    ...prev,
+                    [cat._id]: subs,
+                  }));
+
                   alert("Category created ✔");
                   setOpenModal(false);
                 } catch {
