@@ -14,7 +14,7 @@ export default function HelpModal({ open, onClose }) {
         <h2 className="text-lg font-semibold mb-3">Help & Support</h2>
         <p className="text-sm text-gray-600">Need help? Reach us at:</p>
 
-        <p className="mt-2 font-medium">📧 support@lebah.com</p>
+        <p className="mt-2 font-medium">📧 support@montoaklyn.com</p>
         <p className="text-sm text-gray-500 mt-1">
           We usually reply within 24 hours 🤍
         </p>
