@@ -86,7 +86,7 @@ export default function BestProducts({ activeTab }) {
   return (
     <>
       {/* ===== MAIN SECTION (UNCHANGED UI) ===== */}
-      <section className="bg-white px-2 md:px-6 py-10 max-w-[1600px] mx-auto">
+      <section className="bg-white px-2 md:px-6 py-10 max-w-[1300px] mx-auto">
         <div className="grid grid-cols-2 gap-5">
           {products.length === 0 ? (
             <div className="col-span-2 flex flex-col items-center justify-center py-28 text-center">
