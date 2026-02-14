@@ -33,24 +33,30 @@ export const removeFromWishlist = (variantId) => {
 export const toggleWishlist = (item) => {
   const wishlist = getWishlist();
 
-  const index = wishlist.findIndex((w) => w.variantId === item.variantId);
+  const color = item.color || "Default";
+  const size = item.size || "Free";
+
+  const variantId =
+    item.variantId || `${item.productId || item.id}-${color}-${size}`;
+
+  const index = wishlist.findIndex((w) => w.variantId === variantId);
 
   if (index > -1) {
     wishlist.splice(index, 1);
   } else {
     wishlist.push({
-      variantId: item.variantId,
+      variantId,
       productId: item.productId || item.id,
 
-      title: item.title, // ✅ FIXED
+      title: item.title,
       image: item.image,
 
       price: item.price,
-      oldPrice: item.oldPrice, // ✅ FIXED
+      oldPrice: item.oldPrice,
       discount: item.discount,
 
-      color: item.color,
-      size: item.size, // 🔥 THIS WAS MISSING
+      color,
+      size,
     });
   }
 

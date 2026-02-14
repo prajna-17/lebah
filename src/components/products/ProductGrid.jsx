@@ -44,7 +44,11 @@ export default function ProductGrid({ products = [] }) {
   useEffect(() => {
     const map = {};
     products.forEach((p) => {
-      const variantId = `${p._id}-Default`;
+      const defaultColor =
+        p.colorImages?.[0]?.color || p.colors?.[0] || "Default";
+      const defaultSize = p.sizes?.[0] || "Free";
+
+      const variantId = `${p._id}-${defaultColor}-${defaultSize}`;
       map[variantId] = isInWishlist(variantId);
     });
     setLikedMap(map);
@@ -111,7 +115,10 @@ export default function ProductGrid({ products = [] }) {
             className="grid grid-cols-2 gap-x-4 gap-y-8 px-4 mt-4 text-gray-900"
           >
             {visibleProducts.map((product) => {
-              const defaultColor = product.colorImages?.[0]?.color || "Default";
+              const defaultColor =
+                product.colorImages?.[0]?.color ||
+                product.colors?.[0] ||
+                "Default";
               const defaultSize = product.sizes?.[0] || "Free";
 
               const variantId = `${product._id}-${defaultColor}-${defaultSize}`;
@@ -139,7 +146,7 @@ export default function ProductGrid({ products = [] }) {
                         if (!requireLogin()) return;
 
                         toggleWishlist({
-                          variantId,
+                          // variantId,
                           productId: product._id,
                           title: product.title,
                           image: product.images?.[0],
@@ -152,8 +159,8 @@ export default function ProductGrid({ products = [] }) {
                                   100,
                               )
                             : null,
-                          color: product.colorImages?.[0]?.color || "Default",
-                          size: product.sizes?.[0] || null,
+                          color: defaultColor,
+                          size: product.sizes?.[0] || "Free",
                         });
 
                         showToast(
@@ -197,12 +204,12 @@ export default function ProductGrid({ products = [] }) {
 
                         addToCart({
                           productId: product._id,
-                          variantId,
+                          // variantId,
                           title: product.title,
                           image: product.images?.[0],
                           price: product.price,
                           oldPrice: product.oldPrice,
-                          color: "Default",
+                          color: defaultColor,
                           size: product.sizes?.[0] || "Default", // 🔥 THIS
                         });
 

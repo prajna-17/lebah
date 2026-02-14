@@ -50,7 +50,10 @@ export default function BestProducts({ activeTab }) {
 
         const map = {};
         bestSelling.forEach((p) => {
-          const variantId = `${p._id}-Default`;
+          const defaultColor =
+            p.colorImages?.[0]?.color || p.colors?.[0] || "Default";
+          const defaultSize = p.sizes?.[0] || "Free";
+          const variantId = `${p._id}-${defaultColor}-${defaultSize}`;
           map[variantId] = isInWishlist(variantId);
         });
         setLikedMap(map);
@@ -109,7 +112,10 @@ export default function BestProducts({ activeTab }) {
             </div>
           ) : (
             products.map((p) => {
-              const variantId = `${p._id}-Default`;
+              const defaultColor =
+                p.colorImages?.[0]?.color || p.colors?.[0] || "Default";
+              const defaultSize = p.sizes?.[0] || "Free";
+              const variantId = `${p._id}-${defaultColor}-${defaultSize}`;
               const liked = likedMap[variantId];
 
               return (
@@ -133,12 +139,13 @@ export default function BestProducts({ activeTab }) {
                         if (!requireLogin()) return;
 
                         toggleWishlist({
-                          variantId,
+                          // variantId,
                           productId: p._id,
                           title: p.title,
                           image: p.images?.[0],
                           price: p.price,
-                          color: "Default",
+                          color: defaultColor,
+                          size: p.sizes?.[0] || "Free",
                         });
 
                         showToast(
@@ -280,14 +287,19 @@ export default function BestProducts({ activeTab }) {
               <button
                 disabled={!selectedSize}
                 onClick={() => {
+                  const defaultColor =
+                    activeProduct.colorImages?.[0]?.color ||
+                    activeProduct.colors?.[0] ||
+                    "Default";
+
                   addToCart({
                     productId: activeProduct._id,
-                    variantId: `${activeProduct._id}-${selectedSize}`,
+                    // variantId: `${activeProduct._id}-${selectedSize}`,
                     title: activeProduct.title,
                     image: activeProduct.images?.[0],
                     price: activeProduct.price,
                     oldPrice: activeProduct.oldPrice,
-                    color: "Default",
+                    color: defaultColor,
                     size: selectedSize,
                   });
 

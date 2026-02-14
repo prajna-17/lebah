@@ -33,19 +33,19 @@ export default function ProductHero({ product }) {
   const [addedItem, setAddedItem] = useState(null);
 
   const images = activeImages.length ? activeImages : product.images || [];
-  const variantId = `${product._id}-${selectedColor}-${selectedSize}`;
+  const variantId = `${product._id}-${selectedColor}-${selectedSize || "Free"}`;
   useEffect(() => {
     if (!product) return;
 
-    // ALWAYS start with default product.images
     setActiveImages(product.images || []);
     setActiveImg(0);
 
-    // colorImages override ONLY when user clicks color
-    if (product.colorImages?.length > 0) {
-      setSelectedColor(product.colors?.[0] || "Default");
-    }
+    const defaultColor =
+      product.colorImages?.[0]?.color || product.colors?.[0] || "Default";
+
+    setSelectedColor(defaultColor);
   }, [product]);
+
   useEffect(() => {
     if (showSizeChart) {
       document.body.style.overflow = "hidden";
@@ -135,7 +135,7 @@ export default function ProductHero({ product }) {
             onClick={() =>
               requireLogin(() => {
                 toggleWishlist({
-                  variantId,
+                  // variantId,
                   productId: product._id,
                   title: product.title,
                   image: images[0],
@@ -364,7 +364,7 @@ export default function ProductHero({ product }) {
 
                   addToCart({
                     productId: product._id,
-                    variantId,
+                    // variantId,
                     title: product.title,
                     image:
                       product.colorImages?.find(

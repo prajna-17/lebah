@@ -28,7 +28,7 @@ export default function CartSummary() {
   }, 0);
 
   const tax = Math.round(subTotal * 0.02); // 2%
-  const orderTotal = subTotal - discount + tax;
+  const orderTotal = subTotal + tax;
 
   return (
     <>
@@ -61,14 +61,14 @@ export default function CartSummary() {
               <span>₹ {subTotal.toLocaleString("en-IN")}</span>
             </div>
 
-            {discount > 0 && (
+            {/* {discount > 0 && (
               <div className="flex justify-between">
                 <span className="text-gray-600">Discount</span>
                 <span className="text-green-600">
                   - ₹ {discount.toLocaleString("en-IN")}
                 </span>
               </div>
-            )}
+            )} */}
 
             <div className="flex justify-between">
               <span className="text-gray-600">Estimated Tax</span>

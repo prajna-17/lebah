@@ -153,12 +153,20 @@ export default function Sidebar({ open, onClose }) {
               )}
 
               <div className="border-t mt-2">
-                <MenuItem
-                  icon={LogOut}
-                  label="Logout"
-                  onClick={handleLogout}
-                  danger
-                />
+                {isLoggedIn ? (
+                  <MenuItem
+                    icon={LogOut}
+                    label="Logout"
+                    onClick={handleLogout}
+                    danger
+                  />
+                ) : (
+                  <MenuItem
+                    icon={User}
+                    label="Login"
+                    onClick={() => go("/login")}
+                  />
+                )}
               </div>
             </div>
           </aside>

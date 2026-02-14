@@ -34,9 +34,8 @@ export function AddressProvider({ children }) {
 
   /* CLEAR on logout */
   const clearAddress = () => {
-    if (storageKey) {
-      localStorage.removeItem(storageKey);
-    }
+    // DO NOT remove from localStorage
+    // Only clear state
     setAddressState(null);
   };
 

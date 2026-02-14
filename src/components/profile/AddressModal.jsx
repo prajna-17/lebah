@@ -1,8 +1,9 @@
 "use client";
 import { X, MapPin } from "lucide-react";
+import { useAddress } from "@/context/AddressContext";
 
 export default function AddressModal({ open, onClose }) {
-  const address = null; // later from backend
+  const { address } = useAddress();
 
   if (!open) return null;
 
@@ -21,7 +22,14 @@ export default function AddressModal({ open, onClose }) {
             No address saved yet
           </div>
         ) : (
-          <div>{/* show address */}</div>
+          <div className="space-y-2 text-sm">
+            <p className="font-semibold">{address.name}</p>
+            <p>{address.line1}</p>
+            <p>
+              {address.city}, {address.state} - {address.pincode}
+            </p>
+            <p>{address.phone}</p>
+          </div>
         )}
       </div>
     </div>

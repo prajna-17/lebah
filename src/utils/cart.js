@@ -21,8 +21,7 @@ export const addToCart = (product) => {
   const color = product.color || "Default";
   const size = product.size || "Free";
 
-  const variantId =
-    product.variantId || `${product.productId || product.id}-${color}-${size}`;
+  const variantId = `${product.productId || product.id}-${color}-${size}`;
 
   const oldPrice = product.oldPrice; // ✅ FROM DB
   const price = product.price;

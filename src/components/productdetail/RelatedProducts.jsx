@@ -33,7 +33,11 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
 
         const map = {};
         sliced.forEach((p) => {
-          const variantId = `${p._id}-Default`;
+          const defaultColor =
+            p.colorImages?.[0]?.color || p.colors?.[0] || "Default";
+          const defaultSize = p.sizes?.[0] || "Free";
+
+          const variantId = `${p._id}-${defaultColor}-${defaultSize}`;
           map[variantId] = isInWishlist(variantId);
         });
         setLikedMap(map);
@@ -82,7 +86,13 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
         {/* GRID */}
         <div className="grid grid-cols-2 gap-4">
           {products.map((p) => {
-            const variantId = `${p._id}-Default`;
+            const defaultColor =
+              p.colorImages?.[0]?.color || p.colors?.[0] || "Default";
+
+            const defaultSize = p.sizes?.[0] || "Free";
+
+            const variantId = `${p._id}-${defaultColor}-${defaultSize}`;
+
             const liked = likedMap[variantId];
 
             return (
@@ -110,7 +120,8 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
                           title: p.title,
                           image: p.images?.[0],
                           price: p.price,
-                          color: "Default",
+                          color: defaultColor,
+                          size: defaultSize,
                         });
 
                         showToast(
@@ -145,11 +156,12 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
                       requireLogin(() => {
                         addToCart({
                           productId: p._id,
-                          variantId,
+                          // variantId,
                           title: p.title,
                           image: p.images?.[0],
                           price: p.price,
-                          color: "Default",
+                          color: defaultColor,
+                          size: defaultSize,
                         });
 
                         const audio = new Audio("/sounds/pop.mp3");

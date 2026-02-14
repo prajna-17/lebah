@@ -162,6 +162,16 @@ export default function AddAddressPage() {
           <button
             className="flex-1 bg-[#0f1e3a] text-white py-3 font-medium"
             onClick={() => {
+              const emailKey = form.email?.trim().toLowerCase();
+
+              if (!emailKey) {
+                alert("Email is required");
+                return;
+              }
+
+              // Save in localStorage per email
+              localStorage.setItem(`address_${emailKey}`, JSON.stringify(form));
+
               setAddress(form);
               router.push("/checkout");
             }}

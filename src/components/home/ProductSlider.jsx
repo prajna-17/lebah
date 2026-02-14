@@ -178,13 +178,18 @@ export default function ProductSlider({ activeTab }) {
               <button
                 disabled={!selectedSize}
                 onClick={() => {
+                  const defaultColor =
+                    selectedProduct.colorImages?.[0]?.color ||
+                    selectedProduct.colors?.[0] ||
+                    "Default";
+
                   addToCart({
                     productId: selectedProduct._id,
-                    variantId: `${selectedProduct._id}-${selectedSize}`,
+                    // variantId: `${selectedProduct._id}-${defaultColor}-${selectedSize}`,
                     title: selectedProduct.title,
                     image: selectedProduct.images?.[0],
                     price: selectedProduct.price,
-                    color: "Default",
+                    color: defaultColor,
                     size: selectedSize,
                   });
 
