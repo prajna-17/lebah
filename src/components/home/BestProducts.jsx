@@ -141,7 +141,7 @@ export default function BestProducts({ activeTab }) {
                           <img
                             src={p.images?.[0]}
                             alt="preview"
-                            className="w-12 h-12 object-cover rounded-md border border-white/30"
+                            className="w-12 h-18 object-cover rounded-md border border-white/30"
                           />
 
                           {/* Text Content */}
@@ -214,7 +214,7 @@ export default function BestProducts({ activeTab }) {
                     </button>
 
                     {/* PRICE OVERLAY */}
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 text-white">
+                    {/* <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 text-white">
                       <p className="text-xs">{p.title}</p>
                       <div className="mt-1 text-xs">
                         ₹ {p.price}
@@ -224,7 +224,7 @@ export default function BestProducts({ activeTab }) {
                           </span>
                         )}
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* ADD TO CART */}
