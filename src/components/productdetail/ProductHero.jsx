@@ -142,6 +142,7 @@ export default function ProductHero({ product }) {
                   price: product.price,
                   color: selectedColor,
                 });
+                setLiked((prev) => !prev);
 
                 showToast(
                   liked ? "Removed from Wishlist" : "Added to Wishlist",
