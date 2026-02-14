@@ -1,6 +1,6 @@
 export default function DeliveryInfo() {
   return (
-    <section className="px-4 mt-20">
+    <section className="px-4 mt-20 mb-10">
       <div className="grid grid-cols-3 gap-4 text-center">
         {/* FREE SHIPPING */}
         <div className="flex flex-col items-center gap-2">

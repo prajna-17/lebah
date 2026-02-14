@@ -30,10 +30,16 @@ export default function ProductSlider({ activeTab }) {
   useEffect(() => {
     setLoading(true);
 
-    fetch(`${API}/products?superCategory=${SUPER_CATEGORY_MAP[activeTab]}`)
+    let url = `${API}/products`;
+
+    if (activeTab) {
+      url += `?superCategory=${SUPER_CATEGORY_MAP[activeTab]}`;
+    }
+
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
