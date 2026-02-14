@@ -64,7 +64,7 @@ export default function CartPage() {
           {cartItems.map((item) => (
             <div
               key={item.variantId}
-              className="bg-gray-100 rounded-lg p-4 flex gap-4 relative"
+              className="bg-gray-300 rounded-lg p-4 flex gap-4 relative"
             >
               {/* REMOVE */}
               <button
