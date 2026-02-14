@@ -20,6 +20,7 @@ import { useAddress } from "@/context/AddressContext";
 import { clearCart } from "@/utils/cart";
 import { clearWishlist } from "@/utils/wishlist";
 import { Shield } from "lucide-react";
+import LoginGate from "@/components/auth/LoginGate";
 
 export default function Sidebar({ open, onClose }) {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function Sidebar({ open, onClose }) {
   const { clearAddress } = useAddress();
 
   const [showLogoutMsg, setShowLogoutMsg] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   // 🔒 LOCK BODY SCROLL
   useEffect(() => {
@@ -164,7 +166,10 @@ export default function Sidebar({ open, onClose }) {
                   <MenuItem
                     icon={User}
                     label="Login"
-                    onClick={() => go("/login")}
+                    onClick={() => {
+                      onClose(); // close sidebar
+                      setShowLogin(true); // open modal
+                    }}
                   />
                 )}
               </div>
@@ -172,6 +177,7 @@ export default function Sidebar({ open, onClose }) {
           </aside>
         </>
       )}
+      <LoginGate open={showLogin} onClose={() => setShowLogin(false)} />
     </>
   );
 }
