@@ -109,11 +109,18 @@ export default function TrendingWeek({ activeTab }) {
                     alt={p.title}
                     className="w-full h-[300px] object-cover"
                   />
+                  {!p.inStock && (
+                    <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded">
+                      SOLD OUT
+                    </div>
+                  )}
 
                   {/* ❤️ WISHLIST */}
                   <button
+                    disabled={!p.inStock}
                     onClick={(e) => {
                       e.stopPropagation();
+                      if (!p.inStock) return;
                       if (!requireLogin()) return;
 
                       toggleWishlist({
@@ -122,10 +129,7 @@ export default function TrendingWeek({ activeTab }) {
                         title: p.title,
                         image: p.images?.[0],
                         price: p.price,
-                        color:
-                          p.colorImages?.[0]?.color ||
-                          p.colors?.[0] ||
-                          "Default",
+                        color: defaultColor,
                         size: p.sizes?.[0] || "Free",
                       });
 
@@ -144,9 +148,15 @@ export default function TrendingWeek({ activeTab }) {
                         [variantId]: !liked,
                       }));
                     }}
-                    className="absolute top-3 right-3 bg-white p-2 rounded-full shadow"
+                    className={`absolute top-3 right-3 p-2 rounded-full shadow transition
+    ${p.inStock ? "bg-white" : "bg-gray-200 opacity-50 cursor-not-allowed"}
+  `}
                   >
-                    <Heart size={16} fill={liked ? "#5b2d1f" : "none"} />
+                    <Heart
+                      size={16}
+                      fill={liked && p.inStock ? "#5b2d1f" : "none"}
+                      color={!p.inStock ? "#999" : "currentColor"}
+                    />
                   </button>
 
                   {/* OVERLAY */}
@@ -167,17 +177,25 @@ export default function TrendingWeek({ activeTab }) {
 
                 {/* ADD TO CART */}
                 <button
+                  disabled={!p.inStock}
                   onClick={(e) => {
                     e.stopPropagation();
+                    if (!p.inStock) return;
                     if (!requireLogin()) return;
 
                     setActiveProduct(p);
                     setSelectedSize(null);
                     setShowVariantModal(true);
                   }}
-                  className="w-full mt-4 py-3 bg-[#0f243e] text-white text-sm"
+                  className={`w-full mt-4 py-3 text-sm transition
+    ${
+      p.inStock
+        ? "bg-[#0f243e] text-white"
+        : "bg-gray-400 text-white cursor-not-allowed"
+    }
+  `}
                 >
-                  Add to cart
+                  {p.inStock ? "Add to cart" : "Sold Out"}
                 </button>
               </div>
             );

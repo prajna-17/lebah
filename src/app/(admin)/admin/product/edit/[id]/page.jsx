@@ -307,6 +307,21 @@ export default function EditProductPage() {
           onChange={(e) => setSizes(e.target.value)}
           placeholder="Sizes (S,M,L)"
         />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginTop: 10,
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={inStock}
+            onChange={(e) => setInStock(e.target.checked)}
+          />
+          <label>In Stock</label>
+        </div>
 
         <button className="primary-btn create-btn" onClick={updateProduct}>
           Update Product

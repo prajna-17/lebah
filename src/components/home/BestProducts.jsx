@@ -133,6 +133,11 @@ export default function BestProducts({ activeTab }) {
                         alt={p.title}
                         className="h-[280px] w-full object-cover"
                       />
+                      {!p.inStock && (
+                        <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded">
+                          SOLD OUT
+                        </div>
+                      )}
 
                       {/* Bottom Black Gradient Overlay */}
                       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 text-white">
@@ -174,12 +179,14 @@ export default function BestProducts({ activeTab }) {
 
                     {/* ❤️ HEART */}
                     <button
+                      disabled={!p.inStock}
                       onClick={(e) => {
                         e.stopPropagation();
+
+                        if (!p.inStock) return; // 🚫 block if sold out
                         if (!requireLogin()) return;
 
                         toggleWishlist({
-                          // variantId,
                           productId: p._id,
                           title: p.title,
                           image: p.images?.[0],
@@ -207,10 +214,19 @@ export default function BestProducts({ activeTab }) {
                         audio.volume = 0.6;
                         audio.play();
                       }}
-                      className="absolute top-2 right-2 bg-white w-8 h-8 rounded-full flex items-center justify-center shadow z-50"
-                      style={{ color: liked ? "#0b1b2f" : "#333" }}
+                      className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow z-50 transition
+    ${
+      p.inStock
+        ? "bg-white hover:scale-105"
+        : "bg-gray-200 opacity-50 cursor-not-allowed"
+    }
+  `}
                     >
-                      <FiHeart size={18} fill={liked ? "#5b2d1f" : "none"} />
+                      <FiHeart
+                        size={18}
+                        fill={liked && p.inStock ? "#5b2d1f" : "none"}
+                        color={!p.inStock ? "#999" : "#333"}
+                      />
                     </button>
 
                     {/* PRICE OVERLAY */}
@@ -229,17 +245,21 @@ export default function BestProducts({ activeTab }) {
 
                   {/* ADD TO CART */}
                   <button
+                    disabled={!p.inStock}
                     onClick={(e) => {
                       e.stopPropagation();
                       if (!requireLogin()) return;
+
+                      if (!p.inStock) return;
 
                       setActiveProduct(p);
                       setSelectedSize(null);
                       setShowVariantModal(true);
                     }}
-                    className="mt-2 w-full bg-[#0b1d36] py-3 text-sm text-white transition-all duration-150 active:scale-95"
+                    className={`mt-2 w-full py-3 text-sm text-white transition-all duration-150 active:scale-95 
+  ${p.inStock ? "bg-[#0b1d36]" : "bg-gray-400 cursor-not-allowed"}`}
                   >
-                    Add to cart
+                    {p.inStock ? "Add to cart" : "Sold Out"}
                   </button>
                 </div>
               );

@@ -86,6 +86,11 @@ export default function ProductSlider({ activeTab }) {
                       );
                     }}
                   />
+                  {!p.inStock && (
+                    <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded">
+                      SOLD OUT
+                    </div>
+                  )}
 
                   {/* RATING */}
                   <div className="absolute bottom-3 left-3 bg-white px-2 py-1 rounded-md text-mid text-gray-800 flex items-center gap-1 font-semibold">
@@ -95,8 +100,10 @@ export default function ProductSlider({ activeTab }) {
 
                   {/* CART ICON */}
                   <button
+                    disabled={!p.inStock}
                     onClick={(e) => {
                       e.stopPropagation();
+                      if (!p.inStock) return; // 🚫 block if sold out
                       if (!requireLogin()) return;
 
                       fetch(`${API}/products/${p._id}`)
@@ -106,9 +113,14 @@ export default function ProductSlider({ activeTab }) {
                           setSelectedSize(null);
                         });
                     }}
-                    className="absolute bottom-3 right-3 bg-white w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150 active:scale-90"
+                    className={`absolute bottom-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150 active:scale-90
+    ${p.inStock ? "bg-white" : "bg-gray-200 opacity-50 cursor-not-allowed"}
+  `}
                   >
-                    <FiShoppingCart size={18} className="text-[#0f243e]" />
+                    <FiShoppingCart
+                      size={18}
+                      className={p.inStock ? "text-[#0f243e]" : "text-gray-400"}
+                    />
                   </button>
                 </div>
 

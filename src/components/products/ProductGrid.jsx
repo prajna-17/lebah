@@ -138,15 +138,21 @@ export default function ProductGrid({ products = [] }) {
                       alt={product.title}
                       className="w-full h-full object-cover"
                     />
+                    {!product.inStock && (
+                      <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded">
+                        SOLD OUT
+                      </div>
+                    )}
 
                     {/* ❤️ WISHLIST */}
                     <button
+                      disabled={!product.inStock}
                       onClick={(e) => {
-                        e.stopPropagation(); // 🔥 prevent navigation
+                        e.stopPropagation();
+                        if (!product.inStock) return;
                         if (!requireLogin()) return;
 
                         toggleWishlist({
-                          // variantId,
                           productId: product._id,
                           title: product.title,
                           image: product.images?.[0],
@@ -182,9 +188,17 @@ export default function ProductGrid({ products = [] }) {
                         audio.volume = 0.6;
                         audio.play();
                       }}
-                      className="absolute top-2 right-2 bg-white p-1.5 rounded-full shadow"
+                      className={`absolute top-2 right-2 p-1.5 rounded-full shadow transition
+    ${
+      product.inStock ? "bg-white" : "bg-gray-200 opacity-50 cursor-not-allowed"
+    }
+  `}
                     >
-                      <Heart size={16} fill={liked ? "#5b2d1f" : "none"} />
+                      <Heart
+                        size={16}
+                        fill={liked && product.inStock ? "#5b2d1f" : "none"}
+                        color={!product.inStock ? "#999" : "currentColor"}
+                      />
                     </button>
 
                     {/* RATING */}
@@ -198,19 +212,20 @@ export default function ProductGrid({ products = [] }) {
 
                     {/* 🛒 CART */}
                     <button
+                      disabled={!product.inStock}
                       onClick={(e) => {
-                        e.stopPropagation(); // 🔥 prevent navigation
+                        e.stopPropagation();
+                        if (!product.inStock) return;
                         if (!requireLogin()) return;
 
                         addToCart({
                           productId: product._id,
-                          // variantId,
                           title: product.title,
                           image: product.images?.[0],
                           price: product.price,
                           oldPrice: product.oldPrice,
                           color: defaultColor,
-                          size: product.sizes?.[0] || "Default", // 🔥 THIS
+                          size: product.sizes?.[0] || "Default",
                         });
 
                         const audio = new Audio("/sounds/pop.mp3");
@@ -232,9 +247,18 @@ export default function ProductGrid({ products = [] }) {
                             ?.classList.remove("cart-bounce");
                         }, 600);
                       }}
-                      className="absolute bottom-3 right-2 bg-white p-1.5 rounded-full shadow"
+                      className={`absolute bottom-3 right-2 p-1.5 rounded-full shadow transition
+    ${
+      product.inStock ? "bg-white" : "bg-gray-200 opacity-50 cursor-not-allowed"
+    }
+  `}
                     >
-                      <ShoppingCart size={16} />
+                      <ShoppingCart
+                        size={16}
+                        className={
+                          product.inStock ? "text-black" : "text-gray-400"
+                        }
+                      />
                     </button>
                   </div>
 

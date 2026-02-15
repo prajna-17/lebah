@@ -108,11 +108,19 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
                     alt={p.title}
                     className="w-full h-[230px] object-cover"
                   />
+                  {!p.inStock && (
+                    <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded">
+                      SOLD OUT
+                    </div>
+                  )}
 
                   {/* ❤️ WISHLIST */}
                   <button
+                    disabled={!p.inStock}
                     onClick={(e) => {
                       e.stopPropagation();
+                      if (!p.inStock) return;
+
                       requireLogin(() => {
                         toggleWishlist({
                           variantId,
@@ -123,7 +131,6 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
                           color: defaultColor,
                           size: defaultSize,
                         });
-
                         showToast(
                           liked ? "Removed from Wishlist" : "Added to Wishlist",
                         );
@@ -144,19 +151,27 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
                         audio.play();
                       });
                     }}
-                    className="absolute top-2 right-2 bg-white p-1.5 rounded-full shadow"
+                    className={`absolute top-2 right-2 p-1.5 rounded-full shadow transition
+    ${p.inStock ? "bg-white" : "bg-gray-200 opacity-50 cursor-not-allowed"}
+  `}
                   >
-                    <Heart size={16} fill={liked ? "#5b2d1f" : "none"} />
+                    <Heart
+                      size={16}
+                      fill={liked && p.inStock ? "#5b2d1f" : "none"}
+                      color={!p.inStock ? "#999" : "currentColor"}
+                    />
                   </button>
 
                   {/* 🛒 CART */}
                   <button
+                    disabled={!p.inStock}
                     onClick={(e) => {
                       e.stopPropagation();
+                      if (!p.inStock) return;
+
                       requireLogin(() => {
                         addToCart({
                           productId: p._id,
-                          // variantId,
                           title: p.title,
                           image: p.images?.[0],
                           price: p.price,
@@ -184,9 +199,14 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
                         }, 600);
                       });
                     }}
-                    className="absolute bottom-2 right-2 bg-white p-1.5 rounded-full shadow"
+                    className={`absolute bottom-2 right-2 p-1.5 rounded-full shadow transition
+    ${p.inStock ? "bg-white" : "bg-gray-200 opacity-50 cursor-not-allowed"}
+  `}
                   >
-                    <ShoppingCart size={16} />
+                    <ShoppingCart
+                      size={16}
+                      className={p.inStock ? "text-black" : "text-gray-400"}
+                    />
                   </button>
 
                   {/* RATING */}

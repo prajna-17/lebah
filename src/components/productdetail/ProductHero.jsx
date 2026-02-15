@@ -119,6 +119,11 @@ export default function ProductHero({ product }) {
                   src={img}
                   className="w-full h-[550px] md:h-[520px] object-cover"
                 />
+                {!product.inStock && (
+                  <div className="absolute top-4 left-4 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded z-20">
+                    SOLD OUT
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -132,8 +137,11 @@ export default function ProductHero({ product }) {
 
           {/* ❤️ WISHLIST */}
           <button
+            disabled={!product.inStock}
             onClick={() =>
               requireLogin(() => {
+                if (!product.inStock) return;
+
                 toggleWishlist({
                   variantId,
                   productId: product._id,
@@ -162,12 +170,16 @@ export default function ProductHero({ product }) {
                 audio.play();
               })
             }
-            className="absolute top-16 right-4 bg-white p-2 rounded-md shadow"
+            className={`absolute top-16 right-4 p-2 rounded-md shadow transition
+    ${
+      product.inStock ? "bg-white" : "bg-gray-200 opacity-50 cursor-not-allowed"
+    }
+  `}
           >
             <Heart
               size={18}
-              fill={liked ? "#5b2d1f" : "none"}
-              className="text-[#0f243e]"
+              fill={liked && product.inStock ? "#5b2d1f" : "none"}
+              className={product.inStock ? "text-[#0f243e]" : "text-gray-400"}
             />
           </button>
 
@@ -318,8 +330,10 @@ export default function ProductHero({ product }) {
           {/* ACTION BUTTONS */}
           <div className="flex gap-4 mt-9">
             <button
+              disabled={!product.inStock}
               onClick={() =>
                 requireLogin(() => {
+                  if (!product.inStock) return;
                   if (!selectedSize) {
                     alert("Please select a size");
                     return;
@@ -340,35 +354,36 @@ export default function ProductHero({ product }) {
                     quantity: 1,
                   };
 
-                  // Store temporarily for checkout
                   localStorage.setItem(
                     "buyNowItem",
                     JSON.stringify(buyNowItem),
                   );
-
                   router.push("/checkout?type=buyNow");
                 })
               }
-              className="flex-1 border border-[#0f243e] py-3 font-medium"
+              className={`flex-1 py-3 font-medium transition
+    ${
+      product.inStock
+        ? "border border-[#0f243e]"
+        : "bg-gray-300 text-gray-600 cursor-not-allowed"
+    }
+  `}
             >
-              Buy Now
+              {product.inStock ? "Buy Now" : "Sold Out"}
             </button>
 
             <button
+              disabled={!product.inStock}
               onClick={() =>
                 requireLogin(() => {
+                  if (!product.inStock) return;
                   if (!selectedSize) {
                     alert("Please select a size");
                     return;
                   }
-                  console.log("ADDING TO CART 👉", {
-                    size: selectedSize,
-                    color: selectedColor,
-                  });
 
                   addToCart({
                     productId: product._id,
-                    // variantId,
                     title: product.title,
                     image:
                       product.colorImages?.find(
@@ -377,7 +392,7 @@ export default function ProductHero({ product }) {
                     price: product.price,
                     oldPrice: product.oldPrice,
                     color: selectedColor,
-                    size: selectedSize, // 🔥 THIS FIXES CART SIZE
+                    size: selectedSize,
                   });
 
                   const audio = new Audio("/sounds/pop.mp3");
@@ -400,9 +415,15 @@ export default function ProductHero({ product }) {
                   }, 600);
                 })
               }
-              className="flex-1 bg-[#0f243e] text-white py-3 font-medium"
+              className={`flex-1 py-3 font-medium transition
+    ${
+      product.inStock
+        ? "bg-[#0f243e] text-white"
+        : "bg-gray-400 text-white cursor-not-allowed"
+    }
+  `}
             >
-              Add To Cart
+              {product.inStock ? "Add To Cart" : "Sold Out"}
             </button>
           </div>
         </div>
