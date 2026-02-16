@@ -22,13 +22,18 @@ export default function CartSummary() {
   // 🧮 CALCULATIONS
   const subTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  const discount = cart.reduce((sum, item) => {
-    if (!item.oldPrice) return sum;
-    return sum + (item.oldPrice - item.price) * item.qty;
-  }, 0);
+  const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  let discountPercentage = 0;
+
+  if (totalQty === 2) discountPercentage = 5;
+  else if (totalQty === 3) discountPercentage = 10;
+  else if (totalQty >= 4) discountPercentage = 15;
+
+  const discount = Math.round((subTotal * discountPercentage) / 100);
 
   const tax = Math.round(subTotal * 0.02); // 2%
-  const orderTotal = subTotal + tax;
+  const orderTotal = subTotal - discount;
 
   return (
     <>
@@ -70,10 +75,10 @@ export default function CartSummary() {
               </div>
             )} */}
 
-            <div className="flex justify-between">
+            {/* <div className="flex justify-between">
               <span className="text-gray-600">Estimated Tax</span>
               <span>₹ {tax.toLocaleString("en-IN")}</span>
-            </div>
+            </div> */}
 
             <div className="flex justify-between">
               <span className="text-gray-600">Delivery Charge</span>

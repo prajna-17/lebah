@@ -110,7 +110,7 @@ export default function ProfilePage() {
             <ChevronRight size={18} />
           </button>
 
-          <button
+          {/* <button
             onClick={() => setOpenSettings(true)}
             className="w-full flex items-center justify-between px-5 py-4"
           >
@@ -119,7 +119,7 @@ export default function ProfilePage() {
               <span className="text-sm">Settings</span>
             </div>
             <ChevronRight size={18} />
-          </button>
+          </button> */}
 
           <button
             onClick={() => setOpenHelp(true)}

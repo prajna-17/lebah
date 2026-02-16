@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { useAuth } from "@/components/auth/AuthContext";
 import { API } from "@/utils/api";
+import { Truck } from "lucide-react";
 
 export default function OrderDetailsPage() {
   const { isLoggedIn } = useAuth();
@@ -221,6 +222,12 @@ export default function OrderDetailsPage() {
           Cancel Order
         </button>
       )}
+      <button
+        onClick={() => router.push(`/order-track/${order._id}`)}
+        className="w-full mt-10 bg-[#0f1e3a] text-white py-4 rounded-lg flex items-center justify-center gap-2 font-medium"
+      >
+        <Truck size={18} /> TRACK ORDER
+      </button>
 
       {showCancel && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-6">

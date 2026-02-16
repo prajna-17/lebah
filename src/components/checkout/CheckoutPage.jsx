@@ -18,15 +18,19 @@ export default function CheckoutPage() {
   const [cart, setCart] = useState([]);
   const subTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  const rawDiscount = cart.reduce((sum, item) => {
-    if (!item.oldPrice) return sum;
-    return sum + (item.oldPrice - item.price) * item.qty;
-  }, 0);
+  const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
 
-  const discount = Math.min(rawDiscount, 100);
+  let discountPercentage = 0;
 
-  const tax = Math.round(subTotal * 0.02); // 2%
-  const grandTotal = subTotal - discount + tax;
+  if (totalQty === 2) discountPercentage = 5;
+  else if (totalQty === 3) discountPercentage = 10;
+  else if (totalQty >= 4) discountPercentage = 15;
+
+  const discount = Math.round((subTotal * discountPercentage) / 100);
+
+  const tax = 0;
+  const grandTotal = subTotal - discount;
+
   const today = new Date();
 
   const addDays = (date, days) => {
@@ -45,6 +49,7 @@ export default function CheckoutPage() {
   const endDate = addDays(today, 10);
 
   const arrivalText = `${formatDate(startDate)} to ${formatDate(endDate)}`;
+  const [showOfferModal, setShowOfferModal] = useState(false);
 
   useEffect(() => {
     const load = () => setCart(getCart());
@@ -111,7 +116,10 @@ export default function CheckoutPage() {
           )}
 
           {/* OFFERS */}
-          <div className="bg-white rounded-2xl px-5 py-5 flex items-center justify-between shadow-[0_10px_25px_rgba(0,0,0,0.15)]">
+          <div
+            onClick={() => setShowOfferModal(true)}
+            className="bg-white rounded-2xl px-5 py-5 flex items-center justify-between shadow-[0_10px_25px_rgba(0,0,0,0.15)] cursor-pointer"
+          >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-[#0f1e3a]/10 flex items-center justify-center">
                 <Percent className="text-[#0f1e3a] text-xl" />
@@ -226,7 +234,7 @@ export default function CheckoutPage() {
                 <img src="/img/cod.png" className="h-6" alt="cod" />
                 <span className="text-sm text-gray-700">Cash On Delivery</span>
               </div>
-              <input type="radio" name="more" />
+              <input type="radio" name="more" defaultChecked />
             </div>
           </div>
         </div>
@@ -387,6 +395,27 @@ export default function CheckoutPage() {
       {showAddressError && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#0b1b2f] text-white px-5 py-3 rounded-xl shadow-lg animate-fadeIn">
           Please add your delivery address to continue
+        </div>
+      )}
+
+      {showOfferModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md text-center">
+            <h3 className="text-lg font-semibold mb-4">Combo Offer</h3>
+            <p className="mb-2">Buy 2 items → 5% OFF</p>
+            <p className="mb-2">Buy 3 items → 10% OFF</p>
+            <p className="mb-2">Buy 4+ items → 15% OFF</p>
+            <p className="text-sm text-gray-500 mt-3">
+              Discount is applied automatically at checkout.
+            </p>
+
+            <button
+              onClick={() => setShowOfferModal(false)}
+              className="mt-5 bg-[#0f1e3a] text-white px-6 py-2 rounded-lg"
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
     </div>
