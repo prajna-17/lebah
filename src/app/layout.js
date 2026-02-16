@@ -6,6 +6,12 @@ const lato = Lato({
   weight: ["300", "400", "700", "900"],
 });
 
+export const metadata = {
+  title: "Montoaklyn",
+  description: "Luxury Clothing & Perfumes",
+  metadataBase: new URL("https://montoaklyn.in"),
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">

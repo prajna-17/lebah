@@ -55,7 +55,7 @@ export default function Header() {
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
             <img
               src="/img/montoaklynlogo1.png"
-              alt="Lebah"
+              alt="Montoaklyn"
               className="h-12 object-contain cursor-pointer"
             />
           </Link>

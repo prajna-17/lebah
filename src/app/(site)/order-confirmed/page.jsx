@@ -48,7 +48,7 @@ export default function OrderConfirmedPage() {
       year: "numeric",
     });
 
-  const shareText = `I just placed an order with Lebah! 🛍️
+  const shareText = `I just placed an order with Montoaklyn! 🛍️
 Order ${orderNumber}
 Total ₹${subTotal.toLocaleString("en-IN")}`;
 
@@ -119,7 +119,7 @@ Total ₹${subTotal.toLocaleString("en-IN")}`;
             if (typeof document === "undefined") return;
 
             const invoice = `
-Lebah - Invoice
+Montoaklyn - Invoice
 
 Order Number: ${orderNumber}
 Total Amount: ₹ ${grandTotal}
@@ -133,7 +133,7 @@ ${items
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
-            link.download = "Lebah-Invoice.txt";
+            link.download = "Montoaklyn-Invoice.txt";
             link.click();
             URL.revokeObjectURL(url);
           }}

@@ -76,7 +76,7 @@ export default function Footer() {
       <div className="mt-10 pb-8 flex justify-center">
         <img
           src="/img/montoaklynlogo1.png"
-          alt="Lebah"
+          alt="Montoaklyn"
           className="h-8 object-contain"
         />
       </div>
