@@ -12,6 +12,7 @@ import { API } from "@/utils/api";
 export default function CheckoutPage() {
   const [openSummary, setOpenSummary] = useState(false);
   const [showAddressError, setShowAddressError] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("COD");
 
   const router = useRouter();
   const { address } = useAddress();
@@ -57,6 +58,17 @@ export default function CheckoutPage() {
 
     window.addEventListener("cart-updated", load);
     return () => window.removeEventListener("cart-updated", load);
+  }, []);
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
 
   return (
@@ -209,33 +221,35 @@ export default function CheckoutPage() {
         {/* </div> */}
 
         {/* MORE OPTIONS */}
-        <div className="space-y-4">
-          {/* <h3 className="text-lg font-semibold">More Payment Options</h3> */}
-
-          <div className="bg-white rounded-2xl p-4 shadow-[0_10px_25px_rgba(0,0,0,0.15)] space-y-3">
-            {/* <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
-              <div className="flex items-center gap-3">
-                <img src="/img/wallet.png" className="h-6" alt="wallet" />
-                <span className="text-sm text-gray-700">Wallet</span>
-              </div>
-              <FiChevronRight />
-            </div> */}
-
-            {/* <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
-              <div className="flex items-center gap-3">
-                <img src="/img/bank.png" className="h-6" alt="bank" />
-                <span className="text-sm text-gray-700">Net Banking</span>
-              </div>
-              <FiChevronRight />
-            </div> */}
-
-            <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
-              <div className="flex items-center gap-3">
-                <img src="/img/cod.png" className="h-6" alt="cod" />
-                <span className="text-sm text-gray-700">Cash On Delivery</span>
-              </div>
-              <input type="radio" name="more" defaultChecked />
+        <div className="space-y-3">
+          {/* COD */}
+          <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
+            <div className="flex items-center gap-3">
+              <img src="/img/cod.png" className="h-6" alt="cod" />
+              <span className="text-sm text-gray-700">Cash On Delivery</span>
             </div>
+            <input
+              type="radio"
+              name="payment"
+              checked={paymentMethod === "COD"}
+              onChange={() => setPaymentMethod("COD")}
+            />
+          </div>
+
+          {/* ONLINE PAYMENT */}
+          <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-4">
+            <div className="flex items-center gap-3">
+              {/* <img src="/img/upi.png" className="h-6" alt="online" /> */}
+              <span className="text-sm text-gray-700">
+                Online Payment (UPI / Card)
+              </span>
+            </div>
+            <input
+              type="radio"
+              name="payment"
+              checked={paymentMethod === "ONLINE"}
+              onChange={() => setPaymentMethod("ONLINE")}
+            />
           </div>
         </div>
 
@@ -349,39 +363,91 @@ export default function CheckoutPage() {
               };
 
               try {
-                const res = await fetch(`${API}/orders/create-cod`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                  },
-                  body: JSON.stringify({ products, shippingAddress }),
-                });
+                if (paymentMethod === "COD") {
+                  const res = await fetch(`${API}/orders/create-cod`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ products, shippingAddress }),
+                  });
 
-                const data = await res.json();
+                  const data = await res.json();
 
-                if (!res.ok) {
-                  alert(data.message || "Order failed");
-                  return;
+                  if (!res.ok) {
+                    alert(data.message || "Order failed");
+                    return;
+                  }
+
+                  localStorage.setItem(
+                    "lastOrder",
+                    JSON.stringify({
+                      orderNumber: data.data.orderId,
+                      items: cart,
+                      subTotal,
+                      discount,
+                      tax,
+                      grandTotal,
+                      arrivalText,
+                      paymentMethod: "COD",
+                    }),
+                  );
+
+                  clearCart();
+                  window.dispatchEvent(new Event("cart-updated"));
+                  router.push("/order-confirmed");
+                } else {
+                  const orderRes = await fetch(`${API}/razorpay/create-order`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ amount: grandTotal }),
+                  });
+
+                  const orderData = await orderRes.json();
+
+                  if (!orderRes.ok || !orderData.success) {
+                    alert("Failed to initiate payment");
+                    return;
+                  }
+
+                  const { order } = orderData;
+                  console.log(
+                    "Razorpay Key:",
+                    process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                  );
+                  console.log("Order ID:", order.id);
+                  console.log("Amount:", order.amount);
+
+                  const options = {
+                    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                    amount: order.amount,
+                    currency: "INR",
+                    name: "Lebah",
+                    description: "Order Payment",
+                    order_id: order.id,
+                    handler: function () {
+                      alert("Payment Successful 🎉");
+
+                      clearCart();
+                      window.dispatchEvent(new Event("cart-updated"));
+                      router.push("/order-confirmed");
+                    },
+                    prefill: {
+                      name: address.name,
+                      email: address.email,
+                      contact: address.phone,
+                    },
+                    theme: {
+                      color: "#0f1e3a",
+                    },
+                  };
+
+                  const rzp = new window.Razorpay(options);
+                  rzp.open();
                 }
-
-                localStorage.setItem(
-                  "lastOrder",
-                  JSON.stringify({
-                    orderNumber: data.data.orderId,
-                    items: cart,
-                    subTotal,
-                    discount,
-                    tax,
-                    grandTotal,
-                    arrivalText,
-                    paymentMethod: "COD",
-                  }),
-                );
-
-                clearCart();
-                window.dispatchEvent(new Event("cart-updated"));
-                router.push("/order-confirmed");
               } catch (err) {
                 alert("Something went wrong. Please try again.");
               }
