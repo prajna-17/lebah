@@ -425,16 +425,57 @@ export default function CheckoutPage() {
                     key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                     amount: order.amount,
                     currency: "INR",
-                    name: "Lebah",
+                    name: "Montoaklyn",
                     description: "Order Payment",
                     order_id: order.id,
-                    handler: function () {
-                      alert("Payment Successful 🎉");
+                    handler: async function (response) {
+                      try {
+                        const token = localStorage.getItem("lebah-token");
 
-                      clearCart();
-                      window.dispatchEvent(new Event("cart-updated"));
-                      router.push("/order-confirmed");
+                        const verifyRes = await fetch(
+                          `${API}/orders/create-pending`,
+                          {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                              Authorization: `Bearer ${token}`,
+                            },
+                            body: JSON.stringify({
+                              products,
+                              shippingAddress,
+                            }),
+                          },
+                        );
+
+                        const verifyData = await verifyRes.json();
+
+                        if (!verifyRes.ok) {
+                          alert("Order saving failed");
+                          return;
+                        }
+
+                        localStorage.setItem(
+                          "lastOrder",
+                          JSON.stringify({
+                            orderNumber: verifyData.data.orderId,
+                            items: cart,
+                            subTotal,
+                            discount,
+                            tax,
+                            grandTotal,
+                            arrivalText,
+                            paymentMethod: "ONLINE",
+                          }),
+                        );
+
+                        clearCart();
+                        window.dispatchEvent(new Event("cart-updated"));
+                        router.push("/order-confirmed");
+                      } catch (err) {
+                        alert("Something went wrong after payment");
+                      }
                     },
+
                     prefill: {
                       name: address.name,
                       email: address.email,
