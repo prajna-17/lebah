@@ -41,7 +41,7 @@ export default function Header() {
       <header className="w-full sticky top-0 z-[9999]">
         {/* Offer strip */}
         <div className="bg-white text-center py-1 text-xs font-semibold text-black border-b">
-          BUY 2 GET 5% OFF | BUY 3 GET 10% OFF | BUY 4+ GET 15% OFF
+          Combo Offer: Buy More, Save More
         </div>
 
         {/* Main header */}
