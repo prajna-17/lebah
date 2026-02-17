@@ -432,7 +432,8 @@ export default function CheckoutPage() {
                       try {
                         const token = localStorage.getItem("lebah-token");
 
-                        const verifyRes = await fetch(
+                        // 1️⃣ First create pending order
+                        const pendingRes = await fetch(
                           `${API}/orders/create-pending`,
                           {
                             method: "POST",
@@ -447,17 +448,43 @@ export default function CheckoutPage() {
                           },
                         );
 
+                        const pendingData = await pendingRes.json();
+
+                        if (!pendingRes.ok) {
+                          alert("Order creation failed");
+                          return;
+                        }
+
+                        const orderId = pendingData.data.orderId;
+
+                        // 2️⃣ Verify payment
+                        const verifyRes = await fetch(
+                          `${API}/razorpay/verify-payment`,
+                          {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                              razorpay_order_id: response.razorpay_order_id,
+                              razorpay_payment_id: response.razorpay_payment_id,
+                              razorpay_signature: response.razorpay_signature,
+                              orderId,
+                            }),
+                          },
+                        );
+
                         const verifyData = await verifyRes.json();
 
                         if (!verifyRes.ok) {
-                          alert("Order saving failed");
+                          alert("Payment verification failed");
                           return;
                         }
 
                         localStorage.setItem(
                           "lastOrder",
                           JSON.stringify({
-                            orderNumber: verifyData.data.orderId,
+                            orderNumber: orderId,
                             items: cart,
                             subTotal,
                             discount,
@@ -475,7 +502,6 @@ export default function CheckoutPage() {
                         alert("Something went wrong after payment");
                       }
                     },
-
                     prefill: {
                       name: address.name,
                       email: address.email,
