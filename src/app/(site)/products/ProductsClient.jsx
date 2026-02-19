@@ -37,9 +37,11 @@ export default function ProductsClient() {
       // ✅ category click → category only
       params.append("category", category);
     } else if (superCategoryKey) {
-      // ✅ men/women browsing → convert to ObjectId
-      params.append("superCategory", SUPER_CATEGORY_MAP[superCategoryKey]);
+      const mapped = SUPER_CATEGORY_MAP[superCategoryKey] || superCategoryKey;
+
+      params.append("superCategory", mapped);
     }
+
     if (subCategory) params.append("subCategory", subCategory);
 
     if (search) params.append("search", search);
