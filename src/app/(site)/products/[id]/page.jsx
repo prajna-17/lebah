@@ -66,10 +66,7 @@ export default function ProductDetailPage() {
         /> */}
       </CinematicScrollReveal>
       <CinematicScrollReveal>
-        <RelatedProducts
-          categoryId={product.superCategory}
-          currentProductId={product._id}
-        />
+        <RelatedProducts activeTab={activeTab} currentProductId={product._id} />
       </CinematicScrollReveal>
 
       <CinematicScrollReveal>

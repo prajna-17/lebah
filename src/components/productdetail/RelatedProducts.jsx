@@ -9,8 +9,9 @@ import { API } from "@/utils/api";
 import { addToCart } from "@/utils/cart";
 import { toggleWishlist, isInWishlist } from "@/utils/wishlist";
 import { createPortal } from "react-dom";
+import { SUPER_CATEGORY_MAP } from "@/utils/superCategoryMap";
 
-export default function RelatedProducts({ categoryId, currentProductId }) {
+export default function RelatedProducts({ activeTab, currentProductId }) {
   const { isLoggedIn } = useAuth();
   const [showLogin, setShowLogin] = useState(false);
   const [products, setProducts] = useState([]);
@@ -27,7 +28,9 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
         const productArray = Array.isArray(data) ? data : data.data || [];
 
         const filtered = productArray.filter(
-          (p) => p._id !== currentProductId && p.superCategory === categoryId,
+          (p) =>
+            p._id !== currentProductId &&
+            p.superCategory === SUPER_CATEGORY_MAP[activeTab],
         );
 
         const sliced = filtered.slice(0, 4);
@@ -44,7 +47,7 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
         });
         setLikedMap(map);
       });
-  }, [categoryId, currentProductId]);
+  }, [activeTab, currentProductId]);
 
   const requireLogin = (cb) => {
     if (!isLoggedIn) {
@@ -78,10 +81,10 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-base font-semibold">Related Products</h2>
           <button
-            onClick={() => router.push(`/products?superCategory=${categoryId}`)}
+            onClick={() => router.push(`/products?superCategory=${activeTab}`)}
             className="text-sm underline text-gray-600"
           >
-            View
+            View All
           </button>
         </div>
 
