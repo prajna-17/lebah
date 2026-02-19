@@ -17,14 +17,21 @@ export default function FabricTabs() {
       .then((data) => {
         if (!Array.isArray(data)) return;
 
+        // ✅ Filter by superCategory from URL
+        const filtered = superCategory
+          ? data.filter(
+              (s) => String(s.superCategory) === String(superCategory),
+            )
+          : data;
+
         // ✅ remove duplicates by name
         const uniqueByName = Array.from(
-          new Map(data.map((s) => [s.name.toLowerCase(), s])).values(),
+          new Map(filtered.map((s) => [s.name.toLowerCase(), s])).values(),
         );
 
         setSubCategories(uniqueByName);
       });
-  }, []);
+  }, [superCategory]);
 
   const handleTabClick = (sub) => {
     const params = new URLSearchParams();
