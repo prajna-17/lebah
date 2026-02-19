@@ -15,20 +15,28 @@ export default function FabricTabs() {
   useEffect(() => {
     if (!superCategory) return;
 
-    // ✅ convert men/women to ObjectId if needed
     const mapped = SUPER_CATEGORY_MAP[superCategory] || superCategory;
 
-    // Step 1: Fetch categories for this superCategory
+    // Step 1: Fetch categories under this superCategory
     fetch(`${API}/categories?superCategory=${mapped}`)
       .then((res) => res.json())
       .then((categoryData) => {
-        const categoryIds = categoryData.map((c) => c._id);
+        const categories = Array.isArray(categoryData)
+          ? categoryData
+          : categoryData.data || [];
 
-        // Step 2: Fetch subcategories
+        const categoryIds = categories.map((c) => c._id);
+
+        // Step 2: Fetch all subcategories
         return fetch(`${API}/sub-categories`)
           .then((res) => res.json())
           .then((subData) => {
-            const filtered = subData.filter((s) =>
+            const subCategories = Array.isArray(subData)
+              ? subData
+              : subData.data || [];
+
+            // Step 3: Filter subcategories by matching category IDs
+            const filtered = subCategories.filter((s) =>
               categoryIds.includes(s.category),
             );
 
