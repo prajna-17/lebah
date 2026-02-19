@@ -270,7 +270,9 @@ export default function BestProducts({ activeTab }) {
         {products.length > 0 && (
           <div className="mt-10 flex justify-center">
             <button
-              onClick={() => router.push("/products")}
+              onClick={() =>
+                router.push(`/products?superCategory=${activeTab}`)
+              }
               className="border border-black px-10 py-3 text-sm text-[#0b1d36]"
             >
               View All
