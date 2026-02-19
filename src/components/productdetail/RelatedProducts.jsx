@@ -26,7 +26,9 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
       .then((data) => {
         const productArray = Array.isArray(data) ? data : data.data || [];
 
-        const filtered = productArray.filter((p) => p._id !== currentProductId);
+        const filtered = productArray.filter(
+          (p) => p._id !== currentProductId && p.superCategory === categoryId,
+        );
 
         const sliced = filtered.slice(0, 4);
         setProducts(sliced);
@@ -76,7 +78,7 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-base font-semibold">Related Products</h2>
           <button
-            onClick={() => router.push("/products")}
+            onClick={() => router.push(`/products?superCategory=${categoryId}`)}
             className="text-sm underline text-gray-600"
           >
             View All
