@@ -81,7 +81,7 @@ export default function RelatedProducts({ categoryId, currentProductId }) {
             onClick={() => router.push(`/products?superCategory=${categoryId}`)}
             className="text-sm underline text-gray-600"
           >
-            View All
+            View
           </button>
         </div>
 
