@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { API } from "@/utils/api";
+import { SUPER_CATEGORY_MAP } from "@/utils/superCategoryMap";
 
 export default function FabricTabs() {
   const [subCategories, setSubCategories] = useState([]);
@@ -14,8 +15,11 @@ export default function FabricTabs() {
   useEffect(() => {
     if (!superCategory) return;
 
+    // ✅ convert men/women to ObjectId if needed
+    const mapped = SUPER_CATEGORY_MAP[superCategory] || superCategory;
+
     // Step 1: Fetch categories for this superCategory
-    fetch(`${API}/categories?superCategory=${superCategory}`)
+    fetch(`${API}/categories?superCategory=${mapped}`)
       .then((res) => res.json())
       .then((categoryData) => {
         const categoryIds = categoryData.map((c) => c._id);
