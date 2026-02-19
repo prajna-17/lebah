@@ -12,24 +12,28 @@ export default function FabricTabs() {
   const superCategory = searchParams.get("superCategory");
 
   useEffect(() => {
-    fetch(`${API}/sub-categories`)
+    if (!superCategory) return;
+
+    // Step 1: Fetch categories for this superCategory
+    fetch(`${API}/categories?superCategory=${superCategory}`)
       .then((res) => res.json())
-      .then((data) => {
-        if (!Array.isArray(data)) return;
+      .then((categoryData) => {
+        const categoryIds = categoryData.map((c) => c._id);
 
-        const filtered = superCategory
-          ? data.filter(
-              (s) =>
-                String(s.superCategory?._id || s.superCategory) ===
-                String(superCategory),
-            )
-          : data;
+        // Step 2: Fetch subcategories
+        return fetch(`${API}/sub-categories`)
+          .then((res) => res.json())
+          .then((subData) => {
+            const filtered = subData.filter((s) =>
+              categoryIds.includes(s.category),
+            );
 
-        const uniqueByName = Array.from(
-          new Map(filtered.map((s) => [s.name.toLowerCase(), s])).values(),
-        );
+            const uniqueByName = Array.from(
+              new Map(filtered.map((s) => [s.name.toLowerCase(), s])).values(),
+            );
 
-        setSubCategories(uniqueByName);
+            setSubCategories(uniqueByName);
+          });
       });
   }, [superCategory]);
 
