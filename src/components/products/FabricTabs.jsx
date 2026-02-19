@@ -17,14 +17,14 @@ export default function FabricTabs() {
       .then((data) => {
         if (!Array.isArray(data)) return;
 
-        // ✅ Filter by superCategory from URL
         const filtered = superCategory
           ? data.filter(
-              (s) => String(s.superCategory) === String(superCategory),
+              (s) =>
+                String(s.superCategory?._id || s.superCategory) ===
+                String(superCategory),
             )
           : data;
 
-        // ✅ remove duplicates by name
         const uniqueByName = Array.from(
           new Map(filtered.map((s) => [s.name.toLowerCase(), s])).values(),
         );
