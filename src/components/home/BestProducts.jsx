@@ -104,7 +104,9 @@ export default function BestProducts({ activeTab }) {
               </p>
 
               <button
-                onClick={() => router.push("/products")}
+                onClick={() =>
+                  router.push(`/products?superCategory=${activeTab}`)
+                }
                 className="mt-8 border border-[#0b1d36] px-8 py-3 text-sm tracking-wide text-[#0b1d36] font-bold hover:bg-[#0b1d36] hover:text-white transition-all duration-300"
               >
                 Explore Collection
