@@ -4,7 +4,7 @@ import { FiChevronLeft, FiChevronRight, FiPlus } from "react-icons/fi";
 import { MapPin, Percent, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { FiChevronUp, FiChevronDown } from "react-icons/fi";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAddress } from "@/context/AddressContext";
 import { getCart, clearCart } from "@/utils/cart";
 import { API } from "@/utils/api";
@@ -15,6 +15,8 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("COD");
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type");
   const { address } = useAddress();
   const [cart, setCart] = useState([]);
   const subTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
@@ -53,12 +55,23 @@ export default function CheckoutPage() {
   const [showOfferModal, setShowOfferModal] = useState(false);
 
   useEffect(() => {
-    const load = () => setCart(getCart());
-    load();
-
-    window.addEventListener("cart-updated", load);
-    return () => window.removeEventListener("cart-updated", load);
-  }, []);
+    if (type === "buyNow") {
+      const item = JSON.parse(localStorage.getItem("buyNowItem"));
+      if (item) {
+        setCart([
+          {
+            ...item,
+            qty: 1,
+          },
+        ]);
+      }
+    } else {
+      const load = () => setCart(getCart());
+      load();
+      window.addEventListener("cart-updated", load);
+      return () => window.removeEventListener("cart-updated", load);
+    }
+  }, [type]);
 
   useEffect(() => {
     const script = document.createElement("script");
