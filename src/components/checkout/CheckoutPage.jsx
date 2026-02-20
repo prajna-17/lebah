@@ -15,8 +15,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("COD");
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const type = searchParams.get("type");
+
   const { address } = useAddress();
   const [cart, setCart] = useState([]);
   const subTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
