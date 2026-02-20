@@ -351,7 +351,7 @@ export default function ProductHero({ product }) {
                     oldPrice: product.oldPrice,
                     color: selectedColor,
                     size: selectedSize,
-                    quantity: 1,
+                    qty: 1,
                   };
 
                   localStorage.setItem(
