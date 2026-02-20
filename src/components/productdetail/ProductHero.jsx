@@ -358,7 +358,7 @@ export default function ProductHero({ product }) {
                     "buyNowItem",
                     JSON.stringify(buyNowItem),
                   );
-                  router.push("/checkout?type=buyNow");
+                  router.push("/checkout");
                 })
               }
               className={`flex-1 py-3 font-medium transition
