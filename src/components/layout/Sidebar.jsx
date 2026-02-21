@@ -105,11 +105,11 @@ export default function Sidebar({ open, onClose }) {
 
             {/* MENU */}
             <div className="py-2 text-gray-900 font-bold">
-              <MenuItem
+              {/* <MenuItem
                 icon={LayoutGrid}
                 label="Shop By Category"
                 onClick={() => go("/products")}
-              />
+              /> */}
               <MenuItem
                 icon={User}
                 label="My Account"
