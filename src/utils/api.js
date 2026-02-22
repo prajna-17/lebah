@@ -1,1 +1,1 @@
-export const API = "https://lebah-backend.onrender.com/api";
+export const API = "/api";
