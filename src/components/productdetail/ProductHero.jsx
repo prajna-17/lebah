@@ -351,14 +351,14 @@ export default function ProductHero({ product }) {
                     oldPrice: product.oldPrice,
                     color: selectedColor,
                     size: selectedSize,
-                    quantity: 1,
+                    qty: 1,
                   };
 
                   localStorage.setItem(
                     "buyNowItem",
                     JSON.stringify(buyNowItem),
                   );
-                  router.push("/checkout?type=buyNow");
+                  router.push("/checkout");
                 })
               }
               className={`flex-1 py-3 font-medium transition

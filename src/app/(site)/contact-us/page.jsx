@@ -29,7 +29,7 @@ export default function ContactUsPage() {
 
           {/* Phone */}
           <motion.a
-            href="tel:+918791676705"
+            href="tel:+918679206139"
             whileHover={{ y: -6 }}
             className="border border-[#0f2742]/20 p-10 rounded-2xl hover:shadow-xl transition"
           >
@@ -40,7 +40,7 @@ export default function ContactUsPage() {
           {/* WhatsApp */}
           <motion.a
             whileHover={{ y: -6 }}
-            href="https://wa.me/918791676705"
+            href="https://wa.me/918679206139"
             target="_blank"
             className="border border-[#0f2742]/20 p-10 rounded-2xl hover:shadow-xl transition"
           >

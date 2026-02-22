@@ -15,6 +15,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("COD");
 
   const router = useRouter();
+
   const { address } = useAddress();
   const [cart, setCart] = useState([]);
   const subTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
@@ -53,11 +54,26 @@ export default function CheckoutPage() {
   const [showOfferModal, setShowOfferModal] = useState(false);
 
   useEffect(() => {
-    const load = () => setCart(getCart());
-    load();
+    const buyNowItem = localStorage.getItem("buyNowItem");
 
-    window.addEventListener("cart-updated", load);
-    return () => window.removeEventListener("cart-updated", load);
+    if (buyNowItem) {
+      const item = JSON.parse(buyNowItem);
+
+      setCart([
+        {
+          ...item,
+          qty: 1,
+        },
+      ]);
+
+      // Clear after using
+      localStorage.removeItem("buyNowItem");
+    } else {
+      const load = () => setCart(getCart());
+      load();
+      window.addEventListener("cart-updated", load);
+      return () => window.removeEventListener("cart-updated", load);
+    }
   }, []);
 
   useEffect(() => {
