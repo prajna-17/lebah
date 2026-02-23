@@ -189,23 +189,6 @@ export default function AdminOrders() {
                     >
                       Mark as Read
                     </button>
-                    <button
-                      onClick={() =>
-                        setNotifications((prev) =>
-                          prev.filter((item) => item.id !== n.id),
-                        )
-                      }
-                      style={{
-                        fontSize: 12,
-                        marginLeft: 10,
-                        background: "transparent",
-                        border: "none",
-                        color: "#999",
-                        cursor: "pointer",
-                      }}
-                    >
-                      ✖
-                    </button>
                   </div>
                 </div>
               ))}
