@@ -83,10 +83,9 @@ export default function AdminOrderDetails() {
     }));
   };
 
-  const printOrder = () => {
-    window.print();
+  const downloadInvoice = () => {
+    window.open(`${API}/orders/invoice/${order._id}`, "_blank");
   };
-
   if (loading) return <div style={{ padding: 30 }}>Loading...</div>;
   if (!order) return <div style={{ padding: 30 }}>Order not found</div>;
 
@@ -184,8 +183,8 @@ export default function AdminOrderDetails() {
           </select>
 
           <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-            <button className="primary-btn small" onClick={printOrder}>
-              Print Order
+            <button className="primary-btn small" onClick={downloadInvoice}>
+              Download Invoice
             </button>
 
             {order.orderStatus !== "CANCELLED" && (
