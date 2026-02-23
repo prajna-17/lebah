@@ -9,11 +9,19 @@ export default function AdminOrders() {
   const [filter, setFilter] = useState("ALL");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
     loadOrders();
-  }, []);
+    loadNotifications();
 
+    const interval = setInterval(() => {
+      loadNotifications();
+    }, 10000); // every 10 sec
+
+    return () => clearInterval(interval);
+  }, []);
   const loadOrders = async () => {
     try {
       const res = await fetch(`${API}/orders`, {
@@ -30,7 +38,27 @@ export default function AdminOrders() {
       setLoading(false);
     }
   };
+  const loadNotifications = async () => {
+    try {
+      const res = await fetch(`${API}/orders/unread`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("lebah-token")}`,
+        },
+      });
 
+      const data = await res.json();
+      const unreadOrders = data.data || [];
+
+      const formatted = unreadOrders.map((order) => ({
+        id: order._id,
+        message: `New Order #${order._id.slice(-6)} placed`,
+      }));
+
+      setNotifications(formatted);
+    } catch (err) {
+      console.error("Failed to load notifications", err);
+    }
+  };
   // ✅ STATUS BADGE HELPER (ONLY ADDITION)
   const getStatusBadge = (status) => {
     const styles = {
@@ -70,8 +98,100 @@ export default function AdminOrders() {
 
   return (
     <div className="font-semibold text-gray-900">
-      <h1 className="page-title">Manage Orders</h1>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h1 className="page-title">Manage Orders</h1>
 
+        <div style={{ position: "relative" }}>
+          <button
+            onClick={() => setShowNotifications(!showNotifications)}
+            style={{
+              fontSize: 22,
+              cursor: "pointer",
+              background: "none",
+              border: "none",
+            }}
+          >
+            🔔
+            {notifications.length > 0 && (
+              <span
+                style={{
+                  background: "red",
+                  color: "white",
+                  borderRadius: "50%",
+                  padding: "2px 6px",
+                  fontSize: 10,
+                  position: "absolute",
+                  top: -5,
+                  right: -5,
+                }}
+              >
+                {notifications.length}
+              </span>
+            )}
+          </button>
+
+          {showNotifications && (
+            <div
+              style={{
+                position: "absolute",
+                right: 0,
+                top: 35,
+                width: 280,
+                background: "white",
+                border: "1px solid #ddd",
+                borderRadius: 8,
+                padding: 10,
+                zIndex: 1000,
+              }}
+            >
+              {notifications.length === 0 && (
+                <div style={{ fontSize: 13 }}>No notifications</div>
+              )}
+
+              {notifications.map((n) => (
+                <div
+                  key={n.id}
+                  style={{
+                    padding: 8,
+                    marginBottom: 6,
+                    background: "#e3f2fd",
+                    borderRadius: 6,
+                    fontSize: 13,
+                  }}
+                >
+                  <div>{n.message}</div>
+
+                  <div style={{ marginTop: 5 }}>
+                    <button
+                      onClick={async () => {
+                        await fetch(`${API}/orders/mark-notified/${n.id}`, {
+                          method: "PATCH",
+                          headers: {
+                            Authorization: `Bearer ${localStorage.getItem("lebah-token")}`,
+                          },
+                        });
+
+                        setNotifications((prev) =>
+                          prev.filter((item) => item.id !== n.id),
+                        );
+                      }}
+                      style={{ fontSize: 11 }}
+                    >
+                      Mark as Read
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
       {/* FILTER BUTTONS */}
       <div
         className="cat-top-row"
