@@ -120,7 +120,7 @@ export default function AdminOrders() {
             }}
           >
             🔔
-            {notifications.length > 0 && (
+            {notifications.filter((n) => !n.read).length > 0 && (
               <span
                 style={{
                   background: "red",
@@ -133,7 +133,7 @@ export default function AdminOrders() {
                   right: -5,
                 }}
               >
-                {notifications.length}
+                {notifications.filter((n) => !n.read).length}{" "}
               </span>
             )}
           </button>
@@ -170,25 +170,27 @@ export default function AdminOrders() {
                   <div>{n.message}</div>
 
                   <div style={{ marginTop: 5 }}>
-                    <button
-                      onClick={async () => {
-                        await fetch(`${API}/orders/mark-notified/${n.id}`, {
-                          method: "PATCH",
-                          headers: {
-                            Authorization: `Bearer ${localStorage.getItem("lebah-token")}`,
-                          },
-                        });
+                    {!n.read && (
+                      <button
+                        onClick={async () => {
+                          await fetch(`${API}/orders/mark-notified/${n.id}`, {
+                            method: "PATCH",
+                            headers: {
+                              Authorization: `Bearer ${localStorage.getItem("lebah-token")}`,
+                            },
+                          });
 
-                        setNotifications((prev) =>
-                          prev.map((item) =>
-                            item.id === n.id ? { ...item, read: true } : item,
-                          ),
-                        );
-                      }}
-                      style={{ fontSize: 11 }}
-                    >
-                      Mark as Read
-                    </button>
+                          setNotifications((prev) =>
+                            prev.map((item) =>
+                              item.id === n.id ? { ...item, read: true } : item,
+                            ),
+                          );
+                        }}
+                        style={{ fontSize: 11 }}
+                      >
+                        Mark as Read
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
