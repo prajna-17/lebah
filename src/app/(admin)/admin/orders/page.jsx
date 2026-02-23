@@ -40,18 +40,20 @@ export default function AdminOrders() {
   };
   const loadNotifications = async () => {
     try {
-      const res = await fetch(`${API}/orders/unread`, {
+      const res = await fetch(`${API}/orders/notifications`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("lebah-token")}`,
         },
       });
 
       const data = await res.json();
-      const unreadOrders = data.data || [];
+      const orders = data.data || [];
 
-      const formatted = unreadOrders.map((order) => ({
+      const formatted = orders.map((order) => ({
         id: order._id,
-        message: `New Order #${order._id.slice(-6)} placed`,
+        message: `Order #${order._id.slice(-6)} placed`,
+        read: order.isNotified,
+        date: new Date(order.createdAt).toLocaleString(),
       }));
 
       setNotifications(formatted);
@@ -160,7 +162,7 @@ export default function AdminOrders() {
                   style={{
                     padding: 8,
                     marginBottom: 6,
-                    background: "#e3f2fd",
+                    background: n.read ? "#f5f5f5" : "#e8f0fe",
                     borderRadius: 6,
                     fontSize: 13,
                   }}
@@ -178,12 +180,31 @@ export default function AdminOrders() {
                         });
 
                         setNotifications((prev) =>
-                          prev.filter((item) => item.id !== n.id),
+                          prev.map((item) =>
+                            item.id === n.id ? { ...item, read: true } : item,
+                          ),
                         );
                       }}
                       style={{ fontSize: 11 }}
                     >
                       Mark as Read
+                    </button>
+                    <button
+                      onClick={() =>
+                        setNotifications((prev) =>
+                          prev.filter((item) => item.id !== n.id),
+                        )
+                      }
+                      style={{
+                        fontSize: 12,
+                        marginLeft: 10,
+                        background: "transparent",
+                        border: "none",
+                        color: "#999",
+                        cursor: "pointer",
+                      }}
+                    >
+                      ✖
                     </button>
                   </div>
                 </div>
