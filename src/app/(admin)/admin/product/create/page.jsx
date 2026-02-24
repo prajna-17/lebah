@@ -308,10 +308,10 @@ export default function AdminCreateProduct() {
           >
             {colorImages.map((c, i) => (
               <div key={i}>
-                <p style={{ fontSize: 12, fontWeight: 500 }}>
+                {/* <p style={{ fontSize: 12, fontWeight: 500 }}>
                   Color: {c.color}
-                </p>
-                <div className="image-preview-box">
+                </p> */}
+                {/* <div className="image-preview-box">
                   {c.images.map((img, idx) => (
                     <div key={idx} style={{ position: "relative" }}>
                       <img src={img} className="preview-img" />
@@ -337,7 +337,7 @@ export default function AdminCreateProduct() {
                       </span>
                     </div>
                   ))}
-                </div>
+                </div> */}
               </div>
             ))}
           </div>

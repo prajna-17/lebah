@@ -222,20 +222,20 @@ export default function EditProductPage() {
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Description"
         />
-
+        {/* 
         <input
           className="modal-input"
           placeholder="Color (Red / Blue)"
           value={currentColor}
           onChange={(e) => setCurrentColor(e.target.value)}
-        />
-        <input
+        /> */}
+        {/* <input
           ref={colorFileRef}
           type="file"
           multiple
           accept="image/*"
           onChange={(e) => handleColorUpload([...e.target.files])}
-        />
+        /> */}
 
         {colorImages.length > 0 && (
           <div
