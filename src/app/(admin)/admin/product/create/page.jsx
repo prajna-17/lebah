@@ -281,21 +281,21 @@ export default function AdminCreateProduct() {
           ))}
         </select>
 
-        <input
+        {/* <input
           className="modal-input"
           placeholder="Color (Red / Blue)"
           value={currentColor}
           onChange={(e) => setCurrentColor(e.target.value)}
-        />
+        /> */}
 
-        <input
+        {/* <input
           ref={colorFileRef}
           type="file"
           multiple
           accept="image/*"
           className="modal-input"
           onChange={(e) => handleColorUpload([...e.target.files])}
-        />
+        /> */}
 
         {colorImages.length > 0 && (
           <div
