@@ -52,7 +52,7 @@ export default function ProductMeta({ product }) {
       content: (
         <div className="text-sm leading-relaxed space-y-2">
           <p>
-            <strong>Manufactured By:</strong> Montoaklyn Fashion Pvt. Ltd.
+            <strong>Manufactured By:</strong> Montoaklyn
           </p>
           <p>
             <strong>Country of Origin:</strong> India
