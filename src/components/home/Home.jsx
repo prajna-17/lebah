@@ -9,7 +9,7 @@ import ProductSlider from "@/components/home/ProductSlider";
 import PremiumCottonBanner from "@/components/home/PremiumCottonBanner";
 import BestProducts from "@/components/home/BestProducts";
 import CoreFeatures from "@/components/home/CoreFeatures";
-import Testimonials from "@/components/home/Testimonials";
+// import Testimonials from "@/components/home/Testimonials";
 import CinematicScrollReveal from "@/components/CinematicScrollReveal";
 
 export default function Home() {
@@ -43,9 +43,7 @@ export default function Home() {
         <CoreFeatures activeTab={activeTab} />
       </CinematicScrollReveal>
 
-      <CinematicScrollReveal>
-        <Testimonials />
-      </CinematicScrollReveal>
+      <CinematicScrollReveal>{/* <Testimonials /> */}</CinematicScrollReveal>
     </>
   );
 }
