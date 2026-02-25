@@ -99,12 +99,47 @@ export default function ProductHero({ product, activeTab }) {
   };
 
   const menSizeChart = [
-    { size: "XS", chest: 36, waist: 30, length: 27, shoulder: 16.5 },
-    { size: "S", chest: 38, waist: 32, length: 27.5, shoulder: 17 },
-    { size: "M", chest: 40, waist: 34, length: 28, shoulder: 17.5 },
-    { size: "L", chest: 42, waist: 36, length: 28.5, shoulder: 18 },
-    { size: "XL", chest: 44, waist: 38, length: 29, shoulder: 18.5 },
-    { size: "XXL", chest: 46, waist: 40, length: 29.5, shoulder: 19 },
+    {
+      size: "XS",
+      chest: 36,
+      waist: 30,
+      length: 27,
+      shoulder: 16.5,
+      sleeve: 23,
+    },
+    {
+      size: "S",
+      chest: 38,
+      waist: 32,
+      length: 27.5,
+      shoulder: 17,
+      sleeve: 23.5,
+    },
+    { size: "M", chest: 40, waist: 34, length: 28, shoulder: 17.5, sleeve: 24 },
+    {
+      size: "L",
+      chest: 42,
+      waist: 36,
+      length: 28.5,
+      shoulder: 18,
+      sleeve: 24.5,
+    },
+    {
+      size: "XL",
+      chest: 44,
+      waist: 38,
+      length: 29,
+      shoulder: 18.5,
+      sleeve: 25,
+    },
+    {
+      size: "XXL",
+      chest: 46,
+      waist: 40,
+      length: 29.5,
+      shoulder: 19,
+      sleeve: 25.5,
+    },
   ];
 
   const womenSizeChart = [
@@ -518,6 +553,7 @@ export default function ProductHero({ product, activeTab }) {
                           <th>Waist</th>
                           <th>Length</th>
                           <th>Shoulder</th>
+                          <th>Sleeve</th>
                         </>
                       )}
                     </tr>
@@ -546,6 +582,7 @@ export default function ProductHero({ product, activeTab }) {
                               <td>{convert(row.waist)}</td>
                               <td>{convert(row.length)}</td>
                               <td>{convert(row.shoulder)}</td>
+                              <td>{convert(row.sleeve)}</td>
                             </>
                           )}
                         </tr>
