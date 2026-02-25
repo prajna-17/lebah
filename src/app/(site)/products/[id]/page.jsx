@@ -53,8 +53,7 @@ export default function ProductDetailPage() {
   return (
     <main>
       {/* HERO (images, colors, sizes, price) */}
-      <ProductHero product={product} />
-
+      <ProductHero product={product} activeTab={activeTab} />
       <CinematicScrollReveal>
         <ProductMeta product={product} />
       </CinematicScrollReveal>

@@ -11,7 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FiX, FiCopy } from "react-icons/fi";
 import { FaWhatsapp, FaFacebookF, FaInstagram } from "react-icons/fa";
 
-export default function ProductHero({ product }) {
+export default function ProductHero({ product, activeTab }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const colorFromURL = searchParams.get("color");
@@ -97,6 +97,27 @@ export default function ProductHero({ product }) {
       alert("Link copied to clipboard!");
     }
   };
+
+  const menSizeChart = [
+    { size: "XS", chest: 36, waist: 30, length: 27, shoulder: 16.5 },
+    { size: "S", chest: 38, waist: 32, length: 27.5, shoulder: 17 },
+    { size: "M", chest: 40, waist: 34, length: 28, shoulder: 17.5 },
+    { size: "L", chest: 42, waist: 36, length: 28.5, shoulder: 18 },
+    { size: "XL", chest: 44, waist: 38, length: 29, shoulder: 18.5 },
+    { size: "XXL", chest: 46, waist: 40, length: 29.5, shoulder: 19 },
+  ];
+
+  const womenSizeChart = [
+    { size: "XS", bust: 32, waist: 26, hips: 34 },
+    { size: "S", bust: 34, waist: 28, hips: 36 },
+    { size: "M", bust: 36, waist: 30, hips: 38 },
+    { size: "L", bust: 38, waist: 32, hips: 40 },
+    { size: "XL", bust: 40, waist: 34, hips: 42 },
+    { size: "XXL", bust: 42, waist: 36, hips: 44 },
+  ];
+
+  const isWomen = activeTab === "women";
+  const sizeData = isWomen ? womenSizeChart : menSizeChart;
 
   return (
     <>
@@ -484,48 +505,25 @@ export default function ProductHero({ product }) {
                   <thead>
                     <tr className="border-b">
                       <th className="py-2">Size</th>
-                      <th>Chest</th>
-                      <th>Waist</th>
-                      <th>Hips</th>
-                      <th>Bust</th>
-                      <th>Length</th>
+
+                      {isWomen ? (
+                        <>
+                          <th>Bust</th>
+                          <th>Waist</th>
+                          <th>Hips</th>
+                        </>
+                      ) : (
+                        <>
+                          <th>Chest</th>
+                          <th>Waist</th>
+                          <th>Length</th>
+                          <th>Shoulder</th>
+                        </>
+                      )}
                     </tr>
                   </thead>
                   <tbody>
-                    {[
-                      {
-                        size: "S",
-                        chest: 34,
-                        waist: 28,
-                        hips: 36,
-                        bust: 34,
-                        length: 24,
-                      },
-                      {
-                        size: "M",
-                        chest: 36,
-                        waist: 30,
-                        hips: 38,
-                        bust: 36,
-                        length: 25,
-                      },
-                      {
-                        size: "L",
-                        chest: 38,
-                        waist: 32,
-                        hips: 40,
-                        bust: 38,
-                        length: 26,
-                      },
-                      {
-                        size: "XL",
-                        chest: 40,
-                        waist: 34,
-                        hips: 42,
-                        bust: 40,
-                        length: 27,
-                      },
-                    ].map((row, i) => {
+                    {sizeData.map((row, i) => {
                       const convert = (val) =>
                         unit === "cm" ? Math.round(val * 2.54) : val;
 
@@ -535,11 +533,21 @@ export default function ProductHero({ product }) {
                           className="border-b hover:bg-gray-50 transition"
                         >
                           <td className="py-3 font-medium">{row.size}</td>
-                          <td>{convert(row.chest)}</td>
-                          <td>{convert(row.waist)}</td>
-                          <td>{convert(row.hips)}</td>
-                          <td>{convert(row.bust)}</td>
-                          <td>{convert(row.length)}</td>
+
+                          {isWomen ? (
+                            <>
+                              <td>{convert(row.bust)}</td>
+                              <td>{convert(row.waist)}</td>
+                              <td>{convert(row.hips)}</td>
+                            </>
+                          ) : (
+                            <>
+                              <td>{convert(row.chest)}</td>
+                              <td>{convert(row.waist)}</td>
+                              <td>{convert(row.length)}</td>
+                              <td>{convert(row.shoulder)}</td>
+                            </>
+                          )}
                         </tr>
                       );
                     })}
