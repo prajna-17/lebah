@@ -22,8 +22,6 @@ export default function BestProducts({ activeTab }) {
   const [addedItem, setAddedItem] = useState(null);
   const [showVariantModal, setShowVariantModal] = useState(false);
   const [activeProduct, setActiveProduct] = useState(null);
-
-  // 🔥 SIZE ONLY (NO COLOR STATE)
   const [selectedSize, setSelectedSize] = useState(null);
 
   useEffect(() => {
@@ -31,12 +29,10 @@ export default function BestProducts({ activeTab }) {
       .then((res) => res.json())
       .then((data) => {
         const productArray = Array.isArray(data) ? data : data.data || [];
-
         const bestSelling = productArray.filter(
           (p) =>
             p.productSellingCategory === "best-selling" && p.category !== null,
         );
-
         console.log(
           "BEST SELLING FINAL:",
           bestSelling.map((p) => ({
@@ -45,9 +41,7 @@ export default function BestProducts({ activeTab }) {
             category: p.category?.name,
           })),
         );
-
         setProducts(bestSelling);
-
         const map = {};
         bestSelling.forEach((p) => {
           const defaultColor =
@@ -59,10 +53,7 @@ export default function BestProducts({ activeTab }) {
         setLikedMap(map);
       });
 
-    const sync = () => {
-      setLikedMap((prev) => ({ ...prev }));
-    };
-
+    const sync = () => setLikedMap((prev) => ({ ...prev }));
     window.addEventListener("wishlist-updated", sync);
     return () => window.removeEventListener("wishlist-updated", sync);
   }, [activeTab]);
@@ -85,24 +76,195 @@ export default function BestProducts({ activeTab }) {
 
   return (
     <>
-      {/* ===== MAIN SECTION (UNCHANGED UI) ===== */}
-      <section className="bg-white px-4 py-10">
-        <div className="grid grid-cols-2 gap-5">
-          {products.length === 0 ? (
-            <div className="col-span-2 flex flex-col items-center justify-center py-28 text-center">
-              {/* <div className="w-14 h-14 flex items-center justify-center rounded-full border border-gray-200 mb-6"> */}
-              {/* <FiStar size={26} className="text-gray-400" /> */}
-              {/* </div> */}
+      <style>{`
+        @media (min-width: 768px) {
+          .bp-section {
+            background: linear-gradient(160deg, #fdfaf5 0%, #f7f0e6 60%, #fdfaf5 100%);
+            padding: 48px 64px 56px !important;
+            position: relative;
+          }
+          .bp-section::before,
+          .bp-section::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #c9a44c66, #c9a44caa, #c9a44c66, transparent);
+            pointer-events: none;
+          }
+          .bp-section::before { top: 0; }
+          .bp-section::after  { bottom: 0; }
 
+          /* Section header */
+          .bp-header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 36px;
+          }
+          .bp-eyebrow {
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.38em;
+            text-transform: uppercase;
+            color: #c9a44c;
+            margin-bottom: 4px;
+          }
+          .bp-headline {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: #1a1208;
+            line-height: 1;
+          }
+          .bp-header-rule {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+          }
+          .bp-header-rule span {
+            width: 4px; height: 4px;
+            background: #c9a44c;
+            border-radius: 50%;
+          }
+          .bp-header-rule::before {
+            content: '';
+            width: 48px; height: 1px;
+            background: linear-gradient(90deg, #c9a44c, transparent);
+          }
+          .bp-header-rule::after {
+            content: '';
+            width: 80px; height: 1px;
+            background: linear-gradient(90deg, transparent, #c9a44c44);
+          }
+
+          /* Grid — 4 cols on desktop */
+          .bp-grid {
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 28px !important;
+          }
+
+          /* Card */
+          .bp-card {
+            opacity: 0;
+            transform: translateY(16px);
+            animation: bpCardIn 0.45s ease forwards;
+          }
+          .bp-card:nth-child(1) { animation-delay: 0.04s; }
+          .bp-card:nth-child(2) { animation-delay: 0.10s; }
+          .bp-card:nth-child(3) { animation-delay: 0.16s; }
+          .bp-card:nth-child(4) { animation-delay: 0.22s; }
+          .bp-card:nth-child(5) { animation-delay: 0.28s; }
+          .bp-card:nth-child(6) { animation-delay: 0.34s; }
+          .bp-card:nth-child(7) { animation-delay: 0.40s; }
+          .bp-card:nth-child(8) { animation-delay: 0.46s; }
+          @keyframes bpCardIn {
+            to { opacity: 1; transform: translateY(0); }
+          }
+
+          /* Image wrapper */
+          .bp-img-wrap {
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow:
+              0 2px 8px rgba(0,0,0,0.09),
+              0 0 0 1px rgba(201,164,76,0.14);
+            transition: box-shadow 0.3s ease, transform 0.3s cubic-bezier(.2,.8,.3,1);
+          }
+          .bp-card:hover .bp-img-wrap {
+            box-shadow:
+              0 12px 32px rgba(0,0,0,0.14),
+              0 0 0 1px rgba(201,164,76,0.4);
+            transform: translateY(-3px);
+          }
+
+          /* Image taller on desktop */
+          .bp-main-img {
+            height: 340px !important;
+            transition: transform 5s ease !important;
+          }
+          .bp-card:hover .bp-main-img {
+            transform: scale(1.04);
+          }
+
+          /* Heart button */
+          .bp-heart {
+            width: 34px !important;
+            height: 34px !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.14) !important;
+            transition: transform 0.2s ease, box-shadow 0.2s !important;
+            border: 1px solid rgba(201,164,76,0.18) !important;
+          }
+          .bp-heart:hover:not(:disabled) {
+            transform: scale(1.12) !important;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18) !important;
+          }
+
+          /* Add to cart button */
+          .bp-atc {
+            border-radius: 2px !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.12em !important;
+            text-transform: uppercase !important;
+            padding: 12px !important;
+            transition: background 0.22s ease, box-shadow 0.22s ease !important;
+            box-shadow: 0 2px 8px rgba(11,29,54,0.15) !important;
+          }
+          .bp-atc:hover:not(:disabled) {
+            background: #1a3560 !important;
+            box-shadow: 0 6px 20px rgba(11,29,54,0.28) !important;
+          }
+
+          /* View All button */
+          .bp-view-all {
+            border: 1px solid rgba(201,164,76,0.6) !important;
+            color: #8a6a1a !important;
+            font-size: 10px !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.25em !important;
+            text-transform: uppercase !important;
+            padding: 12px 40px !important;
+            transition: background 0.22s, border-color 0.22s, color 0.22s !important;
+          }
+          .bp-view-all:hover {
+            background: rgba(201,164,76,0.1) !important;
+            border-color: #c9a44c !important;
+            color: #1a1208 !important;
+          }
+        }
+
+        /* Mobile — keep everything default */
+        @media (max-width: 767px) {
+          .bp-header { display: none !important; }
+          .bp-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 20px !important; }
+          .bp-card { opacity: 1 !important; transform: none !important; animation: none !important; }
+          .bp-main-img { height: 280px !important; }
+        }
+      `}</style>
+
+      <section className="bp-section bg-white px-4 py-10">
+        {/* Desktop header */}
+        <div className="bp-header">
+          <span className="bp-eyebrow">Top Picks</span>
+          <span className="bp-headline">Best Sellers</span>
+          <div className="bp-header-rule">
+            <span />
+          </div>
+        </div>
+
+        <div className="bp-grid grid grid-cols-2 gap-5">
+          {products.length === 0 ? (
+            <div className="col-span-2 md:col-span-4 flex flex-col items-center justify-center py-28 text-center">
+              {" "}
               <h3 className="text-xl font-semibold text-[#0b1d36] tracking-wide">
                 No Best Sellers Yet
               </h3>
-
               <p className="text-sm text-gray-500 mt-3 max-w-sm leading-relaxed">
                 Our curated best-selling pieces will appear here once selected.
                 Discover our full collection in the meantime.
               </p>
-
               <button
                 onClick={() =>
                   router.push(`/products?superCategory=${activeTab}`)
@@ -124,16 +286,15 @@ export default function BestProducts({ activeTab }) {
                 <div
                   key={p._id}
                   onClick={() => router.push(`/products/${p._id}`)}
-                  className="cursor-pointer relative transition-all duration-200 ease-in-out active:scale-95"
+                  className="bp-card cursor-pointer relative transition-all duration-200 ease-in-out active:scale-95"
                 >
                   {/* IMAGE */}
-                  <div className="relative overflow-hidden transition-all duration-200 active:scale-[0.98]">
+                  <div className="bp-img-wrap relative overflow-hidden transition-all duration-200 active:scale-[0.98]">
                     <div className="relative overflow-hidden">
-                      {/* Main Image */}
                       <img
                         src={p.images?.[0]}
                         alt={p.title}
-                        className="h-[280px] w-full object-cover"
+                        className="bp-main-img h-[280px] w-full object-cover"
                       />
                       {!p.inStock && (
                         <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded">
@@ -141,22 +302,17 @@ export default function BestProducts({ activeTab }) {
                         </div>
                       )}
 
-                      {/* Bottom Black Gradient Overlay */}
                       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 text-white">
                         <div className="flex items-end gap-3">
-                          {/* Small Preview Image */}
                           <img
                             src={p.images?.[0]}
                             alt="preview"
                             className="w-12 h-18 object-cover rounded-md border border-white/30"
                           />
-
-                          {/* Text Content */}
                           <div className="flex-1">
                             <p className="text-xs font-medium leading-tight">
                               {p.title}
                             </p>
-
                             <div className="text-xs mt-1">
                               ₹ {p.price}
                               {p.oldPrice && (
@@ -165,7 +321,6 @@ export default function BestProducts({ activeTab }) {
                                 </span>
                               )}
                             </div>
-
                             {p.oldPrice && (
                               <p className="text-green-500 text-xs font-semibold mt-1">
                                 {Math.round(
@@ -179,15 +334,13 @@ export default function BestProducts({ activeTab }) {
                       </div>
                     </div>
 
-                    {/* ❤️ HEART */}
+                    {/* HEART */}
                     <button
                       disabled={!p.inStock}
                       onClick={(e) => {
                         e.stopPropagation();
-
-                        if (!p.inStock) return; // 🚫 block if sold out
+                        if (!p.inStock) return;
                         if (!requireLogin()) return;
-
                         toggleWishlist({
                           productId: p._id,
                           title: p.title,
@@ -196,33 +349,24 @@ export default function BestProducts({ activeTab }) {
                           color: defaultColor,
                           size: p.sizes?.[0] || "Free",
                         });
-
                         showToast(
                           liked ? "Removed from Wishlist" : "Added to Wishlist",
                         );
-
                         const heart = document.createElement("div");
                         heart.innerHTML = "💙";
                         heart.className = "pop-heart";
                         e.currentTarget.appendChild(heart);
                         setTimeout(() => heart.remove(), 700);
-
                         setLikedMap((prev) => ({
                           ...prev,
                           [variantId]: !liked,
                         }));
-
                         const audio = new Audio("/sounds/pop.mp3");
                         audio.volume = 0.6;
                         audio.play();
                       }}
-                      className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow z-50 transition
-    ${
-      p.inStock
-        ? "bg-white hover:scale-105"
-        : "bg-gray-200 opacity-50 cursor-not-allowed"
-    }
-  `}
+                      className={`bp-heart absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow z-50 transition
+                        ${p.inStock ? "bg-white hover:scale-105" : "bg-gray-200 opacity-50 cursor-not-allowed"}`}
                     >
                       <FiHeart
                         size={18}
@@ -230,19 +374,6 @@ export default function BestProducts({ activeTab }) {
                         color={!p.inStock ? "#999" : "#333"}
                       />
                     </button>
-
-                    {/* PRICE OVERLAY */}
-                    {/* <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 text-white">
-                      <p className="text-xs">{p.title}</p>
-                      <div className="mt-1 text-xs">
-                        ₹ {p.price}
-                        {p.oldPrice && (
-                          <span className="line-through ml-2 text-gray-300">
-                            ₹ {p.oldPrice}
-                          </span>
-                        )}
-                      </div>
-                    </div> */}
                   </div>
 
                   {/* ADD TO CART */}
@@ -251,15 +382,13 @@ export default function BestProducts({ activeTab }) {
                     onClick={(e) => {
                       e.stopPropagation();
                       if (!requireLogin()) return;
-
                       if (!p.inStock) return;
-
                       setActiveProduct(p);
                       setSelectedSize(null);
                       setShowVariantModal(true);
                     }}
-                    className={`mt-2 w-full py-3 text-sm text-white transition-all duration-150 active:scale-95 
-  ${p.inStock ? "bg-[#0b1d36]" : "bg-gray-400 cursor-not-allowed"}`}
+                    className={`bp-atc mt-2 w-full py-3 text-sm text-white transition-all duration-150 active:scale-95
+                      ${p.inStock ? "bg-[#0b1d36]" : "bg-gray-400 cursor-not-allowed"}`}
                   >
                     {p.inStock ? "Add to cart" : "Sold Out"}
                   </button>
@@ -275,7 +404,7 @@ export default function BestProducts({ activeTab }) {
               onClick={() =>
                 router.push(`/products?superCategory=${activeTab}`)
               }
-              className="border border-black px-10 py-3 text-sm text-[#0b1d36]"
+              className="bp-view-all border border-black px-10 py-3 text-sm text-[#0b1d36]"
             >
               View All
             </button>
@@ -285,7 +414,7 @@ export default function BestProducts({ activeTab }) {
         <LoginGate open={showLogin} onClose={() => setShowLogin(false)} />
       </section>
 
-      {/* ===== CART MODAL (UNCHANGED) ===== */}
+      {/* ===== CART MODAL — UNTOUCHED ===== */}
       {showCartModal &&
         typeof window !== "undefined" &&
         createPortal(
@@ -297,12 +426,10 @@ export default function BestProducts({ activeTab }) {
               >
                 ✕
               </span>
-
               <div className="added-content">
                 <img src={addedItem?.image} alt="product" />
                 <span>Added to cart ✔</span>
               </div>
-
               <button
                 className="go-to-cart-btn"
                 onClick={() => router.push("/cart")}
@@ -314,7 +441,7 @@ export default function BestProducts({ activeTab }) {
           document.body,
         )}
 
-      {/* ===== SIZE-ONLY MODAL (WISHLIST STYLE) ===== */}
+      {/* ===== SIZE MODAL — UNTOUCHED ===== */}
       {showVariantModal &&
         activeProduct &&
         createPortal(
@@ -326,12 +453,10 @@ export default function BestProducts({ activeTab }) {
                 setActiveProduct(null);
               }}
             />
-
             <div className="fixed inset-x-4 bottom-6 z-50 bg-white rounded-2xl p-6">
               <h3 className="text-lg font-semibold mb-4 text-gray-900">
                 Select Size
               </h3>
-
               <div className="flex gap-3 flex-wrap mb-6">
                 {activeProduct.sizes?.map((size) => (
                   <button
@@ -347,7 +472,6 @@ export default function BestProducts({ activeTab }) {
                   </button>
                 ))}
               </div>
-
               <button
                 disabled={!selectedSize}
                 onClick={() => {
@@ -355,10 +479,8 @@ export default function BestProducts({ activeTab }) {
                     activeProduct.colorImages?.[0]?.color ||
                     activeProduct.colors?.[0] ||
                     "Default";
-
                   addToCart({
                     productId: activeProduct._id,
-                    // variantId: `${activeProduct._id}-${selectedSize}`,
                     title: activeProduct.title,
                     image: activeProduct.images?.[0],
                     price: activeProduct.price,
@@ -366,12 +488,10 @@ export default function BestProducts({ activeTab }) {
                     color: defaultColor,
                     size: selectedSize,
                   });
-
                   setAddedItem({
                     image: activeProduct.images?.[0],
                     title: activeProduct.title,
                   });
-
                   setShowVariantModal(false);
                   setActiveProduct(null);
                   setShowCartModal(true);
