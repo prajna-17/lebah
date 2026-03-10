@@ -66,8 +66,10 @@ export default function ProductsClient() {
   // }
   // SEARCH FILTER (FRONTEND SAFETY)
   if (search) {
+    const s = search.toLowerCase().trim();
+
     sortedProducts = sortedProducts.filter((p) =>
-      p.title?.toLowerCase().includes(search.toLowerCase()),
+      p.title?.toLowerCase().includes(s),
     );
   }
   // SORT
