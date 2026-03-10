@@ -64,7 +64,12 @@ export default function ProductsClient() {
   //     (p) => String(p.subCategory) === String(subCategory),
   //   );
   // }
-
+  // SEARCH FILTER (FRONTEND SAFETY)
+  if (search) {
+    sortedProducts = sortedProducts.filter((p) =>
+      p.name?.toLowerCase().includes(search.toLowerCase()),
+    );
+  }
   // SORT
   if (sort === "price-low") {
     sortedProducts.sort((a, b) => a.price - b.price);
