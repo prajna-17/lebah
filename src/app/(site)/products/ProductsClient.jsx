@@ -67,7 +67,7 @@ export default function ProductsClient() {
   // SEARCH FILTER (FRONTEND SAFETY)
   if (search) {
     sortedProducts = sortedProducts.filter((p) =>
-      p.name?.toLowerCase().includes(search.toLowerCase()),
+      p.title?.toLowerCase().includes(search.toLowerCase()),
     );
   }
   // SORT
