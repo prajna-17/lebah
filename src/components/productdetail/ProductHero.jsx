@@ -197,8 +197,8 @@ export default function ProductHero({ product, activeTab }) {
 
           .ph-slide img {
             width: 100%;
-            height: 560px !important;
-            object-fit: cover;
+            height: 480px !important;
+            object-fit: contain;
           }
 
           /* Thumbnails row below image */
@@ -373,7 +373,7 @@ export default function ProductHero({ product, activeTab }) {
                   >
                     <img
                       src={img}
-                      className="w-full h-[550px] md:h-[520px] object-cover"
+                      className="w-full h-[480px] md:h-[480px] object-contain"
                     />
                     {!product.inStock && (
                       <div className="absolute top-4 left-4 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded z-20">
@@ -438,15 +438,30 @@ export default function ProductHero({ product, activeTab }) {
 
               {/* Arrows */}
               <button
-                onClick={() =>
-                  setActiveImg((activeImg - 1 + images.length) % images.length)
-                }
+                onClick={() => {
+                  const newIndex =
+                    (activeImg - 1 + images.length) % images.length;
+                  setActiveImg(newIndex);
+
+                  sliderRef.current?.scrollTo({
+                    left: newIndex * sliderRef.current.clientWidth,
+                    behavior: "smooth",
+                  });
+                }}
                 className="ph-arrow hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow"
               >
                 <ChevronLeft size={20} />
               </button>
               <button
-                onClick={() => setActiveImg((activeImg + 1) % images.length)}
+                onClick={() => {
+                  const newIndex = (activeImg + 1) % images.length;
+                  setActiveImg(newIndex);
+
+                  sliderRef.current?.scrollTo({
+                    left: newIndex * sliderRef.current.clientWidth,
+                    behavior: "smooth",
+                  });
+                }}
                 className="ph-arrow hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow"
               >
                 <ChevronRight size={20} />
