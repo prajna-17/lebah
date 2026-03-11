@@ -13,7 +13,6 @@ export default function SortFilterBar({ sort, setSort, openFilter }) {
   const [toast, setToast] = useState("");
   const [tempSort, setTempSort] = useState(sort);
 
-  // Handle Mounting for SSR & Body Scroll Lock
   useEffect(() => {
     setMounted(true);
     if (showSortModal || showFilterModal) {
@@ -30,17 +29,76 @@ export default function SortFilterBar({ sort, setSort, openFilter }) {
 
   return (
     <>
-      {/* TOP BAR - Remains in the document flow */}
-      <section className="w-full border-y border-neutral-200 bg-white mt-10">
-        <div className="grid grid-cols-2 divide-x divide-neutral-200">
+      <style>{`
+        @media (min-width: 768px) {
+          .sfb-section {
+            margin: 0 64px !important;
+            margin-top: 32px !important;
+            border-radius: 4px !important;
+            border: 1px solid rgba(201,164,76,0.25) !important;
+            border-top: none !important;
+            border-bottom: none !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+            overflow: hidden;
+          }
+
+          .sfb-section .grid {
+            background: #fdfaf5;
+          }
+
+          .sfb-btn {
+            padding: 18px 28px !important;
+            gap: 14px !important;
+            border-bottom: 2px solid transparent;
+            transition: background 0.2s, border-color 0.2s !important;
+          }
+          .sfb-btn:hover {
+            background: #f7f0e6 !important;
+            border-bottom-color: #c9a44c;
+          }
+
+          .sfb-icon {
+            width: 18px !important;
+            height: 18px !important;
+            color: #8a6a1a !important;
+          }
+
+          .sfb-label {
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            color: #1a1208 !important;
+            letter-spacing: 0.02em !important;
+          }
+
+          .sfb-sub {
+            font-size: 11px !important;
+            color: #a0845c !important;
+            letter-spacing: 0.03em !important;
+          }
+
+          .sfb-divider {
+            border-color: rgba(201,164,76,0.2) !important;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .sfb-section { margin: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
+        }
+      `}</style>
+
+      {/* TOP BAR */}
+      <section className="sfb-section w-full border-y border-neutral-200 bg-white mt-10">
+        <div className="grid grid-cols-2 divide-x sfb-divider divide-neutral-200">
           <button
             onClick={() => setShowSortModal(true)}
-            className="flex items-center gap-3 px-5 py-4 hover:bg-neutral-50 transition"
+            className="sfb-btn flex items-center gap-3 px-5 py-4 hover:bg-neutral-50 transition"
           >
-            <ArrowDownUp className="w-5 h-5 text-neutral-800" />
+            <ArrowDownUp className="sfb-icon w-5 h-5 text-neutral-800" />
             <div className="text-left">
-              <p className="text-sm font-semibold text-neutral-900">Sort By</p>
-              <p className="text-xs text-neutral-500">
+              <p className="sfb-label text-sm font-semibold text-neutral-900">
+                Sort By
+              </p>
+              <p className="sfb-sub text-xs text-neutral-500">
                 {sort === "newest"
                   ? "Newest Arrival"
                   : sort === "price-low"
@@ -52,45 +110,38 @@ export default function SortFilterBar({ sort, setSort, openFilter }) {
 
           <button
             onClick={() => setShowFilterModal(true)}
-            className="flex items-center gap-3 px-5 py-4 hover:bg-neutral-50 transition"
+            className="sfb-btn flex items-center gap-3 px-5 py-4 hover:bg-neutral-50 transition"
           >
-            <SlidersHorizontal className="w-5 h-5 text-neutral-800" />
+            <SlidersHorizontal className="sfb-icon w-5 h-5 text-neutral-800" />
             <div className="text-left">
-              <p className="text-sm font-semibold text-neutral-900">Filter</p>
-              <p className="text-xs text-neutral-500">Price Range</p>
+              <p className="sfb-label text-sm font-semibold text-neutral-900">
+                Filter
+              </p>
+              <p className="sfb-sub text-xs text-neutral-500">Price Range</p>
             </div>
           </button>
         </div>
       </section>
 
-      {/* --- PORTALS --- */}
-
-      {/* SORT MODAL */}
-      {/* SORT MODAL */}
+      {/* SORT MODAL — untouched */}
       {createPortal(
         <div
           className={`fixed inset-0 z-[100] flex items-end justify-center transition-all duration-300 ${
             showSortModal ? "visible" : "invisible"
           }`}
         >
-          {/* Backdrop */}
           <div
             onClick={() => setShowSortModal(false)}
             className={`absolute inset-0 bg-black/50 backdrop-blur-md transition-opacity duration-300 ${
               showSortModal ? "opacity-100" : "opacity-0"
             }`}
           />
-
-          {/* Modal */}
           <div
             className={`relative w-full max-w-md bg-white rounded-t-3xl p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] transform transition-all duration-500 ease-out ${
               showSortModal ? "translate-y-0" : "translate-y-full"
             }`}
           >
-            {/* Drag Handle */}
             <div className="w-14 h-1.5 bg-neutral-300 rounded-full mx-auto mb-6" />
-
-            {/* Header */}
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-semibold text-neutral-900">
                 Sort Products
@@ -100,8 +151,6 @@ export default function SortFilterBar({ sort, setSort, openFilter }) {
                 onClick={() => setShowSortModal(false)}
               />
             </div>
-
-            {/* Sort Options */}
             <div className="space-y-3 text-gray-900">
               {[
                 { label: "Newest Arrival", value: "newest" },
@@ -118,8 +167,6 @@ export default function SortFilterBar({ sort, setSort, openFilter }) {
                   }`}
                 >
                   <span className="font-medium">{option.label}</span>
-
-                  {/* Radio Circle */}
                   <div
                     className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                       tempSort === option.value
@@ -134,26 +181,18 @@ export default function SortFilterBar({ sort, setSort, openFilter }) {
                 </button>
               ))}
             </div>
-
-            {/* Divider */}
             <div className="my-6 border-t border-neutral-200" />
-
-            {/* Apply Button */}
             <button
               onClick={() => {
                 setSort(tempSort);
                 setShowSortModal(false);
-
                 setToast(
-                  `${
-                    tempSort === "newest"
-                      ? "Newest Arrival"
-                      : tempSort === "price-low"
-                        ? "Price: Low to High"
-                        : "Price: High to Low"
-                  }`,
+                  tempSort === "newest"
+                    ? "Newest Arrival"
+                    : tempSort === "price-low"
+                      ? "Price: Low to High"
+                      : "Price: High to Low",
                 );
-
                 setTimeout(() => setToast(""), 2000);
               }}
               className="w-full bg-[#0b1b2f] text-white py-4 rounded-xl font-medium hover:bg-neutral-800 transition active:scale-[0.98]"
@@ -165,32 +204,25 @@ export default function SortFilterBar({ sort, setSort, openFilter }) {
         document.body,
       )}
 
-      {/* FILTER MODAL */}
-      {/* FILTER MODAL */}
+      {/* FILTER MODAL — untouched */}
       {createPortal(
         <div
           className={`fixed inset-0 z-[100] flex items-end justify-center transition-all duration-300 text-gray-900 ${
             showFilterModal ? "visible" : "invisible"
           }`}
         >
-          {/* Backdrop */}
           <div
             onClick={() => setShowFilterModal(false)}
             className={`absolute inset-0 bg-black/50 backdrop-blur-md transition-opacity duration-300 ${
               showFilterModal ? "opacity-100" : "opacity-0"
             }`}
           />
-
-          {/* Modal */}
           <div
             className={`relative w-full max-w-md bg-white rounded-t-3xl p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.15)] transform transition-all duration-500 ease-out ${
               showFilterModal ? "translate-y-0" : "translate-y-full"
             }`}
           >
-            {/* Drag Handle */}
             <div className="w-14 h-1.5 bg-neutral-300 rounded-full mx-auto mb-6" />
-
-            {/* Header */}
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-semibold text-neutral-900">
                 Filter Products
@@ -200,8 +232,6 @@ export default function SortFilterBar({ sort, setSort, openFilter }) {
                 onClick={() => setShowFilterModal(false)}
               />
             </div>
-
-            {/* Price Range Section */}
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-neutral-700">
@@ -215,7 +245,6 @@ export default function SortFilterBar({ sort, setSort, openFilter }) {
                   className="mt-2 w-full border border-neutral-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0b1b2f]"
                 />
               </div>
-
               <div>
                 <label className="text-sm font-medium text-neutral-700">
                   Maximum Price
@@ -229,11 +258,7 @@ export default function SortFilterBar({ sort, setSort, openFilter }) {
                 />
               </div>
             </div>
-
-            {/* Divider */}
             <div className="my-6 border-t border-neutral-200" />
-
-            {/* Buttons */}
             <div className="flex gap-3">
               <button
                 onClick={() => {
@@ -244,12 +269,10 @@ export default function SortFilterBar({ sort, setSort, openFilter }) {
               >
                 Reset
               </button>
-
               <button
                 onClick={() => {
                   openFilter({ minPrice, maxPrice });
                   setShowFilterModal(false);
-
                   setToast("Filters applied!");
                   setTimeout(() => setToast(""), 2000);
                 }}
@@ -262,6 +285,7 @@ export default function SortFilterBar({ sort, setSort, openFilter }) {
         </div>,
         document.body,
       )}
+
       {toast && (
         <div className="fixed -top-30 left-1/2 -translate-x-1/2 z-[200] animate-bounce">
           <div className="bg-[#0b1b2f] text-white px-6 py-3 rounded-full shadow-lg text-sm font-medium">
